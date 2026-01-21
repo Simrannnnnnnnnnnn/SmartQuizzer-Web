@@ -95,7 +95,7 @@
 
         try {
             // BACKEND API CALL (Hugging Face Space URL)
-            const response = await fetch('https://simrankaurrrrrr-smartquizzer-backend.hf.space/generate_quiz', {
+            const response = await fetch("{{ url_for('routes.handle_generation') }}", {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
@@ -132,3 +132,4 @@
 
 </body>
 </html>
+
