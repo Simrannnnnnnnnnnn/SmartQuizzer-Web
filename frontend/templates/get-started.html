@@ -1,24 +1,102 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="results-wrapper" style="text-align: center; margin-top: 60px; padding-bottom: 100px;">
-
-    <h1 style="font-size: 3.5rem; color: var(--brand-midnight); margin-bottom: 10px;">Welcome to SmartQuizzer</h1>
-    <p style="margin-bottom: 50px; font-size: 1.2rem; color: var(--text-muted); font-weight: 600;">The smarter way to master any subject with Generative AI.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Started | SmartQuizzer</title>
     
-    <div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;">
-        <div class="auth-glass-card" style="padding: 50px 40px; width: 350px; transition: transform 0.3s ease;">
-            <div style="font-size: 3rem; margin-bottom: 20px;">🔍</div>
-            <h3 style="color: var(--brand-midnight); font-size: 1.5rem;">Quick Topic</h3>
-            <p style="color: #666; font-size: 0.95rem; margin-bottom: 30px;">Type any subject—from Quantum Physics to History—and let AI curate a test for you.</p>
-            <a href="{{ url_for('routes.dashboard') }}" class="btn-main" style="display: block; text-decoration: none;">Start Researching</a>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+    <style>
+        :root { 
+            --brand-midnight: #0f172a; 
+            --brand-accent: #FFB300; 
+            --text-muted: #64748b;
+        }
+        body { 
+            background: radial-gradient(circle at top right, #f8fafc, #e2e8f0);
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+        }
+        .results-wrapper {
+            text-align: center;
+            padding: 80px 20px;
+        }
+        .auth-glass-card {
+            background: white;
+            padding: 50px 40px;
+            width: 350px;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255,255,255,0.8);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .auth-glass-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.1);
+            border-color: var(--brand-accent);
+        }
+        .btn-main {
+            background: var(--brand-midnight);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 15px;
+            font-weight: 800;
+            text-decoration: none;
+            display: block;
+            transition: 0.3s;
+            border: none;
+        }
+        .btn-main:hover {
+            background: var(--brand-accent);
+            color: var(--brand-midnight);
+        }
+        .accent-bg {
+            background: var(--brand-accent) !important;
+            color: var(--brand-midnight) !important;
+        }
+    </style>
+</head>
+<body>
+
+<div class="results-wrapper container">
+    <div class="animate__animated animate__fadeInDown">
+        <h1 style="font-size: 3.5rem; color: var(--brand-midnight); margin-bottom: 10px; font-weight: 800;">
+            Welcome to SmartQuizzer
+        </h1>
+        <p style="margin-bottom: 60px; font-size: 1.2rem; color: var(--text-muted); font-weight: 600;">
+            The smarter way to master any subject with Generative AI.
+        </p>
+    </div>
+    
+    <div class="d-flex justify-content-center gap-4 flex-wrap animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+        <div class="auth-glass-card" onclick="location.href='dashboard.html'">
+            <div style="font-size: 3.5rem; margin-bottom: 20px;">🔍</div>
+            <h3 style="color: var(--brand-midnight); font-size: 1.5rem; font-weight: 700;">Quick Topic</h3>
+            <p style="color: #666; font-size: 0.95rem; margin-bottom: 35px; line-height: 1.6;">
+                Type any subject—from Quantum Physics to History—and let AI curate a test for you.
+            </p>
+            <a href="dashboard.html" class="btn-main">Start Researching</a>
         </div>
 
-        <div class="auth-glass-card" style="padding: 50px 40px; width: 350px; transition: transform 0.3s ease;">
-            <div style="font-size: 3rem; margin-bottom: 20px;">📄</div>
-            <h3 style="color: var(--brand-midnight); font-size: 1.5rem;">Upload Notes</h3>
-            <p style="color: #666; font-size: 0.95rem; margin-bottom: 30px;">Upload your own PDF or class notes. Our AI will extract key concepts automatically.</p>
-            <a href="{{ url_for('routes.dashboard') }}" class="btn-main" style="display: block; text-decoration: none; background: var(--brand-accent);">Upload PDF</a>
+        <div class="auth-glass-card" onclick="location.href='dashboard.html?action=upload'">
+            <div style="font-size: 3.5rem; margin-bottom: 20px;">📄</div>
+            <h3 style="color: var(--brand-midnight); font-size: 1.5rem; font-weight: 700;">Upload Notes</h3>
+            <p style="color: #666; font-size: 0.95rem; margin-bottom: 35px; line-height: 1.6;">
+                Upload your own PDF or class notes. Our AI will extract key concepts automatically.
+            </p>
+            <a href="dashboard.html" class="btn-main accent-bg">Upload PDF</a>
         </div>
     </div>
+
+    <p style="margin-top: 50px; font-size: 0.9rem; color: var(--text-muted);">
+        <i class="fa-solid fa-lightbulb me-2"></i> 
+        Tip: You can review all your generated questions in the <strong>Library</strong> later.
+    </p>
 </div>
-{% endblock %}
+
+</body>
+</html>
