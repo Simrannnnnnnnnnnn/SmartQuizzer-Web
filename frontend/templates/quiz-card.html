@@ -1,14 +1,97 @@
-<div class="quiz-card-box" style="background: white; border-radius: 35px; padding: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.03); border: 1px solid #f1f5f9;">
+<div class="quiz-card-box animate__animated animate__fadeIn" 
+     style="background: white; border-radius: 35px; padding: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; position: relative; overflow: hidden;">
+    
     <div class="quiz-header-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px;">
-        <div class="q-status-badge" style="background: var(--brand-bg); color: var(--brand-midnight); padding: 8px 20px; border-radius: 50px; font-weight: 800; font-size: 0.8rem; letter-spacing: 0.5px; border: 2px solid var(--brand-midnight);">
-            QUESTION <span id="current-num">1</span> OF 10
+        <div class="q-status-badge" style="background: #f8fafc; color: #0f172a; padding: 8px 20px; border-radius: 50px; font-weight: 800; font-size: 0.8rem; letter-spacing: 0.5px; border: 2px solid #0f172a;">
+            QUESTION <span id="current-num">1</span> OF <span id="total-num">10</span>
         </div>
-        <div class="timer-display" id="quiz-timer" style="font-family: monospace; color: #ef4444; font-weight: 800; font-size: 1.4rem; background: #fee2e2; padding: 5px 15px; border-radius: 12px;">10:00</div>
+        
+        <div class="timer-display" id="quiz-timer" 
+             style="font-family: 'JetBrains Mono', monospace; color: #ef4444; font-weight: 800; font-size: 1.4rem; background: #fee2e2; padding: 5px 15px; border-radius: 12px; transition: all 0.3s;">
+            00:30
+        </div>
     </div>
 
     <div id="question-container">
-        <h2 class="question-text" id="main-question" style="color: var(--brand-midnight); font-size: 1.8rem; margin-bottom: 30px; line-height: 1.4;">Fetching AI insights...</h2>
-        <div class="options-list" id="options-grid" style="display: grid; gap: 15px;">
+        <h2 class="question-text" id="main-question" 
+            style="color: #0f172a; font-size: 1.8rem; margin-bottom: 30px; line-height: 1.4; font-weight: 700;">
+            Fetching AI insights...
+        </h2>
+
+        <div class="options-list" id="options-grid" 
+             style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-bottom: 30px;">
             </div>
     </div>
+
+    <div id="quiz-actions" class="mt-4 pt-4 border-top d-flex justify-content-between align-items-center">
+        <button id="skip-btn" class="btn btn-link text-muted fw-bold text-decoration-none" style="font-size: 0.9rem;">
+            Skip for now
+        </button>
+        <button id="submit-ans-btn" class="btn btn-dark px-5 py-3 rounded-4 fw-bold shadow-lg" style="transition: 0.3s;">
+            Lock In Answer <i class="fa-solid fa-chevron-right ms-2"></i>
+        </button>
+    </div>
+
+    <div id="instant-feedback" class="d-none mt-4 p-4 rounded-4 animate__animated animate__slideInUp" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
+        <h5 id="feedback-title" class="fw-bold text-success mb-2">✨ Correct!</h5>
+        <p id="feedback-explanation" class="small text-dark mb-0"></p>
+    </div>
 </div>
+
+<style>
+    /* Option Card Styling */
+    .option-btn {
+        background: #ffffff;
+        border: 2px solid #e2e8f0;
+        border-radius: 20px;
+        padding: 20px;
+        text-align: left;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .option-btn:hover {
+        border-color: #FFB300;
+        background: #fffdfa;
+        transform: translateX(5px);
+    }
+
+    .option-btn.selected {
+        background: #FFB300;
+        border-color: #0f172a;
+        color: #0f172a;
+        box-shadow: 0 10px 20px rgba(255, 179, 0, 0.2);
+    }
+
+    .option-btn .option-label {
+        width: 30px;
+        height: 30px;
+        background: #f1f5f9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-size: 0.8rem;
+    }
+
+    .selected .option-label {
+        background: white;
+    }
+
+    /* Low Time Animation */
+    @keyframes pulse-red {
+        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+        70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+
+    .timer-warning {
+        animation: pulse-red 1s infinite;
+        background: #ef4444 !important;
+        color: white !important;
+    }
+</style>
