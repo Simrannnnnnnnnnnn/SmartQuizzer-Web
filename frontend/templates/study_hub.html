@@ -1,6 +1,31 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Study Hub | SmartQuizzer</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
-{% block content %}
+    <style>
+        :root { --primary-gold: #FFB300; }
+        body { background-color: #f8f9fa; font-family: 'Inter', sans-serif; }
+        .border-top-gold { border-top: 6px solid var(--primary-gold) !important; }
+        .glass-card { border-radius: 24px; border: 1px solid #eee; background: white; }
+        .nav-pills .nav-link { color: #666; background: #f8f9fa; transition: 0.3s; border: 1px solid #ddd; margin: 0 5px; }
+        .nav-pills .nav-link.active { background: var(--primary-gold) !important; color: white !important; border-color: var(--primary-gold) !important; }
+        .custom-input { border: 2px solid #eee; transition: 0.3s; }
+        .custom-input:focus { border-color: var(--primary-gold); box-shadow: 0 0 10px rgba(255,179,0,0.1); outline: none; }
+        .border-dashed { border: 2px dashed #dee2e6; background: #fafafa; cursor: pointer; }
+        .sunshine-btn { background: var(--primary-gold); color: white; border: none; transition: 0.3s; }
+        .sunshine-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255,179,0,0.3); }
+        .show-loading { display: flex !important; }
+    </style>
+</head>
+<body>
+
 <div class="container py-5 animate__animated animate__fadeIn">
     <div class="text-center mb-5">
         <h1 class="fw-bold display-5" style="color: var(--primary-gold);">🚀 AI Study Hub</h1>
@@ -10,40 +35,40 @@
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <div class="glass-card p-4 p-md-5 shadow-lg border-top-gold">
-                <form action="{{ url_for('routes.study_hub') }}" method="POST" enctype="multipart/form-data" id="studyForm">
-                    
+                <form id="studyForm">
                     <ul class="nav nav-pills nav-justified mb-4 gap-2" id="inputTabs" role="tablist">
                         <li class="nav-item">
-                            <button class="nav-link active rounded-pill fw-bold border" id="topic-tab" data-bs-toggle="pill" data-bs-target="#topicInput" type="button">🔍 Topic</button>
+                            <button class="nav-link active rounded-pill fw-bold" id="topic-tab" data-bs-toggle="pill" data-bs-target="#topicInput" type="button">🔍 Topic</button>
                         </li>
                         <li class="nav-item">
-                            <button class="nav-link rounded-pill fw-bold border" id="text-tab" data-bs-toggle="pill" data-bs-target="#textInput" type="button">📝 Text</button>
+                            <button class="nav-link rounded-pill fw-bold" id="text-tab" data-bs-toggle="pill" data-bs-target="#textInput" type="button">📝 Text</button>
                         </li>
                         <li class="nav-item">
-                            <button class="nav-link rounded-pill fw-bold border" id="pdf-tab" data-bs-toggle="pill" data-bs-target="#pdfInput" type="button">📄 PDF</button>
+                            <button class="nav-link rounded-pill fw-bold" id="pdf-tab" data-bs-toggle="pill" data-bs-target="#pdfInput" type="button">📄 PDF</button>
                         </li>
                     </ul>
 
                     <div class="tab-content mt-4">
                         <div class="tab-pane fade show active" id="topicInput">
                             <label class="fw-bold mb-2">What do you want to learn?</label>
-                            <input type="text" name="topic_name" class="form-control rounded-pill px-4 py-3 custom-input" placeholder="e.g., Photosynthesis, Python Loops, etc.">
-                            <input type="hidden" name="source_type" value="topic" id="source_type_field">
+                            <input type="text" id="topic_name" class="form-control rounded-pill px-4 py-3 custom-input" placeholder="e.g., Photosynthesis, Python Loops, etc.">
                         </div>
 
                         <div class="tab-pane fade" id="textInput">
                             <label class="fw-bold mb-2">Paste your detailed notes here:</label>
-                            <textarea name="raw_text" class="form-control rounded-4 px-4 py-3 custom-input" rows="6" placeholder="Paste the content you want to simplify..."></textarea>
+                            <textarea id="raw_text" class="form-control rounded-4 px-4 py-3 custom-input" rows="6" placeholder="Paste the content you want to simplify..."></textarea>
                         </div>
 
                         <div class="tab-pane fade" id="pdfInput">
                             <div class="upload-box border-dashed rounded-4 p-5 text-center">
                                 <i class="fa-solid fa-cloud-arrow-up display-4 text-warning mb-3"></i>
                                 <h5>Upload your PDF Document</h5>
-                                <input type="file" name="pdf_file" class="form-control mt-3 custom-input" accept=".pdf">
+                                <input type="file" id="pdf_file" class="form-control mt-3 custom-input" accept=".pdf">
                             </div>
                         </div>
                     </div>
+
+                    <input type="hidden" id="source_type_field" value="topic">
 
                     <div class="text-center mt-5">
                         <button type="submit" class="sunshine-btn w-100 py-3 rounded-pill fw-bold fs-5 shadow" id="generateBtn">
@@ -63,62 +88,78 @@
     <p class="text-muted">This usually takes 10-15 seconds</p>
 </div>
 
-<style>
-    :root { --primary-gold: #FFB300; }
-    .border-top-gold { border-top: 6px solid var(--primary-gold) !important; }
-    
-    .nav-pills .nav-link { color: #666; background: #f8f9fa; transition: 0.3s; }
-    .nav-pills .nav-link.active { background: var(--primary-gold) !important; color: white !important; border-color: var(--primary-gold) !important; }
-    
-    .custom-input { border: 2px solid #eee; transition: 0.3s; }
-    .custom-input:focus { border-color: var(--primary-gold); box-shadow: 0 0 10px rgba(255,179,0,0.1); }
-    
-    .border-dashed { border: 2px dashed #dee2e6; background: #fafafa; }
-    
-    /* Show overlay when this class is added */
-    .show-loading { display: flex !important; }
-</style>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    const BACKEND_URL = "https://simrankaurrrrrr-smartquizzer-backend.hf.space";
     const sourceField = document.getElementById('source_type_field');
-    
-    // Tab switching logic using Bootstrap events (more reliable)
+
+    // Tab switching logic
     document.querySelectorAll('button[data-bs-toggle="pill"]').forEach(tab => {
         tab.addEventListener('shown.bs.tab', function (event) {
             const targetId = event.target.id;
             if (targetId === 'topic-tab') sourceField.value = 'topic';
-            if (targetId === 'text-tab') sourceField.value = 'text';
-            if (targetId === 'pdf-tab') sourceField.value = 'pdf';
+            else if (targetId === 'text-tab') sourceField.value = 'text';
+            else if (targetId === 'pdf-tab') sourceField.value = 'pdf';
         });
     });
 
-    // Submit logic with basic validation
-    document.getElementById('studyForm').addEventListener('submit', function(e) {
-        const activeTab = sourceField.value;
-        let isValid = true;
-
-        // Simple check to ensure input isn't empty
-        if (activeTab === 'topic') {
-            if (!document.querySelector('input[name="topic_name"]').value.trim()) isValid = false;
-        } else if (activeTab === 'text') {
-            if (!document.querySelector('textarea[name="raw_text"]').value.trim()) isValid = false;
-        }
-
-        if (!isValid) {
-            e.preventDefault();
-            alert("Please provide some input before generating.");
-            return;
-        }
-
-        // Show loading overlay
-        const overlay = document.getElementById('loadingOverlay');
-        overlay.classList.remove('d-none');
-        overlay.classList.add('show-loading');
+    // Form Submission
+    document.getElementById('studyForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
         
-        // Disable button
-        const btn = document.getElementById('generateBtn');
-        btn.disabled = true;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
+        const activeTab = sourceField.value;
+        const formData = new FormData();
+        formData.append('source_type', activeTab);
+
+        // Validation & Data Prep
+        if (activeTab === 'topic') {
+            const val = document.getElementById('topic_name').value.trim();
+            if (!val) return alert("Please enter a topic");
+            formData.append('topic_name', val);
+        } else if (activeTab === 'text') {
+            const val = document.getElementById('raw_text').value.trim();
+            if (!val) return alert("Please paste some text");
+            formData.append('raw_text', val);
+        } else if (activeTab === 'pdf') {
+            const file = document.getElementById('pdf_file').files[0];
+            if (!file) return alert("Please upload a PDF");
+            formData.append('pdf_file', file);
+        }
+
+        // UI Loading State
+        document.getElementById('loadingOverlay').classList.add('show-loading');
+        document.getElementById('generateBtn').disabled = true;
+
+        try {
+            // Fetch API call to Hugging Face
+            const response = await fetch(`${BACKEND_URL}/study-hub`, {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // IMPORTANT: Save data to localStorage so result page can read it
+                localStorage.setItem('currentStudyData', JSON.stringify(result.data));
+                // Redirect to result page
+                window.location.href = "study_hub_result.html";
+            } else {
+                alert("AI Error: " + result.error);
+                resetUI();
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Connection to AI server failed.");
+            resetUI();
+        }
     });
+
+    function resetUI() {
+        document.getElementById('loadingOverlay').classList.remove('show-loading');
+        document.getElementById('generateBtn').disabled = false;
+    }
 </script>
 
-{% endblock %}
+</body>
+</html>
