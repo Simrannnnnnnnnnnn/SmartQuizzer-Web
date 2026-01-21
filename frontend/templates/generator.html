@@ -1,30 +1,134 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="auth-wrapper" style="background: white;">
-    <div style="text-align: center; max-width: 500px;">
-        <div class="pulse-loader" style="width: 100px; height: 100px; background: var(--brand-midnight); border-radius: 50%; margin: 0 auto; animation: pulse-ring 1.5s infinite ease-in-out;"></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Researching... | SmartQuizzer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        :root { 
+            --brand-midnight: #0f172a; 
+            --brand-accent: #FFB300; 
+            --text-muted: #64748b;
+        }
+
+        body, html { height: 100%; margin: 0; font-family: 'Inter', sans-serif; }
+
+        .auth-wrapper {
+            background: white;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pulse-loader {
+            width: 100px;
+            height: 100px;
+            background: var(--brand-midnight);
+            border-radius: 50%;
+            margin: 0 auto;
+            animation: pulse-ring 1.5s infinite ease-in-out;
+        }
+
+        @keyframes loadingBar {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.9); opacity: 0.5; box-shadow: 0 0 0 0 rgba(15, 23, 42, 0.4); }
+            70% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 25px rgba(15, 23, 42, 0); }
+            100% { transform: scale(0.9); opacity: 0.5; }
+        }
+
+        .status-text {
+            animation: fadeInOut 2s infinite;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="auth-wrapper">
+    <div style="text-align: center; max-width: 500px; padding: 20px;">
+        <div class="pulse-loader"></div>
         
-        <h1 style="color: var(--brand-midnight); margin-top: 40px; font-size: 2.5rem;">AI is Researching...</h1>
-        <p style="color: var(--text-muted); font-weight: 600; line-height: 1.6;">Our Llama-3 engine is reading your content and crafting high-quality questions. This usually takes 5-10 seconds.</p>
+        <h1 style="color: var(--brand-midnight); margin-top: 40px; font-size: 2.5rem; font-weight: 800;">AI is Researching...</h1>
+        <p style="color: var(--text-muted); font-weight: 600; line-height: 1.6; margin-top: 15px;">
+            Our Llama-3 engine is reading your content and crafting high-quality questions. This usually takes 5-10 seconds.
+        </p>
         
-        <div style="width: 100%; height: 8px; background: #f1f5f9; border-radius: 10px; margin-top: 40px; overflow: hidden; border: 1px solid #eee;">
-            <div style="width: 100%; height: 100%; background: linear-gradient(90deg, var(--brand-midnight), var(--brand-accent)); animation: loadingBar 2s infinite ease-in-out;"></div>
+        <div style="width: 100%; height: 10px; background: #f1f5f9; border-radius: 10px; margin-top: 40px; overflow: hidden; border: 1px solid #eee; position: relative;">
+            <div style="width: 50%; height: 100%; background: linear-gradient(90deg, var(--brand-midnight), var(--brand-accent)); position: absolute; animation: loadingBar 1.5s infinite linear;"></div>
         </div>
         
-        <p style="margin-top: 20px; font-size: 0.8rem; font-weight: 800; color: var(--brand-accent); letter-spacing: 1px; text-transform: uppercase;">Adapting to your level...</p>
+        <p id="loading-status" class="status-text" style="margin-top: 25px; font-size: 0.85rem; font-weight: 800; color: var(--brand-accent); letter-spacing: 1.5px; text-transform: uppercase;">
+            Initializing Neural Engine...
+        </p>
     </div>
 </div>
 
-<style>
-@keyframes loadingBar {
-    0% { transform: translateX(-100%); }
-    50% { transform: translateX(0); }
-    100% { transform: translateX(100%); }
-}
-@keyframes pulse-ring {
-    0% { transform: scale(0.9); opacity: 0.5; box-shadow: 0 0 0 0 rgba(26, 42, 108, 0.4); }
-    70% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 20px rgba(26, 42, 108, 0); }
-    100% { transform: scale(0.9); opacity: 0.5; }
-}
-</style>
-{% endblock %}
+<script>
+    async function startGeneration() {
+        const statusEl = document.getElementById('loading-status');
+        const topic = localStorage.getItem('pending_topic'); // Dashboard se topic uthayega
+
+        // Status messages cycle
+        const messages = [
+            "Analyzing Topic Architecture...",
+            "Consulting Llama-3 Dataset...",
+            "Crafting Adaptive Questions...",
+            "Finalizing Explanations..."
+        ];
+        
+        let msgIndex = 0;
+        const msgInterval = setInterval(() => {
+            statusEl.innerText = messages[msgIndex % messages.length];
+            msgIndex++;
+        }, 2500);
+
+        try {
+            // BACKEND API CALL (Hugging Face Space URL)
+            const response = await fetch('https://simrankaurrrrrr-smartquizzer-backend.hf.space/generate_quiz', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    topic: topic || "General Knowledge",
+                    count: 10 
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Save questions for the Quiz Page
+                localStorage.setItem('quiz_questions', JSON.stringify(data.questions));
+                localStorage.setItem('quiz_topic', topic);
+                
+                // Success! Redirect to Quiz
+                window.location.href = "quiz.html";
+            } else {
+                alert("AI Error: " + data.message);
+                window.location.href = "dashboard.html";
+            }
+        } catch (error) {
+            console.error("Generation failed:", error);
+            alert("Connection Lost! Please try again.");
+            window.location.href = "dashboard.html";
+        } finally {
+            clearInterval(msgInterval);
+        }
+    }
+
+    // Start process when page loads
+    window.onload = startGeneration;
+</script>
+
+</body>
+</html>
