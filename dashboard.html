@@ -15,8 +15,6 @@
         .btn-check:checked + .sunshine-outline { background: #ffcc00 !important; color: white !important; }
         .sunshine-main-btn { background: linear-gradient(45deg, #ffcc00, #ffb800) !important; color: white !important; border: none !important; border-radius: 20px !important; transition: 0.3s; }
         .sunshine-main-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255, 184, 0, 0.3) !important; }
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #ffcc00; border-radius: 10px; }
         .streak-badge { background: white; border: 1px solid #eee; }
     </style>
 </head>
@@ -27,10 +25,19 @@
         <div class="col-12 d-flex justify-content-between align-items-center">
             <div>
                 <h2 class="fw-bold" style="color: #4b4b4b;">Rise & Study! ☀️</h2>
-                <p class="text-muted fw-medium">Welcome back, <span id="display-username">Scholar</span></p>
+                <p class="text-muted fw-medium">Welcome back, <span>{{ username }}</span></p>
             </div>
-            <div id="auth-status-area">
+            <div>
+                {% if not is_guest %}
+                <div class="streak-badge p-2 px-4 rounded-pill shadow-sm d-flex align-items-center animate__animated animate__pulse animate__infinite">
+                    <i class="fa-solid fa-fire text-danger fs-4 me-2"></i>
+                    <span class="fw-bold fs-5">{{ streak }} Day Streak</span>
                 </div>
+                {% else %}
+                <div class="badge p-2 px-4 rounded-pill bg-light text-dark border shadow-sm">Guest Mode 👤</div>
+                {% endif %}
+                <a href="{{ url_for('routes.logout') }}" class="btn btn-sm text-muted ms-2"><i class="fa-solid fa-right-from-bracket"></i></a>
+            </div>
         </div>
     </div>
 
@@ -47,7 +54,7 @@
                     </div>
                 </div>
                 
-                <form id="quiz-form">
+                <form action="{{ url_for('routes.handle_generation') }}" method="POST" enctype="multipart/form-data">
                     <div class="mb-4">
                         <div class="row g-2">
                             <div class="col-6">
@@ -68,15 +75,17 @@
                     <div class="row g-4">
                         <div class="col-md-6">
                             <label class="form-label fw-bold small text-muted ms-2">INPUT SOURCE</label>
-                            <select id="source-select" class="form-select sunshine-input p-3 fw-bold">
+                            <select name="source_type" id="source-select" class="form-select sunshine-input p-3 fw-bold">
                                 <option value="topic">🌐 Explore a Topic</option>
+                                <option value="image">📸 Scan Image (OCR)</option>
                                 <option value="pdf">📄 Smart PDF Upload</option>
                                 <option value="text">✍️ Quick Text Paste</option>
+                                {% if not is_guest %}<option value="mistake">🧠 Mistake Bank Review</option>{% endif %}
                             </select>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold small text-muted ms-2">QUESTION COUNT</label>
-                            <input type="range" class="form-range mt-2" id="countRange" min="1" max="15" value="5" oninput="countOutput.innerText = value">
+                            <input type="range" name="count" class="form-range mt-2" id="countRange" min="1" max="15" value="5" oninput="countOutput.innerText = value">
                             <div class="d-flex justify-content-between text-muted extra-small fw-bold">
                                 <span>1</span><span id="countOutput">5</span><span>15</span>
                             </div>
@@ -84,7 +93,7 @@
                     </div>
 
                     <div id="input-area" class="mt-4">
-                        <input type="text" id="topicInput" class="form-control sunshine-input p-4 rounded-pill" placeholder="Enter topic (e.g. Photosynthesis)..." required>
+                        <input type="text" name="topic_name" class="form-control sunshine-input p-4 rounded-pill" placeholder="Enter topic (e.g. Photosynthesis)..." required>
                     </div>
 
                     <div class="mt-5">
@@ -98,96 +107,53 @@
 
         <div class="col-lg-4">
             <div id="stats-container">
+                {% if not is_guest %}
+                <div class="card border-0 shadow-sm p-4 mb-4 text-white" style="background: linear-gradient(135deg, #FF9800, #FF5722); border-radius: 30px;">
+                    <h6 class="fw-bold opacity-75">MY PERFORMANCE</h6>
+                    <h2 class="fw-bold">{{ correct_total }} Correct</h2>
+                    <p class="small mb-0">Keep pushing your limits!</p>
                 </div>
+                <div class="card border-0 shadow-sm p-4 text-center" style="background: white; border-radius: 30px;">
+                    <h2 class="display-4 fw-bold" style="color: #ffcc00;">{{ mistake_count }}</h2>
+                    <p class="text-muted">Mistakes in Bank</p>
+                    <a href="{{ url_for('routes.review_mistakes') }}" class="btn btn-warning w-100 rounded-pill fw-bold">Review Now</a>
+                </div>
+                {% else %}
+                <div class="card border-0 shadow-sm p-4 text-center" style="background: white; border-radius: 30px; border: 2px dashed #ffe082 !important;">
+                    <i class="fa-solid fa-unlock-keyhole fs-1 text-warning mb-3"></i>
+                    <h5 class="fw-bold">Unlock AI Power</h5>
+                    <p class="text-muted small">Save your progress and track streaks.</p>
+                    <a href="{{ url_for('routes.signup') }}" class="btn sunshine-main-btn w-100 rounded-pill fw-bold">Join Now</a>
+                </div>
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    // 1. Initial State & UI Management
-    document.addEventListener('DOMContentLoaded', () => {
-        const user = JSON.parse(localStorage.getItem('user')) || { is_authenticated: false, username: 'Guest' };
-        document.getElementById('display-username').innerText = user.username;
-        
-        renderAuthUI(user);
-        renderStats(user);
-    });
-
-    function renderAuthUI(user) {
-        const area = document.getElementById('auth-status-area');
-        if(user.is_authenticated) {
-            area.innerHTML = `
-                <div class="streak-badge p-2 px-4 rounded-pill shadow-sm d-flex align-items-center animate__animated animate__pulse animate__infinite">
-                    <i class="fa-solid fa-fire text-danger fs-4 me-2"></i>
-                    <span class="fw-bold fs-5">3 Day Streak</span>
-                </div>`;
-        } else {
-            area.innerHTML = `<div class="badge p-2 px-4 rounded-pill bg-light text-dark border shadow-sm">Guest Mode 👤</div>`;
-        }
-    }
-
-    function renderStats(user) {
-        const container = document.getElementById('stats-container');
-        if(user.is_authenticated) {
-            container.innerHTML = `
-                <div class="card border-0 shadow-sm p-4 mb-4 text-white" style="background: linear-gradient(135deg, #FF9800, #FF5722); border-radius: 30px;">
-                    <h6 class="fw-bold opacity-75">KNOWLEDGE VAULT</h6>
-                    <h2 class="fw-bold">85% Mastery</h2>
-                    <p class="small mb-0">Across 12 topics</p>
-                </div>
-                <div class="card border-0 shadow-sm p-4 text-center" style="background: white; border-radius: 30px;">
-                    <h2 class="display-4 fw-bold">4</h2>
-                    <p class="text-muted">Mistakes to Review</p>
-                    <a href="library.html" class="btn btn-warning w-100 rounded-pill fw-bold">Review Now</a>
-                </div>`;
-        } else {
-            container.innerHTML = `
-                <div class="card border-0 shadow-sm p-4 text-center" style="background: white; border-radius: 30px; border: 2px dashed #ffe082 !important;">
-                    <i class="fa-solid fa-unlock-keyhole fs-1 text-warning mb-3"></i>
-                    <h5 class="fw-bold">Unlock AI Power</h5>
-                    <p class="text-muted small">Save your progress and track streaks.</p>
-                    <a href="login.html" class="btn sunshine-main-btn w-100 rounded-pill fw-bold">Join Now</a>
-                </div>`;
-        }
-    }
-
-    // 2. Dynamic Input Toggle
+    // Dynamic Input Toggle for Image, PDF, Text, etc.
     document.getElementById('source-select').onchange = function() {
         const area = document.getElementById('input-area');
-        if(this.value === 'topic') {
-            area.innerHTML = `<input type="text" id="topicInput" class="form-control sunshine-input p-4 rounded-pill animate__animated animate__fadeIn" placeholder="Enter topic (e.g. Physics)..." required>`;
-        } else if(this.value === 'pdf') {
-            area.innerHTML = `<div class="upload-zone p-5 text-center rounded-4 animate__animated animate__fadeIn" style="background: #fffef0; border: 2px dashed #ffe082;">
-                <input type="file" id="fileInput" class="d-none" onchange="document.getElementById('file-name').innerText = this.files[0].name">
-                <label for="fileInput" style="cursor:pointer;"><i class="fa-solid fa-cloud-arrow-up fs-1 text-warning mb-2"></i><h6 id="file-name">Click to upload PDF</h6></label>
+        const val = this.value;
+        
+        if(val === 'topic') {
+            area.innerHTML = `<input type="text" name="topic_name" class="form-control sunshine-input p-4 rounded-pill animate__animated animate__fadeIn" placeholder="Enter topic (e.g. Physics)..." required>`;
+        } else if(val === 'pdf') {
+            area.innerHTML = `<div class="p-4 text-center rounded-4 animate__animated animate__fadeIn" style="background: #fffef0; border: 2px dashed #ffe082;">
+                <input type="file" name="pdf_file" id="fileInput" class="form-control" required>
+                <small class="text-muted mt-2 d-block">Upload your study PDF</small>
             </div>`;
-        } else {
-            area.innerHTML = `<textarea id="textInput" class="form-control sunshine-input p-4 animate__animated animate__fadeIn" rows="5" placeholder="Paste notes here..." required></textarea>`;
+        } else if(val === 'image') {
+            area.innerHTML = `<div class="p-4 text-center rounded-4 animate__animated animate__fadeIn" style="background: #fffef0; border: 2px dashed #ffcc00;">
+                <input type="file" name="image_file" id="imgInput" class="form-control" accept="image/*" required>
+                <small class="text-muted mt-2 d-block">Take a photo of your book page</small>
+            </div>`;
+        } else if(val === 'text') {
+            area.innerHTML = `<textarea name="raw_text" class="form-control sunshine-input p-4 animate__animated animate__fadeIn" rows="5" placeholder="Paste notes here..." required></textarea>`;
+        } else if(val === 'mistake') {
+            area.innerHTML = `<div class="alert alert-warning rounded-4">Reviewing from your personal Mistake Bank. No input needed!</div>`;
         }
-    };
-
-    // 3. Logic: Redirect to Generator
-    document.getElementById('quiz-form').onsubmit = function(e) {
-        e.preventDefault();
-        const btn = document.getElementById('submitBtn');
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Connecting to AI...';
-        
-        // Data Capture
-        const sourceType = document.getElementById('source-select').value;
-        let topicData = "";
-        
-        if(sourceType === 'topic') topicData = document.getElementById('topicInput').value;
-        else if(sourceType === 'text') topicData = document.getElementById('textInput').value;
-        else topicData = "PDF Analysis Request"; // In real PDF, you'd handle file upload
-
-        // Save data to localStorage so generator.html can use it
-        localStorage.setItem('pending_topic', topicData);
-        localStorage.setItem('pending_count', document.getElementById('countRange').value);
-        
-        // Final Redirect
-        setTimeout(() => {
-            window.location.href = 'generator.html';
-        }, 800);
     };
 </script>
 
