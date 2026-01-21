@@ -1,74 +1,66 @@
-{% extends "base.html" %}
-{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Quiz | SmartQuizzer</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+    <style>
+        :root { --primary-gold: #FFD700; --text-color: #2d3436; }
+        body { background-color: #f8f9fa; font-family: 'Inter', sans-serif; }
+        .glass-card { background: white; border-radius: 30px; border: 1px solid #eee; }
+        .option-card { border: 2px solid #eee; background-color: #ffffff; transition: all 0.2s; cursor: pointer; color: #333; }
+        .btn-check:checked + .option-card { border-color: #D4A017 !important; background-color: #FFD700 !important; color: #000 !important; transform: translateY(-3px); box-shadow: 0 4px 12px rgba(212, 160, 23, 0.4) !important; }
+        .sunshine-btn { background: var(--primary-gold); border: none; border-radius: 15px; font-weight: bold; color: black; box-shadow: 0 5px 0 #D4A017; transition: all 0.1s; }
+        .sunshine-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #D4A017; }
+        #ghost-bar { transition: width 1s linear; border-radius: 20px; }
+    </style>
+</head>
+<body>
+
 <div class="container py-4">
-    {% if session.get('quiz_goal') == 'quiz' %}
-    <div class="mb-4 animate__animated animate__fadeInDown">
+    <div id="ghost-container" class="mb-4 d-none animate__animated animate__fadeInDown">
         <div class="d-flex justify-content-between small fw-bold mb-1">
-            <span style="color: var(--text-color);">You 🏃</span>
+            <span>You 🏃</span>
             <span class="text-danger">AI Rival 👻</span>
         </div>
         <div class="progress rounded-pill shadow-sm" style="height: 14px; background: #eee; border: 2px solid #fff;">
-            <div id="ghost-bar" class="progress-bar bg-danger" style="width: 0%; transition: linear; border-radius: 20px;"></div>
+            <div id="ghost-bar" class="progress-bar bg-danger" style="width: 0%;"></div>
         </div>
     </div>
-    {% endif %}
 
-    <div class="glass-card shadow-lg p-4 p-md-5 animate__animated animate__fadeIn">
-        
+    <div class="glass-card shadow-lg p-4 p-md-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <span class="badge {% if session.get('quiz_goal') == 'quiz' %}bg-danger{% else %}bg-warning text-dark{% endif %} px-4 py-2 rounded-pill fs-6 shadow-sm">
-                {{ session.get('quiz_goal').upper() }} MODE
-            </span>
-            {% if session.get('quiz_goal') == 'quiz' %}
-            <div class="h3 mb-0 text-danger fw-bold">⏳ <span id="timer">{{ remaining_time or 30 }}</span>s</div>
-            {% endif %}
+            <span id="mode-badge" class="badge px-4 py-2 rounded-pill fs-6 shadow-sm">MODE</span>
+            <div id="timer-box" class="h3 mb-0 text-danger fw-bold d-none">⏳ <span id="timer">30</span>s</div>
         </div>
 
         <div class="mb-4">
             <div class="d-flex justify-content-between align-items-end mb-1">
-                <h5 class="fw-bold mb-0">Question {{ current_num }} <span class="text-muted fs-6">of {{ total_num }}</span></h5>
-                <span class="small fw-bold text-primary">{{ ((current_num / total_num) * 100)|int }}%</span>
+                <h5 class="fw-bold mb-0">Question <span id="current-q-num">1</span> <span class="text-muted fs-6">of <span id="total-q-num">10</span></span></h5>
+                <span id="progress-percent" class="small fw-bold text-primary">0%</span>
             </div>
-            <div class="progress" style="height: 8px; border-radius: 10px; background-color: #f0f0f0;">
-                <div class="progress-bar bg-primary progress-bar-striped progress-bar-animated" 
-                     style="width: {{ (current_num / total_num) * 100 }}%;">
-                </div>
+            <div class="progress" style="height: 8px; border-radius: 10px;">
+                <div id="main-progress-bar" class="progress-bar bg-primary progress-bar-striped progress-bar-animated" style="width: 0%;"></div>
             </div>
         </div>
 
         <hr class="mb-5 opacity-10">
 
-        <h2 class="fw-bold mb-5" style="line-height: 1.4; color: var(--text-color);">{{ question.question_text }}</h2>
+        <h2 id="question-text" class="fw-bold mb-5" style="line-height: 1.4;">Loading question...</h2>
 
         <div id="feedback-area" class="alert d-none mb-4 rounded-4 shadow-sm animate__animated animate__bounceIn" style="border-left: 8px solid;">
             <h4 id="feedback-status" class="fw-bold"></h4>
             <p id="explanation-text" class="fs-5"></p>
         </div>
 
-        <form id="quiz-form" action="{{ url_for('routes.submit_answer', q_id=question.id) }}" method="POST">
-            
-            {% if options and options.items()|length > 0 %}
-                <div class="row g-3">
-                    {% for key, val in options.items() %}
-                    <div class="col-md-6">
-                        <input type="radio" class="btn-check" name="answer" value="{{ key }}" id="opt-{{ key }}" required>
-                        <label class="btn btn-outline-dark w-100 py-3 text-start rounded-4 fs-5 fw-bold shadow-sm option-card" for="opt-{{ key }}">
-                            <span class="text-warning me-2">{{ key }}.</span> {{ val }}
-                        </label>
-                    </div>
-                    {% endfor %}
+        <form id="quiz-form">
+            <div id="options-container" class="row g-3">
                 </div>
-            {% else %}
-                <div class="theory-box p-1">
-                    <label class="form-label fw-bold text-muted mb-3">WRITE YOUR ANSWER BELOW:</label>
-                    <textarea name="answer" class="form-control rounded-4 p-4 fs-5 shadow-sm border-2" 
-                              rows="6" placeholder="Explain your answer in detail..." required 
-                              style="border-color: #eee; background: #fafafa;"></textarea>
-                    <div class="mt-2 text-muted small">
-                        <i class="fa-solid fa-circle-info me-1"></i> AI will evaluate your conceptual accuracy.
-                    </div>
-                </div>
-            {% endif %}
 
             <div class="mt-5 p-4 rounded-4 text-center" style="background: #FFF9E6; border: 2px dashed #D4A017;">
                 <p class="small fw-bold text-muted mb-3">HOW CONFIDENT ARE YOU?</p>
@@ -83,94 +75,145 @@
             </div>
 
             <div class="mt-5">
-                {% if session.get('quiz_goal') == 'revision' %}
-                    <button type="button" id="check-btn" class="sunshine-btn w-100 py-3 fs-4">Check Answer</button>
-                    <button type="submit" id="next-btn" class="sunshine-btn w-100 py-3 fs-4 d-none" style="background: #333; box-shadow: 0 5px 0 #000;">
-                        Next Question <i class="fa-solid fa-arrow-right ms-2"></i>
-                    </button>
-                {% else %}
-                    <button type="submit" class="sunshine-btn w-100 py-3 fs-4" style="background: linear-gradient(to right, #dc3545, #b02a37); box-shadow: 0 5px 0 #842029;">
-                        Lock In Answer 🔒
-                    </button>
-                {% endif %}
+                <button type="button" id="action-btn" class="sunshine-btn w-100 py-3 fs-4">Lock In Answer 🔒</button>
             </div>
         </form>
     </div>
 </div>
 
-<style>
-    .option-card { border: 2px solid #eee; background-color: #ffffff; transition: all 0.2s ease-in-out; cursor: pointer; color: #333; }
-    .btn-check:checked + .option-card { border-color: #D4A017 !important; background-color: #FFD700 !important; color: #000 !important; transform: translateY(-3px); box-shadow: 0 4px 12px rgba(212, 160, 23, 0.4) !important; }
-    .sunshine-btn { background: var(--primary-gold, #FFD700); border: none; border-radius: 15px; font-weight: bold; color: black; box-shadow: 0 5px 0 #D4A017; transition: all 0.1s; }
-    .sunshine-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #D4A017; }
-    textarea:focus { border-color: #FFD700 !important; box-shadow: 0 0 15px rgba(255, 215, 0, 0.2) !important; outline: none; }
-    #ghost-bar { transition: width 1s linear; }
-</style>
-
 <script>
-    const mode = "{{ session.get('quiz_goal') }}";
-    const correct = "{{ question.correct_answer }}".toLowerCase();
-    const isTheory = {% if options %} false {% else %} true {% endif %};
+    // Configuration
+    let questions = JSON.parse(localStorage.getItem('quiz_questions')) || [];
+    let currentIndex = parseInt(localStorage.getItem('current_q_index')) || 0;
+    let userAnswers = JSON.parse(localStorage.getItem('user_answers_pool')) || [];
+    const quizGoal = localStorage.getItem('quiz_goal') || 'quiz'; // 'quiz' or 'revision'
 
-    // 1. Timer & Ghost Logic
-    if (mode === 'quiz') {
-        let timeLeft = parseInt("{{ remaining_time or 30 }}");
-        let totalTime = 30; // Assuming 30s base for ghost speed
+    let timeLeft = 30;
+    let timerInterval;
+
+    function initQuiz() {
+        if (currentIndex >= questions.length) {
+            calculateAndRedirect();
+            return;
+        }
+
+        const q = questions[currentIndex];
         
-        const tInt = setInterval(() => {
-            timeLeft--;
-            const timerDisplay = document.getElementById('timer');
-            if(timerDisplay) timerDisplay.innerText = timeLeft;
-            
-            // AI Rival Movement
-            const ghostBar = document.getElementById('ghost-bar');
-            if(ghostBar) {
-                let progress = ((totalTime - timeLeft) / totalTime) * 100;
-                ghostBar.style.width = progress + "%";
-            }
+        // Update UI
+        document.getElementById('mode-badge').innerText = quizGoal.toUpperCase() + " MODE";
+        document.getElementById('mode-badge').className = `badge px-4 py-2 rounded-pill fs-6 shadow-sm ${quizGoal === 'quiz' ? 'bg-danger' : 'bg-warning text-dark'}`;
+        document.getElementById('current-q-num').innerText = currentIndex + 1;
+        document.getElementById('total-q-num').innerText = questions.length;
+        document.getElementById('question-text').innerText = q.question;
+        
+        const progress = ((currentIndex + 1) / questions.length) * 100;
+        document.getElementById('main-progress-bar').style.width = progress + "%";
+        document.getElementById('progress-percent').innerText = Math.round(progress) + "%";
 
-            if(timeLeft <= 0) {
-                clearInterval(tInt);
-                document.getElementById('quiz-form').submit();
+        // Render Options
+        const container = document.getElementById('options-container');
+        container.innerHTML = Object.entries(q.options).map(([key, val]) => `
+            <div class="col-md-6">
+                <input type="radio" class="btn-check" name="answer" value="${key}" id="opt-${key}" required>
+                <label class="btn btn-outline-dark w-100 py-3 text-start rounded-4 fs-5 fw-bold shadow-sm option-card" for="opt-${key}">
+                    <span class="text-warning me-2">${key}.</span> ${val}
+                </label>
+            </div>
+        `).join('');
+
+        // Mode specific logic
+        if (quizGoal === 'quiz') {
+            document.getElementById('ghost-container').classList.remove('d-none');
+            document.getElementById('timer-box').classList.remove('d-none');
+            startTimer();
+        }
+
+        document.getElementById('action-btn').innerText = quizGoal === 'revision' ? "Check Answer" : "Lock In Answer 🔒";
+    }
+
+    function startTimer() {
+        timeLeft = 30;
+        document.getElementById('timer').innerText = timeLeft;
+        document.getElementById('ghost-bar').style.width = "0%";
+        
+        clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer').innerText = timeLeft;
+            document.getElementById('ghost-bar').style.width = ((30 - timeLeft) / 30 * 100) + "%";
+
+            if (timeLeft <= 0) {
+                handleSubmission(true); // Auto-submit on timeout
             }
         }, 1000);
     }
 
-    // 2. Feedback Logic
-    const checkBtn = document.getElementById('check-btn');
-    if(checkBtn) {
-        checkBtn.onclick = () => {
-            const area = document.getElementById('feedback-area');
-            const status = document.getElementById('feedback-status');
-            const expl = document.getElementById('explanation-text');
-            
-            if (isTheory) {
-                const userText = document.querySelector('textarea[name="answer"]').value;
-                if(userText.trim().length < 5) return alert("Please write a bit more!");
+    async function handleSubmission(isTimeout = false) {
+        clearInterval(timerInterval);
+        const selected = document.querySelector('input[name="answer"]:checked');
+        const ansValue = isTimeout ? null : selected?.value;
 
-                area.classList.remove('d-none');
-                area.className = "alert alert-info mb-4 rounded-4 shadow-sm";
-                status.innerText = "💡 Conceptual Guide:";
-                expl.innerText = "{{ question.explanation }}";
-            } else {
-                const selected = document.querySelector('input[name="answer"]:checked');
-                if(!selected) return alert("Please pick an answer first!");
+        if (!isTimeout && !selected) return alert("Please select an answer!");
 
-                area.classList.remove('d-none');
-                expl.innerText = "{{ question.explanation }}";
+        const q = questions[currentIndex];
+        const isCorrect = ansValue === q.correct_answer;
 
-                if(selected.value.toLowerCase() === correct) {
-                    area.className = "alert alert-success mb-4 rounded-4 shadow-sm";
-                    status.innerText = "✨ Correct!";
-                } else {
-                    area.className = "alert alert-danger mb-4 rounded-4 shadow-sm";
-                    status.innerText = "❌ Correct Answer: " + correct.toUpperCase();
-                }
-            }
-            // Transition to Next Button
-            checkBtn.classList.add('d-none');
-            document.getElementById('next-btn').classList.remove('d-none');
-        };
+        // Save result
+        userAnswers.push({
+            question: q.question,
+            user_ans: ansValue ? q.options[ansValue] : "Time Out",
+            correct_ans: q.options[q.correct_answer],
+            is_correct: isCorrect,
+            explanation: q.explanation
+        });
+
+        if (quizGoal === 'revision') {
+            showFeedback(isCorrect, q);
+        } else {
+            nextQuestion();
+        }
     }
+
+    function showFeedback(isCorrect, q) {
+        const area = document.getElementById('feedback-area');
+        area.classList.remove('d-none');
+        area.className = `alert ${isCorrect ? 'alert-success' : 'alert-danger'} mb-4 rounded-4 shadow-sm animate__animated animate__bounceIn`;
+        document.getElementById('feedback-status').innerText = isCorrect ? "✨ Correct!" : "❌ Incorrect";
+        document.getElementById('explanation-text').innerText = q.explanation;
+        
+        const btn = document.getElementById('action-btn');
+        btn.innerText = "Next Question →";
+        btn.style.background = "#333";
+        btn.onclick = nextQuestion;
+    }
+
+    function nextQuestion() {
+        currentIndex++;
+        localStorage.setItem('current_q_index', currentIndex);
+        localStorage.setItem('user_answers_pool', JSON.stringify(userAnswers));
+        
+        // Reset feedback UI
+        document.getElementById('feedback-area').classList.add('d-none');
+        document.getElementById('action-btn').onclick = () => handleSubmission(false);
+        
+        initQuiz();
+    }
+
+    function calculateAndRedirect() {
+        const correctCount = userAnswers.filter(a => a.is_correct).length;
+        const finalData = {
+            topic: localStorage.getItem('quiz_topic'),
+            score: correctCount,
+            total: questions.length,
+            user_answers: userAnswers
+        };
+        localStorage.setItem('lastQuizResult', JSON.stringify(finalData));
+        window.location.href = "results.html";
+    }
+
+    document.getElementById('action-btn').onclick = () => handleSubmission(false);
+    initQuiz();
 </script>
-{% endblock %}
+
+</body>
+</html>
