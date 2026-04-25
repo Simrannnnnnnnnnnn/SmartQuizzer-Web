@@ -134,7 +134,8 @@
             // Fetch API call to Hugging Face
             const response = await fetch(`${BACKEND_URL}/study-hub`, {
                 method: 'POST',
-                body: formData
+                body: formData,
+                credentials:'include'
             });
 
             const result = await response.json();
