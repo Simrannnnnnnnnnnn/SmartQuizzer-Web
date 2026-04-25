@@ -176,7 +176,7 @@ document.getElementById('quiz-form').onsubmit = async function(e) {
     btn.disabled = true;
     const formData = new FormData(this);
     try {
-        const response = await fetch(`${BACKEND_URL}/generate`, {
+        const response = await fetch(`${BACKEND_URL}/handle_generation`, {
             method: "POST", body: formData,
             headers: { 'X-Requested-With': 'XMLHttpRequest' },
             credentials: 'include'
