@@ -182,8 +182,19 @@ document.getElementById('quiz-form').onsubmit = async function(e) {
             credentials: 'include'
         });
         const res = await response.json();
-        if(res.success) window.location.href = res.redirect;
-        else alert("Error: " + res.message);
+        if(res.success) {
+            localStorage.setItem('quiz_questions', JSON.stringify(res.questions));
+            localStorage.setItem('quiz_topic', res.topic);
+            localStorage.setItem('current_q_index', '0');
+            localStorage.setItem('user_answers_pool', '[]');
+            localStorage.setItem('quiz_goal', formData.get('quiz_goal') || 'quiz');
+            window.location.href = "quiz.html";
+        } 
+        else {
+            alert("Error: " + res.message);
+        }
+        
+        
     } catch (err) { alert("Timeout. Try again!"); }
     finally { btn.innerHTML = "Generate Questions Now 🪄"; btn.disabled = false; }
 };
