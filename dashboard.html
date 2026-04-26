@@ -171,13 +171,13 @@ document.getElementById('source-select').onchange = function() {
 // Quiz Form Submit
 document.getElementById('quiz-form').onsubmit = async function(e) {
     e.preventDefault();
-    const btn = document.getElementById('submitBtn');
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>AI is researching...';
+    const sourceType = formData.get('source_type');
+    btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>${sourceType === 'pdf' || sourceType === 'image' ? 'Processing file... Please wait (1-2 min) ⏳' : 'AI is researching...'}`;
     btn.disabled = true;
     const formData = new FormData(this);
     try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 120000); // 2 min timeout
+        const timeoutId = setTimeout(() => controller.abort(), 180000); // 2 min timeout
         const response = await fetch(`${BACKEND_URL}/handle_generation`, {
             method: "POST", body: formData,
             headers: { 'X-Requested-With': 'XMLHttpRequest' },
