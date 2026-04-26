@@ -140,7 +140,7 @@
 <script>
 const BACKEND_URL = "https://simrankaurrrrrr-smartquizzer-backend.hf.space";
 
-// Load user stats on page load
+// Load user stats
 async function loadStats() {
     try {
         const res = await fetch(`${BACKEND_URL}/api/dashboard_stats`, { credentials: 'include' });
@@ -160,43 +160,28 @@ document.getElementById('source-select').onchange = function() {
     const area = document.getElementById('input-area');
     const val = this.value;
     let html = '';
-    if (val === 'topic') html = `<input type="text" name="topic_name" id="topicInput" class="form-control sunshine-input p-4 rounded-pill animate__animated animate__fadeIn" placeholder="Enter topic..." required>`;
-    else if (val === 'pdf') html = `<div class="p-4 text-center rounded-4 animate__animated animate__fadeIn" style="background: #fffef0; border: 2px dashed #ffe082;"><input type="file" name="pdf_file" id="pdfInput" class="form-control" accept=".pdf" required></div>`;
-    else if (val === 'image') html = `<div class="p-4 text-center rounded-4 animate__animated animate__fadeIn" style="background: #fffef0; border: 2px dashed #ffcc00;"><input type="file" name="image_file" id="imageInput" class="form-control" accept="image/*" required></div>`;
-    else if (val === 'text') html = `<textarea name="raw_text" id="textInput" class="form-control sunshine-input p-4 animate__animated animate__fadeIn" rows="5" placeholder="Paste study material..." required></textarea>`;
-    else if (val === 'mistake') html = `<div class="alert alert-warning border-0 rounded-4">AI will fetch questions you got wrong previously.</div>`;
+    if (val === 'topic') {
+        html = `<input type="text" name="topic_name" id="topicInput" class="form-control sunshine-input p-4 rounded-pill animate__animated animate__fadeIn" placeholder="Enter topic..." required>`;
+    } else if (val === 'pdf') {
+        // ✅ file input ko directly #activeFileInput ID diya — getActiveContent mein easy access
+        html = `<div class="p-4 text-center rounded-4 animate__animated animate__fadeIn" style="background: #fffef0; border: 2px dashed #ffe082;">
+                    <i class="fa-solid fa-file-pdf fa-2x text-warning mb-2"></i>
+                    <p class="text-muted small mb-2">Upload your PDF file</p>
+                    <input type="file" name="pdf_file" id="activeFileInput" class="form-control" accept=".pdf" required>
+                </div>`;
+    } else if (val === 'image') {
+        html = `<div class="p-4 text-center rounded-4 animate__animated animate__fadeIn" style="background: #fffef0; border: 2px dashed #ffcc00;">
+                    <i class="fa-solid fa-image fa-2x text-warning mb-2"></i>
+                    <p class="text-muted small mb-2">Upload your image</p>
+                    <input type="file" name="image_file" id="activeFileInput" class="form-control" accept="image/*" required>
+                </div>`;
+    } else if (val === 'text') {
+        html = `<textarea name="raw_text" id="textInput" class="form-control sunshine-input p-4 animate__animated animate__fadeIn" rows="5" placeholder="Paste study material..." required></textarea>`;
+    } else if (val === 'mistake') {
+        html = `<div class="alert alert-warning border-0 rounded-4">AI will fetch questions you got wrong previously.</div>`;
+    }
     area.innerHTML = html;
 };
-
-// ─── Helper: source type ke hisaab se content/formData banao ───
-// PDF/Image ke liye: file FormData mein daalte hain, text return nahi hota
-// Topic/Text ke liye: string return karte hain
-function getActiveContent() {
-    const sourceType = document.getElementById('source-select').value;
-
-    if (sourceType === 'topic') {
-        const el = document.getElementById('topicInput');
-        return { type: 'topic', text: el ? el.value.trim() : '', file: null };
-    }
-    if (sourceType === 'text') {
-        const el = document.getElementById('textInput');
-        return { type: 'text', text: el ? el.value.trim() : '', file: null };
-    }
-    if (sourceType === 'pdf') {
-        const el = document.getElementById('pdfInput');
-        const file = el && el.files[0] ? el.files[0] : null;
-        return { type: 'pdf', text: file ? file.name : '', file: file };
-    }
-    if (sourceType === 'image') {
-        const el = document.getElementById('imageInput');
-        const file = el && el.files[0] ? el.files[0] : null;
-        return { type: 'image', text: file ? file.name : '', file: file };
-    }
-    if (sourceType === 'mistake') {
-        return { type: 'mistake', text: 'Mistake Bank', file: null };
-    }
-    return { type: 'topic', text: '', file: null };
-}
 
 // ─── Quiz Form Submit ───
 document.getElementById('quiz-form').onsubmit = async function(e) {
@@ -244,101 +229,70 @@ document.getElementById('quiz-form').onsubmit = async function(e) {
     }
 };
 
-// ─── Case Challenge — ab topic, text, PDF, image sab support karta hai ───
+// ─── Case Challenge ───
 document.getElementById('caseBtn').onclick = async function() {
     const caseBtn = this;
-    const active = getActiveContent();
 
-    // PDF ya Image ke liye — pehle text extract karna hoga backend se
-    // isliye same formData bhejte hain /start-challenge pe
-    if (active.type === 'pdf' || active.type === 'image') {
-        if (!active.file) {
-            alert("Pehle file upload karo!");
+    // ✅ Seedha dropdown value padhte hain — kisi ID pe depend nahi
+    const sourceType = document.getElementById('source-select').value;
+    let content = '';
+    let hasFile = false;
+
+    if (sourceType === 'topic') {
+        const el = document.getElementById('topicInput');
+        content = el ? el.value.trim() : '';
+        if (!content) { alert("Pehle topic enter karo!"); return; }
+
+    } else if (sourceType === 'text') {
+        const el = document.getElementById('textInput');
+        content = el ? el.value.trim() : '';
+        if (!content) { alert("Pehle text paste karo!"); return; }
+
+    } else if (sourceType === 'pdf' || sourceType === 'image') {
+        // ✅ activeFileInput ID use karte hain jo toggler mein set ki
+        const fileEl = document.getElementById('activeFileInput');
+        if (!fileEl || !fileEl.files || !fileEl.files[0]) {
+            alert("Pehle file select karo!");
             return;
         }
+        // File ka naam content ki jagah bhejte hain — backend extract karega
+        content = `Please generate a case study challenge based on the uploaded ${sourceType} named: ${fileEl.files[0].name}`;
+        hasFile = true;
 
-        caseBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
-        caseBtn.disabled = true;
+    } else if (sourceType === 'mistake') {
+        content = 'Generate a case study challenge based on common student mistakes and misconceptions';
+    }
 
-        try {
-            // Step 1: File se text extract karo (handle_generation se questions nahi, sirf content chahiye)
-            // Isliye study-hub endpoint use karenge jo content accept karta hai
-            const extractForm = new FormData();
-            extractForm.append('source_type', active.type);
-            if (active.type === 'pdf') extractForm.append('pdf_file', active.file);
-            else extractForm.append('image_file', active.file);
+    caseBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+    caseBtn.disabled = true;
 
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 180000);
+    try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 120000);
 
-            // Step 2: Extracted content se case challenge banao
-            // Backend ko file bhejo aur woh extract + case generate karega
-            const response = await fetch(`${BACKEND_URL}/start-challenge`, {
-                method: "POST",
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                body: JSON.stringify({
-                    content_to_study: `Generate a case study challenge based on the uploaded ${active.type} file: ${active.text}`
-                })
-            });
-            clearTimeout(timeoutId);
+        const response = await fetch(`${BACKEND_URL}/start-challenge`, {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ content_to_study: content })
+        });
+        clearTimeout(timeoutId);
 
-            const res = await response.json();
-            if (res.success) {
-                window.location.href = res.redirect;
-            } else {
-                alert("Error: " + (res.error || "Could not start challenge"));
-            }
-        } catch(e) {
-            if (e.name === 'AbortError') {
-                alert("Timeout ⏰ — Try with a smaller file or use topic instead!");
-            } else {
-                alert("Connection error. Try again!");
-            }
-        } finally {
-            caseBtn.innerHTML = '<i class="fa-solid fa-brain"></i>';
-            caseBtn.disabled = false;
+        const res = await response.json();
+        if (res.success) {
+            window.location.href = res.redirect;
+        } else {
+            alert("Error: " + (res.error || "Could not start challenge"));
         }
-
-    } else {
-        // Topic, Text, Mistake — seedha text bhejo
-        const content = active.text;
-        if (!content) {
-            alert("Pehle topic ya text enter karo!");
-            return;
+    } catch(e) {
+        if (e.name === 'AbortError') {
+            alert("Timeout ⏰ — Please try again!");
+        } else {
+            alert("Connection error. Try again!");
         }
-
-        caseBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
-        caseBtn.disabled = true;
-
-        try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 120000);
-
-            const response = await fetch(`${BACKEND_URL}/start-challenge`, {
-                method: "POST",
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                body: JSON.stringify({ content_to_study: content })
-            });
-            clearTimeout(timeoutId);
-
-            const res = await response.json();
-            if (res.success) {
-                window.location.href = res.redirect;
-            } else {
-                alert("Error: " + (res.error || "Could not start challenge"));
-            }
-        } catch(e) {
-            if (e.name === 'AbortError') {
-                alert("Timeout ⏰ — Please try again!");
-            } else {
-                alert("Connection error. Try again!");
-            }
-        } finally {
-            caseBtn.innerHTML = '<i class="fa-solid fa-brain"></i>';
-            caseBtn.disabled = false;
-        }
+    } finally {
+        caseBtn.innerHTML = '<i class="fa-solid fa-brain"></i>';
+        caseBtn.disabled = false;
     }
 };
 </script>
