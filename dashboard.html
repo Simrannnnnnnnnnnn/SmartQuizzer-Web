@@ -161,7 +161,7 @@ document.getElementById('source-select').onchange = function() {
     const val = this.value;
     let html = '';
     if(val === 'topic') html = `<input type="text" name="topic_name" id="topicInput" class="form-control sunshine-input p-4 rounded-pill animate__animated animate__fadeIn" placeholder="Enter topic..." required>`;
-    else if(val === 'pdf') html = `<div class="p-4 text-center rounded-4 animate__animated animate__fadeIn" style="background: #fffef0; border: 2px dashed #ffe082;"><input type="file" name="pdf_file" class="form-control" required></div>`;
+    else if(val === 'pdf') html = `<div class="p-4 text-center rounded-4 animate__animated animate__fadeIn" style="background: #fffef0; border: 2px dashed #ffe082;"><input type="file" name="pdf_file" class="form-control" accept=".pdf" required></div>`;
     else if(val === 'image') html = `<div class="p-4 text-center rounded-4 animate__animated animate__fadeIn" style="background: #fffef0; border: 2px dashed #ffcc00;"><input type="file" name="image_file" class="form-control" accept="image/*" required></div>`;
     else if(val === 'text') html = `<textarea name="raw_text" class="form-control sunshine-input p-4 animate__animated animate__fadeIn" rows="5" placeholder="Paste study material..." required></textarea>`;
     else if(val === 'mistake') html = `<div class="alert alert-warning border-0 rounded-4">AI will fetch questions you got wrong previously.</div>`;
@@ -169,61 +169,82 @@ document.getElementById('source-select').onchange = function() {
 };
 
 // Quiz Form Submit
+// FIX 1: formData aur btn pehle define karo, phir use karo
 document.getElementById('quiz-form').onsubmit = async function(e) {
     e.preventDefault();
+    const btn = document.getElementById('submitBtn');       // ✅ pehle define
+    const formData = new FormData(this);                    // ✅ pehle define
     const sourceType = formData.get('source_type');
+
     btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>${sourceType === 'pdf' || sourceType === 'image' ? 'Processing file... Please wait (1-2 min) ⏳' : 'AI is researching...'}`;
     btn.disabled = true;
-    const formData = new FormData(this);
+
     try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 180000); // 2 min timeout
+        const timeoutId = setTimeout(() => controller.abort(), 180000); // 3 min timeout
+
         const response = await fetch(`${BACKEND_URL}/handle_generation`, {
-            method: "POST", body: formData,
+            method: "POST",
+            body: formData,
             headers: { 'X-Requested-With': 'XMLHttpRequest' },
             credentials: 'include',
             signal: controller.signal
         });
-        clearTimeout(timeoutID);
+        clearTimeout(timeoutId); // FIX 2: timeoutId lowercase ✅
+
         const res = await response.json();
-        if(res.success) {
+        if (res.success) {
             localStorage.setItem('quiz_questions', JSON.stringify(res.questions));
             localStorage.setItem('quiz_topic', res.topic);
             localStorage.setItem('current_q_index', '0');
             localStorage.setItem('user_answers_pool', '[]');
             localStorage.setItem('quiz_goal', formData.get('quiz_goal') || 'quiz');
             window.location.href = "quiz.html";
-        } 
-        else {
-            alert("Error: " + res.message);
+        } else {
+            alert("Error: " + (res.message || "Something went wrong. Try again!"));
         }
-        
-        
-    } catch (err) { 
-        if(err.name === 'AbortError') {
-            alert("PDF processing time out ho gaya. Chhota PDF try karo ya topic use karo!");
-        } 
-        else {
-            alert("Connection error. Try again!");
+    } catch (err) {
+        if (err.name === 'AbortError') {
+            alert("Timeout ⏰ — PDF processing time lag raha hai. Chhota PDF try karo ya topic use karo!");
+        } else {
+            alert("Connection error 😕 — Please try again!");
+        }
+    } finally {
+        btn.innerHTML = "Generate Questions Now 🪄";
+        btn.disabled = false;
     }
-}
-    finally { btn.innerHTML = "Generate Questions Now 🪄"; btn.disabled = false; }
 };
 
 // Case Challenge
+// FIX 3: start_challenge → start-challenge (hyphen) ✅
 document.getElementById('caseBtn').onclick = async function() {
-    const topic = document.getElementById('topicInput')?.value || "General Concept";
+    const topicInput = document.getElementById('topicInput');
+    const topic = topicInput ? topicInput.value.trim() : "";
+    if (!topic) {
+        alert("Pehle topic enter karo!");
+        return;
+    }
     this.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+    this.disabled = true;
     try {
-        const response = await fetch(`${BACKEND_URL}/start_challenge`, {
-            method: "POST", headers: { 'Content-Type': 'application/json' },
+        const response = await fetch(`${BACKEND_URL}/start-challenge`, {  
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
             body: JSON.stringify({ content_to_study: topic })
         });
         const res = await response.json();
-        if(res.success) window.location.href = res.redirect;
-    } catch(e) { alert("Error starting case study."); }
-    finally { this.innerHTML = '<i class="fa-solid fa-brain"></i>'; }
+        if (res.success) {
+            window.location.href = res.redirect;
+        } else {
+            alert("Error: " + (res.error || "Could not start challenge"));
+        }
+    } catch(e) {
+        alert("Connection error. Try again!");
+    } finally {
+        this.innerHTML = '<i class="fa-solid fa-brain"></i>';
+        this.disabled = false;
+    }
 };
 </script>
 </body>
