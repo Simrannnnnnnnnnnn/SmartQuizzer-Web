@@ -23,7 +23,7 @@
 <body>
 
 <div class="container py-5 animate__animated animate__fadeIn">
-    <div class="d-flex justify-content-between align-items-center mb-5 no-print">
+    <div class="d-flex justify-content-between align-items-center mb-5">
         <div class="flex-grow-1 me-4">
             <h5 class="fw-bold mb-1">Challenge Progress</h5>
             <div class="progress" style="height: 12px; border-radius: 10px; background-color: #e2e8f0; border: 1px solid #dee2e6;">
@@ -37,9 +37,21 @@
         </div>
     </div>
 
+    <!-- Loading state -->
+    <div id="loading-state" class="text-center py-5">
+        <div class="spinner-grow text-warning" style="width: 3rem; height: 3rem;"></div>
+        <h5 class="mt-3 text-muted">Loading your challenges...</h5>
+    </div>
+
+    <!-- Error state -->
+    <div id="error-state" class="d-none text-center py-5">
+        <i class="fa-solid fa-triangle-exclamation fa-3x text-warning mb-3"></i>
+        <h5 class="text-muted">No challenges found!</h5>
+        <a href="dashboard.html" class="btn btn-warning rounded-pill px-4 fw-bold mt-3">Go Back</a>
+    </div>
+
     <div class="row justify-content-center">
-        <div class="col-lg-9" id="main-content-area">
-            </div>
+        <div class="col-lg-9" id="main-content-area"></div>
     </div>
 
     <div class="row justify-content-center">
@@ -47,40 +59,42 @@
             <button id="prev-btn" class="btn btn-link text-decoration-none text-muted fw-bold" onclick="navigate(-1)">
                 <i class="fa-solid fa-chevron-left me-2"></i> Previous
             </button>
-            <div id="nav-action-area">
-                </div>
+            <div id="nav-action-area"></div>
         </div>
     </div>
 </div>
 
 <script>
-    // 1. DATA: Flask cases ko localStorage se fetch karega (ya default use karega)
-    let challenges = JSON.parse(localStorage.getItem('generated_cases')) || [
-        {
-            type: 'case',
-            scenario: 'A large tech company is facing a sudden 40% drop in user engagement after a UI update.',
-            question: 'What immediate data points should the UX team analyze to identify the friction point?',
-            answer: 'Analyze bounce rates on specific pages, heatmaps of the new interface, and user session recordings from the first 24 hours.',
-            key_points: ['bounce rates', 'heatmaps', 'session recordings', 'friction']
-        },
-        {
-            type: 'reasoning',
-            scenario: 'Logical Reasoning Challenge',
-            question: 'If all mammals are warm-blooded and a whale is a mammal, what can you conclude about the whale?',
-            answer: 'The whale must be warm-blooded based on deductive reasoning.',
-            key_points: ['warm-blooded', 'deductive reasoning', 'mammal']
-        }
-    ];
+    const BACKEND_URL = "https://simrankaurrrrrr-smartquizzer-backend.hf.space";
 
+    let challenges = [];
     let currentIndex = 0;
 
-    // 2. INITIALIZE
+    // ─── Data load karo — localStorage se (dashboard ne save kiya hoga) ───
+    async function loadChallenges() {
+        // Pehle localStorage check karo
+        const stored = localStorage.getItem('generated_cases');
+        if (stored) {
+            try {
+                challenges = JSON.parse(stored);
+                if (challenges && challenges.length > 0) {
+                    document.getElementById('loading-state').classList.add('d-none');
+                    init();
+                    return;
+                }
+            } catch(e) {}
+        }
+
+        // localStorage mein nahi hai — error show karo
+        document.getElementById('loading-state').classList.add('d-none');
+        document.getElementById('error-state').classList.remove('d-none');
+    }
+
     function init() {
         document.getElementById('total-idx-display').innerText = challenges.length;
         renderChallenge();
     }
 
-    // 3. RENDER FUNCTION
     function renderChallenge() {
         const item = challenges[currentIndex];
         const container = document.getElementById('main-content-area');
@@ -88,14 +102,14 @@
         container.innerHTML = `
             <div class="card border-0 shadow-lg rounded-4 mb-4 overflow-hidden animate__animated animate__fadeInRight">
                 <div class="px-4 py-3 ${item.type === 'case' ? 'bg-primary text-white' : 'bg-warning text-dark'} fw-bold d-flex justify-content-between align-items-center">
-                    <span class="text-uppercase tracking-wider">
+                    <span class="text-uppercase">
                         ${item.type === 'case' ? '📁 Case Study' : '💡 Reasoning Challenge'}
                     </span>
                     <i class="fa-solid ${item.type === 'case' ? 'fa-briefcase' : 'fa-lightbulb'} fa-lg"></i>
                 </div>
 
                 <div class="card-body p-4 p-md-5">
-                    ${item.type === 'case' ? `
+                    ${item.type === 'case' && item.scenario ? `
                         <div class="scenario-box p-4 rounded-4 mb-4">
                             <h6 class="text-primary fw-bold text-uppercase small mb-2">The Situation:</h6>
                             <p class="mb-0 fs-5" style="line-height: 1.6; font-style: italic; color: #1e293b;">"${item.scenario}"</p>
@@ -118,7 +132,7 @@
                         </div>
 
                         <div id="read-zone" class="d-none animate__animated animate__fadeIn">
-                            <div class="p-4 rounded-4 border-0" style="background: #f8fafc; border: 1px solid #e2e8f0 !important;">
+                            <div class="p-4 rounded-4" style="background: #f8fafc; border: 1px solid #e2e8f0;">
                                 <h6 class="fw-bold text-primary mb-3">Ideal Solution:</h6>
                                 <p class="mb-0 text-dark fs-5">${item.answer}</p>
                             </div>
@@ -130,7 +144,6 @@
         updateNav();
     }
 
-    // 4. NAVIGATION LOGIC
     function navigate(dir) {
         currentIndex += dir;
         renderChallenge();
@@ -138,12 +151,9 @@
     }
 
     function updateNav() {
-        // Progress Bar
         const percent = ((currentIndex + 1) / challenges.length) * 100;
         document.getElementById('challenge-progress').style.width = percent + '%';
         document.getElementById('current-idx-display').innerText = currentIndex + 1;
-
-        // Buttons
         document.getElementById('prev-btn').disabled = (currentIndex === 0);
         
         const actionArea = document.getElementById('nav-action-area');
@@ -158,7 +168,6 @@
         }
     }
 
-    // 5. SMART ANALYSIS LOGIC
     function toggleMode(mode) {
         document.getElementById('write-zone').classList.toggle('d-none', mode === 'read');
         document.getElementById('read-zone').classList.toggle('d-none', mode === 'write');
@@ -168,35 +177,41 @@
 
     function analyzeLogic() {
         const input = document.getElementById('user-ans').value.toLowerCase();
-        const keys = challenges[currentIndex].key_points;
+        const keys = challenges[currentIndex].key_points || [];
         const res = document.getElementById('result-box');
         
         if (!input.trim()) { alert("Please type something! ✍️"); return; }
 
-        let found = keys.filter(k => input.includes(k.toLowerCase()));
-        res.classList.remove('d-none', 'animate__fadeInUp', 'animate__shakeX');
+        res.classList.remove('d-none', 'animate__fadeInUp');
         res.style.borderLeft = "8px solid";
 
-        if (found.length === keys.length) {
-            res.style.backgroundColor = "#dcfce7"; res.style.borderColor = "#16a34a"; res.style.color = "#166534";
-            res.innerHTML = `<h5 class="fw-bold">Perfect Analysis!</h5><p class="mb-0">You captured everything perfectly.</p>`;
-        } else if (found.length > 0) {
-            res.style.backgroundColor = "#fffbeb"; res.style.borderColor = "#f59e0b"; res.style.color = "#92400e";
-            res.innerHTML = `<h5 class="fw-bold">Almost there!</h5><p class="mb-0">You missed: ${keys.filter(x => !found.includes(x)).join(', ')}</p>`;
+        if (keys.length === 0) {
+            // key_points nahi hain — sirf acknowledge karo
+            res.style.backgroundColor = "#dbeafe"; res.style.borderColor = "#3b82f6"; res.style.color = "#1e40af";
+            res.innerHTML = `<h5 class="fw-bold">Answer Submitted!</h5><p class="mb-0">Compare with the ideal solution using "Reveal" tab.</p>`;
         } else {
-            res.style.backgroundColor = "#fef2f2"; res.style.borderColor = "#ef4444"; res.style.color = "#991b1b";
-            res.innerHTML = `<h5 class="fw-bold">Needs more focus...</h5><p class="mb-0">Think about: ${keys.join(', ')}</p>`;
+            let found = keys.filter(k => input.includes(k.toLowerCase()));
+            if (found.length === keys.length) {
+                res.style.backgroundColor = "#dcfce7"; res.style.borderColor = "#16a34a"; res.style.color = "#166534";
+                res.innerHTML = `<h5 class="fw-bold">Perfect Analysis! 🎉</h5><p class="mb-0">You captured everything perfectly.</p>`;
+            } else if (found.length > 0) {
+                res.style.backgroundColor = "#fffbeb"; res.style.borderColor = "#f59e0b"; res.style.color = "#92400e";
+                res.innerHTML = `<h5 class="fw-bold">Almost there!</h5><p class="mb-0">You missed: <b>${keys.filter(x => !found.includes(x)).join(', ')}</b></p>`;
+            } else {
+                res.style.backgroundColor = "#fef2f2"; res.style.borderColor = "#ef4444"; res.style.color = "#991b1b";
+                res.innerHTML = `<h5 class="fw-bold">Needs more focus...</h5><p class="mb-0">Think about: <b>${keys.join(', ')}</b></p>`;
+            }
         }
         res.classList.add('animate__fadeInUp');
     }
 
     function finishSession() {
-        alert("Congratulations! Session saved to your Vault.");
+        localStorage.removeItem('generated_cases');
         window.location.href = "dashboard.html";
     }
 
-    init();
+    // Start
+    loadChallenges();
 </script>
-
 </body>
 </html>
