@@ -15,6 +15,8 @@
             --sky-blue: #E3F2FD;
             --ocean-blue: #0077b6;
             --text-dark: #2d3436;
+            --gold-primary: #FFD700;
+            --gold-dark: #b8860B;
         }
         
         body { background-color: var(--warm-bg) !important; font-family: 'Inter', sans-serif; color: var(--text-dark); }
@@ -34,24 +36,60 @@
         .sunshine-main-btn { background: linear-gradient(45deg, #ffcc00, #ffb800) !important; color: white !important; border: none !important; border-radius: 20px !important; transition: 0.3s; font-size: 1.1rem; }
         .sunshine-main-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255, 184, 0, 0.4) !important; }
         
-        /* Updated XP Section UI */
-        .xp-card { border-top: 5px solid var(--sun); background: #fff; }
-        .xp-progress-container { background: #f1f2f6; border-radius: 50px; height: 16px; margin: 15px 0; overflow: hidden; position: relative; }
+        /* --- GOLDEN XP BAR STYLING --- */
+        .xp-card { border-top: 5px solid var(--gold-primary); background: #fff; }
+        
+        .xp-progress-container { 
+            background: #f1f2f6; 
+            border-radius: 50px; 
+            height: 18px; 
+            margin: 15px 0; 
+            overflow: hidden; 
+            position: relative;
+            border: 1px solid #eee;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+
         .xp-progress-bar { 
-            background: linear-gradient(90deg, #FFCC00, #FFA000); 
+            background: linear-gradient(90deg, #FFD700 0%, #FFCC00 50%, #FFA500 100%); 
             height: 100%; 
             border-radius: 50px;
             width: 0%; 
             transition: 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
-        }
-        .level-circle {
-            width: 45px; height: 45px; background: var(--sun); color: white;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-weight: 800; box-shadow: 0 4px 10px rgba(255, 204, 0, 0.3);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+            position: relative;
         }
 
-        /* Updated Power Words Card (Sky Blue Theme) */
+        /* Shine effect on progress bar */
+        .xp-progress-bar::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(
+                90deg, 
+                rgba(255,255,255,0) 0%, 
+                rgba(255,255,255,0.4) 50%, 
+                rgba(255,255,255,0) 100%
+            );
+            animation: shine-bar 3s infinite;
+        }
+
+        @keyframes shine-bar {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .level-circle {
+            width: 50px; height: 50px; 
+            background: linear-gradient(135deg, #FFD700, #FFA500); 
+            color: #fff;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1.2rem;
+            box-shadow: 0 4px 15px rgba(255, 165, 0, 0.4);
+            border: 2px solid white;
+        }
+        /* ---------------------------- */
+
         .power-word-card { 
             background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); 
             color: #0369a1; 
@@ -169,7 +207,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div>
                         <h6 class="fw-bold text-muted mb-1 small">CURRENT RANK</h6>
-                        <h3 class="fw-bold mb-0" id="total-xp-display">0 XP</h3>
+                        <h3 class="fw-bold mb-0" id="total-xp-display" style="color: var(--gold-dark);">0 XP</h3>
                     </div>
                     <div class="level-circle" id="level-badge">1</div>
                 </div>
@@ -177,9 +215,11 @@
                 <div class="xp-progress-container">
                     <div class="xp-progress-bar" id="xp-bar"></div>
                 </div>
-                <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between align-items-center">
                     <p class="extra-small text-muted mb-0 fw-bold" id="xp-to-next">0 XP to next level</p>
-                    <i class="fa-solid fa-award text-warning"></i>
+                    <div class="badge bg-light text-warning border border-warning-subtle">
+                        <i class="fa-solid fa-crown me-1"></i> Pro Learner
+                    </div>
                 </div>
             </div>
 
@@ -231,36 +271,11 @@
 <script>
 const BACKEND_URL = "https://simrankaurrrrrr-smartquizzer-backend.hf.space";
 
-// Renamed and Curated Power Words
 const vocabList = [
-    { 
-        word: "Mitigate", 
-        type: "Verb • Formal", 
-        meaning: "To make something less severe, serious, or painful.",
-        ex1: "The new laws were designed to mitigate the effects of pollution.",
-        ex2: "Regular exercise can help mitigate the risk of heart disease."
-    },
-    { 
-        word: "Pragmatic", 
-        type: "Adjective • Smart", 
-        meaning: "Dealing with things sensibly and realistically based on practical conditions.",
-        ex1: "He took a pragmatic approach to the problem rather than overthinking it.",
-        ex2: "In business, staying pragmatic is often better than being idealistic."
-    },
-    { 
-        word: "Lucid", 
-        type: "Adjective • Clear", 
-        meaning: "Expressed clearly; easy to understand.",
-        ex1: "The teacher gave a lucid explanation of the complex theory.",
-        ex2: "Despite the chaos, she remained lucid and focused."
-    },
-    { 
-        word: "Resilient", 
-        type: "Adjective • Strong", 
-        meaning: "Able to withstand or recover quickly from difficult conditions.",
-        ex1: "Children are often remarkably resilient in tough situations.",
-        ex2: "The local economy proved resilient despite the global crisis."
-    }
+    { word: "Mitigate", type: "Verb • Formal", meaning: "To make something less severe, serious, or painful.", ex1: "The new laws were designed to mitigate the effects of pollution.", ex2: "Regular exercise can help mitigate the risk of heart disease." },
+    { word: "Pragmatic", type: "Adjective • Smart", meaning: "Dealing with things sensibly and realistically based on practical conditions.", ex1: "He took a pragmatic approach to the problem rather than overthinking it.", ex2: "In business, staying pragmatic is often better than being idealistic." },
+    { word: "Lucid", type: "Adjective • Clear", meaning: "Expressed clearly; easy to understand.", ex1: "The teacher gave a lucid explanation of the complex theory.", ex2: "Despite the chaos, she remained lucid and focused." },
+    { word: "Resilient", type: "Adjective • Strong", meaning: "Able to withstand or recover quickly from difficult conditions.", ex1: "Children are often remarkably resilient in tough situations.", ex2: "The local economy proved resilient despite the global crisis." }
 ];
 
 let currentVocabIdx = 0;
@@ -268,11 +283,9 @@ let currentVocabIdx = 0;
 function updateVocabUI() {
     const item = vocabList[currentVocabIdx];
     const content = document.getElementById('vocab-content');
-    
     content.classList.remove('animate__fadeIn');
     void content.offsetWidth; 
     content.classList.add('animate__animated', 'animate__fadeIn');
-    
     document.getElementById('vocab-word').innerText = item.word;
     document.getElementById('vocab-type').innerText = item.type;
     document.getElementById('vocab-meaning').innerText = item.meaning;
@@ -312,26 +325,17 @@ async function loadStats() {
 }
 loadStats();
 
-// SOURCE TOGGLER
 document.getElementById('source-select').onchange = function() {
     const area = document.getElementById('input-area');
     const val = this.value;
     area.className = "mt-4 animate__animated animate__fadeIn";
     
     if (val === 'topic') {
-        area.innerHTML = `<input type="text" name="topic_name" id="topicInput" class="form-control sunshine-input p-4 rounded-pill" placeholder="Enter topic (e.g. Photosynthesis)..." required>`;
+        area.innerHTML = `<input type="text" name="topic_name" id="topicInput" class="form-control sunshine-input p-4 rounded-pill" placeholder="Enter topic..." required>`;
     } else if (val === 'pdf') {
-        area.innerHTML = `<div class="p-4 text-center rounded-4 border-2 shadow-sm" style="background: #fffef0; border: 2px dashed #ffe082;">
-                            <i class="fa-solid fa-file-pdf fa-2x text-warning mb-2"></i>
-                            <p class="text-muted small fw-bold">Select PDF Document</p>
-                            <input type="file" name="pdf_file" class="form-control" accept=".pdf" required>
-                          </div>`;
+        area.innerHTML = `<div class="p-4 text-center rounded-4 border-2 shadow-sm" style="background: #fffef0; border: 2px dashed #ffe082;"><i class="fa-solid fa-file-pdf fa-2x text-warning mb-2"></i><p class="text-muted small fw-bold">Select PDF Document</p><input type="file" name="pdf_file" class="form-control" accept=".pdf" required></div>`;
     } else if (val === 'image') {
-        area.innerHTML = `<div class="p-4 text-center rounded-4 border-2 shadow-sm" style="background: #fffef0; border: 2px dashed #ffcc00;">
-                            <i class="fa-solid fa-image fa-2x text-warning mb-2"></i>
-                            <p class="text-muted small fw-bold">Select Study Image</p>
-                            <input type="file" name="image_file" class="form-control" accept="image/*" required>
-                          </div>`;
+        area.innerHTML = `<div class="p-4 text-center rounded-4 border-2 shadow-sm" style="background: #fffef0; border: 2px dashed #ffcc00;"><i class="fa-solid fa-image fa-2x text-warning mb-2"></i><p class="text-muted small fw-bold">Select Study Image</p><input type="file" name="image_file" class="form-control" accept="image/*" required></div>`;
     } else if (val === 'text') {
         area.innerHTML = `<textarea name="raw_text" class="form-control sunshine-input p-4" rows="5" placeholder="Paste your notes here..." required></textarea>`;
     } else if (val === 'mistake') {
@@ -339,7 +343,6 @@ document.getElementById('source-select').onchange = function() {
     }
 };
 
-// FORM SUBMISSION
 document.getElementById('quiz-form').onsubmit = async function(e) {
     e.preventDefault();
     const btn = document.getElementById('submitBtn');
