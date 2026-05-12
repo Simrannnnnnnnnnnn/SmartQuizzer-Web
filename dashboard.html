@@ -60,7 +60,6 @@
             position: relative;
         }
 
-        /* Shine effect on progress bar */
         .xp-progress-bar::after {
             content: "";
             position: absolute;
@@ -88,7 +87,6 @@
             box-shadow: 0 4px 15px rgba(255, 165, 0, 0.4);
             border: 2px solid white;
         }
-        /* ---------------------------- */
 
         .power-word-card { 
             background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); 
@@ -105,6 +103,13 @@
         .sunshine-card:hover .icon-box { transform: rotate(15deg) scale(1.1); }
 
         .streak-badge { background: white; border: 2px solid #FFCC00; padding: 8px 20px; border-radius: 50px; }
+        
+        /* New Smooth Range Styling */
+        input[type=range]::-webkit-slider-thumb {
+            background: var(--sun);
+            border: 3px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
     </style>
 </head>
 <body>
@@ -179,9 +184,11 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold small text-muted ms-2">QUESTION COUNT</label>
-                            <input type="range" name="count" class="form-range mt-2" id="countRange" min="1" max="15" value="5" oninput="countOutput.innerText = value">
+                            <input type="range" name="count" class="form-range mt-2" id="countRange" min="1" max="15" value="5">
                             <div class="d-flex justify-content-between text-muted extra-small fw-bold">
-                                <span>1</span><span id="countOutput" class="text-warning fs-5">5</span><span>15</span>
+                                <span>1</span>
+                                <span id="countOutput" class="text-warning fs-5 animate__animated">5</span>
+                                <span>15</span>
                             </div>
                         </div>
                     </div>
@@ -300,6 +307,15 @@ function changeVocab(direction) {
     updateVocabUI();
 }
 
+// Range input listener for feedback
+document.getElementById('countRange').addEventListener('input', function(e) {
+    const output = document.getElementById('countOutput');
+    output.innerText = e.target.value;
+    output.classList.remove('animate__bounceIn');
+    void output.offsetWidth;
+    output.classList.add('animate__bounceIn');
+});
+
 async function loadStats() {
     updateVocabUI();
     try {
@@ -328,7 +344,7 @@ loadStats();
 document.getElementById('source-select').onchange = function() {
     const area = document.getElementById('input-area');
     const val = this.value;
-    area.className = "mt-4 animate__animated animate__fadeIn";
+    area.className = "mt-4 animate__animated animate__fadeInUp";
     
     if (val === 'topic') {
         area.innerHTML = `<input type="text" name="topic_name" id="topicInput" class="form-control sunshine-input p-4 rounded-pill" placeholder="Enter topic..." required>`;
@@ -339,7 +355,7 @@ document.getElementById('source-select').onchange = function() {
     } else if (val === 'text') {
         area.innerHTML = `<textarea name="raw_text" class="form-control sunshine-input p-4" rows="5" placeholder="Paste your notes here..." required></textarea>`;
     } else if (val === 'mistake') {
-        area.innerHTML = `<div class="alert alert-warning border-0 rounded-4 fw-bold shadow-sm"><i class="fa-solid fa-lightbulb me-2"></i>AI will focus on your weak points.</div>`;
+        area.innerHTML = `<div class="alert alert-warning border-0 rounded-4 fw-bold shadow-sm"><i class="fa-solid fa-lightbulb me-2"></i>AI will focus on your weak points based on past performance.</div>`;
     }
 };
 
