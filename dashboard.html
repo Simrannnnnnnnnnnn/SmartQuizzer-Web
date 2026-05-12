@@ -8,15 +8,24 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
-        :root { --sun: #FFCC00; --warm-bg: #FFFDF5; --xp-purple: #8e44ad; }
-        body { background-color: var(--warm-bg) !important; font-family: 'Inter', sans-serif; }
-        .sun-nav { background: white; border-bottom: 3px solid #FFF4CC; padding: 12px 0; }
+        :root { 
+            --sun: #FFCC00; 
+            --sun-light: #FFF4CC;
+            --warm-bg: #FFFDF5; 
+            --sky-blue: #E3F2FD;
+            --ocean-blue: #0077b6;
+            --text-dark: #2d3436;
+        }
+        
+        body { background-color: var(--warm-bg) !important; font-family: 'Inter', sans-serif; color: var(--text-dark); }
+        
+        .sun-nav { background: white; border-bottom: 3px solid var(--sun-light); padding: 12px 0; }
         .nav-link-custom { font-weight: 700; color: #444 !important; margin: 0 12px; text-decoration: none; transition: 0.3s; font-size: 0.95rem; }
         .nav-link-custom:hover { color: var(--sun) !important; transform: translateY(-2px); }
         .nav-link-custom i { color: var(--sun); margin-right: 5px; }
         
         .sunshine-card { background: #ffffff; border-radius: 30px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: 0.3s; }
-        .sunshine-input { background: #ffffff !important; border: 2px solid #fff4cc !important; border-radius: 15px !important; }
+        .sunshine-input { background: #ffffff !important; border: 2px solid var(--sun-light) !important; border-radius: 15px !important; }
         .sunshine-input:focus { border-color: var(--sun) !important; box-shadow: 0 0 15px rgba(255, 204, 0, 0.2) !important; }
         
         .sunshine-outline { border: 2px solid var(--sun) !important; color: #b89600 !important; background: transparent; }
@@ -25,22 +34,39 @@
         .sunshine-main-btn { background: linear-gradient(45deg, #ffcc00, #ffb800) !important; color: white !important; border: none !important; border-radius: 20px !important; transition: 0.3s; font-size: 1.1rem; }
         .sunshine-main-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255, 184, 0, 0.4) !important; }
         
-        .streak-badge { background: white; border: 2px solid #FFCC00; padding: 8px 20px; border-radius: 50px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        
-        .xp-progress-container { background: #f8f9fa; border-radius: 15px; height: 12px; margin-top: 10px; overflow: hidden; border: 1px solid #eee; }
-        .xp-progress-bar { background: linear-gradient(90deg, #FFCC00 0%, #FF9800 100%); height: 100%; width: 0%; transition: 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
-        
-        /* IELTS Card Styling */
-        .vocab-card { background: linear-gradient(135deg, #0984e3, #6c5ce7); color: white; min-height: 280px; display: flex; flex-direction: column; justify-content: space-between; }
-        .vocab-nav-btn { background: rgba(255, 255, 255, 0.2); border: none; color: white; border-radius: 50%; width: 35px; height: 35px; transition: 0.2s; }
-        .vocab-nav-btn:hover { background: rgba(255, 255, 255, 0.4); transform: scale(1.1); }
-        .example-box { background: rgba(255, 255, 255, 0.1); border-left: 3px solid #FFCC00; padding: 8px 12px; border-radius: 8px; font-size: 0.85rem; margin-top: 10px; }
+        /* Updated XP Section UI */
+        .xp-card { border-top: 5px solid var(--sun); background: #fff; }
+        .xp-progress-container { background: #f1f2f6; border-radius: 50px; height: 16px; margin: 15px 0; overflow: hidden; position: relative; }
+        .xp-progress-bar { 
+            background: linear-gradient(90deg, #FFCC00, #FFA000); 
+            height: 100%; 
+            border-radius: 50px;
+            width: 0%; 
+            transition: 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+        }
+        .level-circle {
+            width: 45px; height: 45px; background: var(--sun); color: white;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: 800; box-shadow: 0 4px 10px rgba(255, 204, 0, 0.3);
+        }
+
+        /* Updated Power Words Card (Sky Blue Theme) */
+        .power-word-card { 
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); 
+            color: #0369a1; 
+            min-height: 300px;
+            border: 1px solid #7dd3fc;
+        }
+        .power-word-card .badge { background: #0ea5e9 !important; color: white; }
+        .vocab-nav-btn { background: white; border: none; color: #0ea5e9; border-radius: 50%; width: 35px; height: 35px; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .vocab-nav-btn:hover { background: #0ea5e9; color: white; transform: scale(1.1); }
+        .example-box { background: rgba(255, 255, 255, 0.6); border-left: 4px solid #0ea5e9; padding: 10px 15px; border-radius: 12px; font-size: 0.88rem; margin-top: 12px; color: #0c4a6e; font-style: italic; }
 
         .icon-box { transition: 0.3s; }
         .sunshine-card:hover .icon-box { transform: rotate(15deg) scale(1.1); }
 
-        textarea::-webkit-scrollbar { width: 8px; }
-        textarea::-webkit-scrollbar-thumb { background: var(--sun); border-radius: 10px; }
+        .streak-badge { background: white; border: 2px solid #FFCC00; padding: 8px 20px; border-radius: 50px; }
     </style>
 </head>
 <body>
@@ -65,7 +91,7 @@
                 <p class="text-muted fw-medium">Welcome back, <b id="username-display" class="text-warning">Loading...</b></p>
             </div>
             <div class="streak-badge d-flex align-items-center animate__animated animate__bounceIn">
-                <i class="fa-solid fa-bolt text-warning fs-4 me-2"></i>
+                <i class="fa-solid fa-fire-flame-curved text-warning fs-4 me-2"></i>
                 <span class="fw-bold fs-5" id="header-xp-display" style="color: #4b4b4b;">0 XP</span>
             </div>
         </div>
@@ -75,7 +101,7 @@
         <div class="col-lg-8">
             <div class="sunshine-card p-4 p-md-5 animate__animated animate__fadeInLeft">
                 <div class="d-flex align-items-center mb-4">
-                    <div class="icon-box me-3 rounded-circle d-flex align-items-center justify-content-center" style="background: #fff9db; width: 60px; height: 60px;">
+                    <div class="icon-box me-3 rounded-circle d-flex align-items-center justify-content-center" style="background: var(--sun-light); width: 60px; height: 60px;">
                         <i class="fa-solid fa-wand-magic-sparkles fs-3" style="color: #ffcc00;"></i>
                     </div>
                     <div>
@@ -139,29 +165,32 @@
         </div>
 
         <div class="col-lg-4">
-            <div class="sunshine-card p-4 mb-4 animate__animated animate__fadeInRight" style="border-left: 6px solid #FFCC00;">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h6 class="fw-bold text-muted mb-0 small">STUDENT PROGRESS</h6>
-                    <span class="badge rounded-pill bg-dark px-3" id="level-badge">Lvl 1</span>
+            <div class="sunshine-card p-4 mb-4 xp-card animate__animated animate__fadeInRight">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h6 class="fw-bold text-muted mb-1 small">CURRENT RANK</h6>
+                        <h3 class="fw-bold mb-0" id="total-xp-display">0 XP</h3>
+                    </div>
+                    <div class="level-circle" id="level-badge">1</div>
                 </div>
-                <div class="d-flex align-items-center mb-1">
-                    <i class="fa-solid fa-bolt text-warning fs-3 me-2"></i>
-                    <h3 class="fw-bold mb-0" id="total-xp-display">0 XP</h3>
-                </div>
+                
                 <div class="xp-progress-container">
                     <div class="xp-progress-bar" id="xp-bar"></div>
                 </div>
-                <p class="extra-small text-muted mt-2 mb-0 fw-bold" id="xp-to-next">0 XP to next level</p>
+                <div class="d-flex justify-content-between">
+                    <p class="extra-small text-muted mb-0 fw-bold" id="xp-to-next">0 XP to next level</p>
+                    <i class="fa-solid fa-award text-warning"></i>
+                </div>
             </div>
 
-            <div class="sunshine-card p-4 mb-4 vocab-card animate__animated animate__fadeInRight">
+            <div class="sunshine-card p-4 mb-4 power-word-card animate__animated animate__fadeInRight">
                 <div>
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div class="d-flex align-items-center">
-                            <div class="rounded-circle bg-white d-flex align-items-center justify-content-center me-2" style="width: 35px; height: 35px;">
-                                <i class="fa-solid fa-language text-primary"></i>
+                            <div class="rounded-circle bg-white d-flex align-items-center justify-content-center me-2" style="width: 35px; height: 35px; color: #0ea5e9;">
+                                <i class="fa-solid fa-book-open"></i>
                             </div>
-                            <h6 class="fw-bold mb-0">IELTS Vocabulary</h6>
+                            <h6 class="fw-bold mb-0">Power Words</h6>
                         </div>
                         <div class="d-flex gap-2">
                             <button class="vocab-nav-btn" onclick="changeVocab(-1)"><i class="fa-solid fa-chevron-left"></i></button>
@@ -170,24 +199,22 @@
                     </div>
                     
                     <div id="vocab-content">
-                        <h4 class="fw-bold mb-1 text-warning" id="vocab-word">Loading...</h4>
-                        <span class="badge bg-white text-primary mb-3" id="vocab-type">---</span>
-                        <p class="small mb-3" id="vocab-meaning">Loading meaning...</p>
+                        <h4 class="fw-bold mb-1" id="vocab-word" style="color: #0c4a6e;">Loading...</h4>
+                        <span class="badge mb-3" id="vocab-type">---</span>
+                        <p class="small mb-3" id="vocab-meaning" style="line-height: 1.5;">Loading meaning...</p>
                         
                         <div class="example-box">
-                            <i class="fa-solid fa-quote-left text-warning me-1"></i>
                             <span id="vocab-ex-1">Example 1 loading...</span>
                         </div>
                         <div class="example-box">
-                            <i class="fa-solid fa-quote-left text-warning me-1"></i>
                             <span id="vocab-ex-2">Example 2 loading...</span>
                         </div>
                     </div>
                 </div>
-                <p class="extra-small text-center mt-3 opacity-75 mb-0">Learn 10 words daily to score Band 8.0!</p>
+                <p class="extra-small text-center mt-3 opacity-75 mb-0 fw-bold">Daily boost for your vocabulary!</p>
             </div>
 
-            <div class="sunshine-card p-4 text-center animate__animated animate__fadeInRight" style="border: 2px dashed #dcdde1; background: #f5f6fa; border-radius: 30px;">
+            <div class="sunshine-card p-4 text-center animate__animated animate__fadeInRight" style="border: 2px dashed #dcdde1; background: #f8fafc; border-radius: 30px;">
                 <div class="d-flex justify-content-around mb-3 opacity-50">
                     <i class="fa-solid fa-id-card-personal fs-4"></i>
                     <i class="fa-solid fa-clone fs-2 text-warning opacity-100"></i>
@@ -204,42 +231,35 @@
 <script>
 const BACKEND_URL = "https://simrankaurrrrrr-smartquizzer-backend.hf.space";
 
-// Enhanced IELTS List with Examples
+// Renamed and Curated Power Words
 const vocabList = [
     { 
         word: "Mitigate", 
-        type: "Verb (Level: 7+)", 
+        type: "Verb • Formal", 
         meaning: "To make something less severe, serious, or painful.",
-        ex1: "The government implemented new laws to mitigate the effects of climate change.",
-        ex2: "Drainage systems were upgraded to mitigate the risk of flooding."
+        ex1: "The new laws were designed to mitigate the effects of pollution.",
+        ex2: "Regular exercise can help mitigate the risk of heart disease."
     },
     { 
         word: "Pragmatic", 
-        type: "Adj (Level: 8+)", 
-        meaning: "Dealing with things sensibly and realistically based on practical considerations.",
-        ex1: "We need to take a pragmatic approach to solve this complex business issue.",
-        ex2: "The scientist offered a pragmatic solution rather than a theoretical one."
+        type: "Adjective • Smart", 
+        meaning: "Dealing with things sensibly and realistically based on practical conditions.",
+        ex1: "He took a pragmatic approach to the problem rather than overthinking it.",
+        ex2: "In business, staying pragmatic is often better than being idealistic."
     },
     { 
-        word: "Acquiesce", 
-        type: "Verb (Level: 8.5+)", 
-        meaning: "To accept something reluctantly but without protest.",
-        ex1: "The company decided to acquiesce to the union's demands for better safety.",
-        ex2: "Sara did not agree with the plan, but she chose to acquiesce to keep the peace."
+        word: "Lucid", 
+        type: "Adjective • Clear", 
+        meaning: "Expressed clearly; easy to understand.",
+        ex1: "The teacher gave a lucid explanation of the complex theory.",
+        ex2: "Despite the chaos, she remained lucid and focused."
     },
     { 
-        word: "Ambiguous", 
-        type: "Adj (Level: 7+)", 
-        meaning: "Open to more than one interpretation; not having one obvious meaning.",
-        ex1: "The ending of the movie was deliberately ambiguous.",
-        ex2: "Please avoid using ambiguous language in your official reports."
-    },
-    { 
-        word: "Exacerbate", 
-        type: "Verb (Level: 8+)", 
-        meaning: "To make a problem, bad situation, or negative feeling worse.",
-        ex1: "Loud music will only exacerbate your headache.",
-        ex2: "The lack of rainfall has exacerbated the water shortage in the city."
+        word: "Resilient", 
+        type: "Adjective • Strong", 
+        meaning: "Able to withstand or recover quickly from difficult conditions.",
+        ex1: "Children are often remarkably resilient in tough situations.",
+        ex2: "The local economy proved resilient despite the global crisis."
     }
 ];
 
@@ -249,9 +269,8 @@ function updateVocabUI() {
     const item = vocabList[currentVocabIdx];
     const content = document.getElementById('vocab-content');
     
-    // Add animation effect
     content.classList.remove('animate__fadeIn');
-    void content.offsetWidth; // trigger reflow
+    void content.offsetWidth; 
     content.classList.add('animate__animated', 'animate__fadeIn');
     
     document.getElementById('vocab-word').innerText = item.word;
@@ -268,19 +287,16 @@ function changeVocab(direction) {
     updateVocabUI();
 }
 
-// 1. DYNAMIC STATS LOADING
 async function loadStats() {
-    updateVocabUI(); // Load first vocab
-
+    updateVocabUI();
     try {
         const res = await fetch(`${BACKEND_URL}/api/dashboard_stats`, { credentials: 'include' });
         const data = await res.json();
         
         if (data.success) {
-            document.getElementById('username-display').innerText = data.username || 'harsh';
+            document.getElementById('username-display').innerText = data.username || 'User';
             document.getElementById('header-xp-display').innerHTML = `<i class="fa-solid fa-bolt text-warning me-1"></i> ${data.total_xp || 0} XP`;
             
-            // Progress Bar Logic
             const totalXp = data.total_xp || 0;
             const level = Math.floor(totalXp / 500) + 1;
             const xpInCurrentLevel = totalXp % 500;
@@ -288,17 +304,15 @@ async function loadStats() {
             const xpLeft = 500 - xpInCurrentLevel;
 
             document.getElementById('total-xp-display').innerText = `${totalXp} XP`;
-            document.getElementById('level-badge').innerText = `Lvl ${level}`;
+            document.getElementById('level-badge').innerText = level;
             document.getElementById('xp-bar').style.width = `${progressPercent}%`;
-            document.getElementById('xp-to-next').innerText = `${xpLeft} XP to reach Level ${level + 1}`;
+            document.getElementById('xp-to-next').innerText = `${xpLeft} XP to Level ${level + 1}`;
         }
-    } catch(e) { 
-        console.error('Stats load failed:', e);
-    }
+    } catch(e) { console.error('Stats load failed:', e); }
 }
 loadStats();
 
-// 2. SOURCE TOGGLER
+// SOURCE TOGGLER
 document.getElementById('source-select').onchange = function() {
     const area = document.getElementById('input-area');
     const val = this.value;
@@ -310,71 +324,39 @@ document.getElementById('source-select').onchange = function() {
         area.innerHTML = `<div class="p-4 text-center rounded-4 border-2 shadow-sm" style="background: #fffef0; border: 2px dashed #ffe082;">
                             <i class="fa-solid fa-file-pdf fa-2x text-warning mb-2"></i>
                             <p class="text-muted small fw-bold">Select PDF Document</p>
-                            <input type="file" name="pdf_file" id="activeFileInput" class="form-control" accept=".pdf" required>
+                            <input type="file" name="pdf_file" class="form-control" accept=".pdf" required>
                           </div>`;
     } else if (val === 'image') {
         area.innerHTML = `<div class="p-4 text-center rounded-4 border-2 shadow-sm" style="background: #fffef0; border: 2px dashed #ffcc00;">
                             <i class="fa-solid fa-image fa-2x text-warning mb-2"></i>
                             <p class="text-muted small fw-bold">Select Study Image</p>
-                            <input type="file" name="image_file" id="activeFileInput" class="form-control" accept="image/*" required>
+                            <input type="file" name="image_file" class="form-control" accept="image/*" required>
                           </div>`;
     } else if (val === 'text') {
-        area.innerHTML = `<textarea name="raw_text" id="textInput" class="form-control sunshine-input p-4" rows="5" placeholder="Paste your notes here..." required></textarea>`;
+        area.innerHTML = `<textarea name="raw_text" class="form-control sunshine-input p-4" rows="5" placeholder="Paste your notes here..." required></textarea>`;
     } else if (val === 'mistake') {
-        area.innerHTML = `<div class="alert alert-warning border-0 rounded-4 fw-bold"><i class="fa-solid fa-lightbulb me-2"></i>AI will generate a quiz based on your previous mistakes.</div>`;
+        area.innerHTML = `<div class="alert alert-warning border-0 rounded-4 fw-bold shadow-sm"><i class="fa-solid fa-lightbulb me-2"></i>AI will focus on your weak points.</div>`;
     }
 };
 
-// 3. FORM SUBMISSION
+// FORM SUBMISSION
 document.getElementById('quiz-form').onsubmit = async function(e) {
     e.preventDefault();
     const btn = document.getElementById('submitBtn');
     const formData = new FormData(this);
-    
-    btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Creating your Quiz...`;
+    btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Summoning Quiz...`;
     btn.disabled = true;
 
     try {
-        const response = await fetch(`${BACKEND_URL}/handle_generation`, {
-            method: "POST",
-            body: formData,
-            credentials: 'include'
-        });
+        const response = await fetch(`${BACKEND_URL}/handle_generation`, { method: "POST", body: formData, credentials: 'include' });
         const res = await response.json();
-        
         if (res.success) {
             localStorage.setItem('quiz_questions', JSON.stringify(res.questions));
             localStorage.setItem('quiz_topic', res.topic);
-            localStorage.setItem('current_q_index', '0');
-            localStorage.setItem('user_answers_pool', '[]');
             window.location.href = "quiz.html";
-        } else {
-            alert(res.message || "Failed to generate quiz.");
-        }
-    } catch (err) {
-        alert("Connection failed. Check backend status.");
-    } finally {
-        btn.innerHTML = "Generate Questions Now 🪄";
-        btn.disabled = false;
-    }
-};
-
-// 4. CASE STUDY CHALLENGE
-document.getElementById('caseBtn').onclick = async function() {
-    const topic = document.getElementById('topicInput')?.value || "General Knowledge";
-    this.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
-    
-    try {
-        const response = await fetch(`${BACKEND_URL}/start-challenge`, {
-            method: "POST",
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ content_to_study: topic })
-        });
-        const res = await response.json();
-        if (res.success) window.location.href = res.redirect;
-    } catch(e) { alert("Error starting challenge."); }
-    finally { this.innerHTML = '<i class="fa-solid fa-brain"></i>'; }
+        } else { alert(res.message); }
+    } catch (err) { alert("Backend Unreachable."); }
+    finally { btn.innerHTML = "Generate Questions Now 🪄"; btn.disabled = false; }
 };
 </script>
 </body>
