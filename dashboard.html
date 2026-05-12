@@ -14,54 +14,58 @@
         .nav-link-custom { font-weight: 700; color: #444 !important; margin: 0 12px; text-decoration: none; transition: 0.3s; font-size: 0.95rem; }
         .nav-link-custom:hover { color: var(--sun) !important; transform: translateY(-2px); }
         .nav-link-custom i { color: var(--sun); margin-right: 5px; }
+        
         .sunshine-card { background: #ffffff; border-radius: 30px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
         .sunshine-input { background: #ffffff !important; border: 2px solid #fff4cc !important; border-radius: 15px !important; }
         .sunshine-input:focus { border-color: var(--sun) !important; box-shadow: 0 0 15px rgba(255, 204, 0, 0.2) !important; }
+        
         .sunshine-outline { border: 2px solid var(--sun) !important; color: #b89600 !important; background: transparent; }
         .btn-check:checked + .sunshine-outline { background: var(--sun) !important; color: white !important; }
+        
         .sunshine-main-btn { background: linear-gradient(45deg, #ffcc00, #ffb800) !important; color: white !important; border: none !important; border-radius: 20px !important; transition: 0.3s; font-size: 1.1rem; }
         .sunshine-main-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255, 184, 0, 0.4) !important; }
+        
         .streak-badge { background: white; border: 1px solid #eee; padding: 8px 20px; border-radius: 50px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         
-        /* New XP Styles */
-        .xp-progress-container { background: #f8f9fa; border-radius: 15px; height: 10px; margin-top: 10px; overflow: hidden; }
-        .xp-progress-bar { background: linear-gradient(90deg, #FFCC00, #8e44ad); height: 100%; width: 0%; transition: 1s ease-in-out; }
+        /* Progress Bar Animation */
+        .xp-progress-container { background: #f8f9fa; border-radius: 15px; height: 12px; margin-top: 10px; overflow: hidden; border: 1px solid #eee; }
+        .xp-progress-bar { background: linear-gradient(90deg, #FFCC00 0%, #FF9800 100%); height: 100%; width: 0%; transition: 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        .icon-box { transition: 0.3s; }
+        .sunshine-card:hover .icon-box { transform: rotate(15deg) scale(1.1); }
     </style>
 </head>
 <body>
 
 <nav class="sun-nav sticky-top mb-4">
     <div class="container d-flex justify-content-between align-items-center">
-        <a href="#" class="navbar-brand fw-bold fs-3" style="color: var(--sun); text-decoration: none;">SmartQuizzer ☀️</a>
+        <a href="dashboard.html" class="navbar-brand fw-bold fs-3" style="color: var(--sun); text-decoration: none;">SmartQuizzer ☀️</a>
         <div class="d-none d-md-flex align-items-center">
             <a href="dashboard.html" class="nav-link-custom"><i class="fa-solid fa-house"></i> Home</a>
             <a href="study_hub.html" class="nav-link-custom"><i class="fa-solid fa-graduation-cap"></i> Study Hub</a>
-            <a href="library.html" class="nav-link-custom"><i class="fa-solid fa-folder-open"></i> Library</a>
-            <a href="review.html" class="nav-link-custom"><i class="fa-solid fa-triangle-exclamation"></i> Mistakes</a>
-            <a href="https://simrankaurrrrrr-smartquizzer-backend.hf.space/logout" class="nav-link-custom text-danger ms-3"><i class="fa-solid fa-power-off"></i></a>
+            <a href="review.html" class="nav-link-custom"><i class="fa-solid fa-brain"></i> Mistakes</a>
+            <a href="https://simrankaurrrrrr-smartquizzer-backend.hf.space/logout" class="nav-link-custom text-danger ms-3"><i class="fa-solid fa-power-off"></i> Logout</a>
         </div>
     </div>
 </nav>
 
 <div class="container pb-5">
     <div class="row mb-4 animate__animated animate__fadeIn">
-        <div class="col-12 d-flex justify-content-between align-items-center">
+        <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
-                <h2 class="fw-bold" style="color: #4b4b4b;">Rise & Study! ☀️</h2>
-                <p class="text-muted fw-medium">Welcome back, <b id="username-display">Student</b></p>
+                <h2 class="fw-bold mb-0" style="color: #4b4b4b;">Rise & Study! ☀️</h2>
+                <p class="text-muted fw-medium">Welcome back, <b id="username-display" class="text-warning">Student</b></p>
             </div>
-            <div>
-                <div class="streak-badge d-flex align-items-center animate__animated animate__pulse animate__infinite">
-                    <i class="fa-solid fa-fire text-danger fs-4 me-2"></i>
-                    <span class="fw-bold fs-5" id="streak-display">0 Day Streak</span>
-                </div>
+            <div class="streak-badge d-flex align-items-center animate__animated animate__pulse animate__infinite">
+                <i class="fa-solid fa-fire text-danger fs-4 me-2"></i>
+                <span class="fw-bold fs-5" id="streak-display">0 Day Streak</span>
             </div>
         </div>
     </div>
 
     <div class="row g-4">
         <div class="col-lg-8">
-            <div class="sunshine-card p-4 animate__animated animate__fadeInLeft">
+            <div class="sunshine-card p-4 p-md-5 animate__animated animate__fadeInLeft">
                 <div class="d-flex align-items-center mb-4">
                     <div class="icon-box me-3 rounded-circle d-flex align-items-center justify-content-center" style="background: #fff9db; width: 60px; height: 60px;">
                         <i class="fa-solid fa-wand-magic-sparkles fs-3" style="color: #ffcc00;"></i>
@@ -105,7 +109,7 @@
                             <label class="form-label fw-bold small text-muted ms-2">QUESTION COUNT</label>
                             <input type="range" name="count" class="form-range mt-2" id="countRange" min="1" max="15" value="5" oninput="countOutput.innerText = value">
                             <div class="d-flex justify-content-between text-muted extra-small fw-bold">
-                                <span>1</span><span id="countOutput">5</span><span>15</span>
+                                <span>1</span><span id="countOutput" class="text-warning fs-5">5</span><span>15</span>
                             </div>
                         </div>
                     </div>
@@ -130,13 +134,13 @@
             <div class="sunshine-card p-4 mb-4 animate__animated animate__fadeInRight" style="border-left: 6px solid var(--sun);">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <h6 class="fw-bold text-muted mb-0">STUDENT LEVEL</h6>
-                    <span class="badge rounded-pill bg-dark" id="level-badge">Lvl 1</span>
+                    <span class="badge rounded-pill bg-dark px-3" id="level-badge">Lvl 1</span>
                 </div>
                 <h3 class="fw-bold mb-1" id="total-xp-display">0 XP</h3>
                 <div class="xp-progress-container">
                     <div class="xp-progress-bar" id="xp-bar"></div>
                 </div>
-                <p class="extra-small text-muted mt-2 mb-0" id="xp-to-next">Keep studying to level up!</p>
+                <p class="extra-small text-muted mt-2 mb-0 fw-bold" id="xp-to-next">Loading progress...</p>
             </div>
 
             <div class="sunshine-card p-4 mb-4 text-white animate__animated animate__fadeInRight" style="background: linear-gradient(135deg, #FF9800, #FF5722); border-radius: 30px;">
@@ -147,8 +151,8 @@
 
             <div class="sunshine-card p-4 text-center animate__animated animate__fadeInRight" style="border: 2px solid #fff4cc;">
                 <h2 class="display-4 fw-bold" style="color: #ffcc00;" id="mistake-count">0</h2>
-                <p class="text-muted fw-bold">Mistakes in Bank</p>
-                <a href="review.html" class="btn btn-warning w-100 rounded-pill fw-bold shadow-sm">Review Now</a>
+                <p class="text-muted fw-bold mb-3">Mistakes in Bank</p>
+                <a href="review.html" class="btn btn-warning w-100 rounded-pill fw-bold shadow-sm py-2">Review Now</a>
             </div>
         </div>
     </div>
@@ -157,137 +161,113 @@
 <script>
 const BACKEND_URL = "https://simrankaurrrrrr-smartquizzer-backend.hf.space";
 
-// Load user stats including XP
+// 1. DYNAMIC STATS LOADING
 async function loadStats() {
     try {
         const res = await fetch(`${BACKEND_URL}/api/dashboard_stats`, { credentials: 'include' });
         const data = await res.json();
+        
         if (data.success) {
             document.getElementById('username-display').innerText = data.username || 'Student';
-            document.getElementById('streak-display').innerText = (data.streak || 0) + ' Day Streak';
+            document.getElementById('streak-display').innerText = `${data.streak || 0} Day Streak`;
             document.getElementById('correct-total').innerText = data.correct_total || 0;
             document.getElementById('mistake-count').innerText = data.mistake_count || 0;
             
-            // XP & Level Logic
-            const xp = data.total_xp || 0;
-            document.getElementById('total-xp-display').innerText =`${data.total_xp} XP`;
-            
-            // Simple Level Logic: Har 500 XP par Level up
-            const level = Math.floor(xp / 500) + 1;
-            const progress = ((xp % 500) / 500) * 100;
-            
-            document.getElementById('level-badge').innerText = 'Lvl ' + level;
-            document.getElementById('xp-bar').style.width = progress + '%';
-            document.getElementById('xp-to-next').innerText = (500 - (xp % 500)) + ' XP to Next Level';
+            // Level Logic (500 XP per level)
+            const totalXp = data.total_xp || 0;
+            const level = Math.floor(totalXp / 500) + 1;
+            const xpInCurrentLevel = totalXp % 500;
+            const progressPercent = (xpInCurrentLevel / 500) * 100;
+            const xpLeft = 500 - xpInCurrentLevel;
+
+            document.getElementById('total-xp-display').innerText = `${totalXp} XP`;
+            document.getElementById('level-badge').innerText = `Lvl ${level}`;
+            document.getElementById('xp-bar').style.width = `${progressPercent}%`;
+            document.getElementById('xp-to-next').innerText = `${xpLeft} XP to Level ${level + 1}`;
         }
-    } catch(e) { console.log('Stats load failed'); }
+    } catch(e) { 
+        console.error('Stats load failed:', e);
+    }
 }
 loadStats();
 
-// Input Area Toggler
+// 2. SOURCE TOGGLER (Improved UX)
 document.getElementById('source-select').onchange = function() {
     const area = document.getElementById('input-area');
     const val = this.value;
-    let html = '';
+    area.className = "mt-4 animate__animated animate__fadeIn";
+    
     if (val === 'topic') {
-        html = `<input type="text" name="topic_name" id="topicInput" class="form-control sunshine-input p-4 rounded-pill animate__animated animate__fadeIn" placeholder="Enter topic..." required>`;
+        area.innerHTML = `<input type="text" name="topic_name" id="topicInput" class="form-control sunshine-input p-4 rounded-pill" placeholder="Enter topic (e.g. Photosynthesis)..." required>`;
     } else if (val === 'pdf') {
-        html = `<div class="p-4 text-center rounded-4 animate__animated animate__fadeIn" style="background: #fffef0; border: 2px dashed #ffe082;">
-                    <i class="fa-solid fa-file-pdf fa-2x text-warning mb-2"></i>
-                    <p class="text-muted small mb-2">Upload your PDF file</p>
-                    <input type="file" name="pdf_file" id="activeFileInput" class="form-control" accept=".pdf" required>
-                </div>`;
+        area.innerHTML = `<div class="p-4 text-center rounded-4 border-2 shadow-sm" style="background: #fffef0; border: 2px dashed #ffe082;">
+                            <i class="fa-solid fa-file-pdf fa-2x text-warning mb-2"></i>
+                            <p class="text-muted small fw-bold">Select PDF Document</p>
+                            <input type="file" name="pdf_file" id="activeFileInput" class="form-control" accept=".pdf" required>
+                          </div>`;
     } else if (val === 'image') {
-        html = `<div class="p-4 text-center rounded-4 animate__animated animate__fadeIn" style="background: #fffef0; border: 2px dashed #ffcc00;">
-                    <i class="fa-solid fa-image fa-2x text-warning mb-2"></i>
-                    <p class="text-muted small mb-2">Upload your image</p>
-                    <input type="file" name="image_file" id="activeFileInput" class="form-control" accept="image/*" required>
-                </div>`;
+        area.innerHTML = `<div class="p-4 text-center rounded-4 border-2 shadow-sm" style="background: #fffef0; border: 2px dashed #ffcc00;">
+                            <i class="fa-solid fa-image fa-2x text-warning mb-2"></i>
+                            <p class="text-muted small fw-bold">Select Study Image</p>
+                            <input type="file" name="image_file" id="activeFileInput" class="form-control" accept="image/*" required>
+                          </div>`;
     } else if (val === 'text') {
-        html = `<textarea name="raw_text" id="textInput" class="form-control sunshine-input p-4 animate__animated animate__fadeIn" rows="5" placeholder="Paste study material..." required></textarea>`;
+        area.innerHTML = `<textarea name="raw_text" id="textInput" class="form-control sunshine-input p-4" rows="5" placeholder="Paste your notes here..." required></textarea>`;
     } else if (val === 'mistake') {
-        html = `<div class="alert alert-warning border-0 rounded-4">AI will fetch questions you got wrong previously.</div>`;
+        area.innerHTML = `<div class="alert alert-warning border-0 rounded-4 fw-bold"><i class="fa-solid fa-lightbulb me-2"></i>AI will generate a quiz based on your previous mistakes.</div>`;
     }
-    area.innerHTML = html;
 };
 
-// Form Submit & Case Challenge Logic (Unchanged as they are perfect)
+// 3. FORM SUBMISSION
 document.getElementById('quiz-form').onsubmit = async function(e) {
     e.preventDefault();
     const btn = document.getElementById('submitBtn');
     const formData = new FormData(this);
-    const sourceType = formData.get('source_type');
-
-    btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>${sourceType === 'pdf' || sourceType === 'image' ? 'Processing file... (1-2 min) ⏳' : 'AI is researching...'}`;
+    
+    btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Creating your Quiz...`;
     btn.disabled = true;
 
     try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 180000);
-
         const response = await fetch(`${BACKEND_URL}/handle_generation`, {
             method: "POST",
             body: formData,
-            headers: { 'X-Requested-With': 'XMLHttpRequest' },
-            credentials: 'include',
-            signal: controller.signal
+            credentials: 'include'
         });
-        clearTimeout(timeoutId);
-
         const res = await response.json();
+        
         if (res.success) {
             localStorage.setItem('quiz_questions', JSON.stringify(res.questions));
             localStorage.setItem('quiz_topic', res.topic);
             localStorage.setItem('current_q_index', '0');
             localStorage.setItem('user_answers_pool', '[]');
-            localStorage.setItem('quiz_goal', formData.get('quiz_goal') || 'quiz');
             window.location.href = "quiz.html";
         } else {
-            alert("Error: " + (res.message || "Something went wrong."));
+            alert(res.message || "Failed to generate quiz.");
         }
     } catch (err) {
-        alert(err.name === 'AbortError' ? "Timeout ⏰" : "Connection error 😕");
+        alert("Connection failed. Check your internet.");
     } finally {
         btn.innerHTML = "Generate Questions Now 🪄";
         btn.disabled = false;
     }
 };
 
+// 4. CASE STUDY CHALLENGE
 document.getElementById('caseBtn').onclick = async function() {
-    const caseBtn = this;
-    const sourceType = document.getElementById('source-select').value;
-    let content = '';
-
-    if (sourceType === 'topic') {
-        content = document.getElementById('topicInput')?.value.trim();
-        if (!content) { alert("Pehle topic enter karo!"); return; }
-    } else if (sourceType === 'text') {
-        content = document.getElementById('textInput')?.value.trim();
-        if (!content) { alert("Pehle text paste karo!"); return; }
-    } else if (sourceType === 'pdf' || sourceType === 'image') {
-        const fileEl = document.getElementById('activeFileInput');
-        if (!fileEl?.files[0]) { alert("Pehle file select karo!"); return; }
-        content = `Study challenge for ${sourceType}: ${fileEl.files[0].name}`;
-    }
-
-    caseBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
-    caseBtn.disabled = true;
-
+    const topic = document.getElementById('topicInput')?.value || "General Knowledge";
+    this.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+    
     try {
         const response = await fetch(`${BACKEND_URL}/start-challenge`, {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
-            body: JSON.stringify({ content_to_study: content })
+            body: JSON.stringify({ content_to_study: topic })
         });
         const res = await response.json();
         if (res.success) window.location.href = res.redirect;
-        else alert("Error starting challenge");
-    } catch(e) { alert("Connection error."); }
-    finally {
-        caseBtn.innerHTML = '<i class="fa-solid fa-brain"></i>';
-        caseBtn.disabled = false;
-    }
+    } catch(e) { alert("Error starting challenge."); }
+    finally { this.innerHTML = '<i class="fa-solid fa-brain"></i>'; }
 };
 </script>
 </body>
