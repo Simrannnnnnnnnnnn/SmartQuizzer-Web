@@ -15,7 +15,7 @@
         .nav-link-custom:hover { color: var(--sun) !important; transform: translateY(-2px); }
         .nav-link-custom i { color: var(--sun); margin-right: 5px; }
         
-        .sunshine-card { background: #ffffff; border-radius: 30px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .sunshine-card { background: #ffffff; border-radius: 30px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: 0.3s; }
         .sunshine-input { background: #ffffff !important; border: 2px solid #fff4cc !important; border-radius: 15px !important; }
         .sunshine-input:focus { border-color: var(--sun) !important; box-shadow: 0 0 15px rgba(255, 204, 0, 0.2) !important; }
         
@@ -25,14 +25,17 @@
         .sunshine-main-btn { background: linear-gradient(45deg, #ffcc00, #ffb800) !important; color: white !important; border: none !important; border-radius: 20px !important; transition: 0.3s; font-size: 1.1rem; }
         .sunshine-main-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255, 184, 0, 0.4) !important; }
         
-        .streak-badge { background: white; border: 1px solid #eee; padding: 8px 20px; border-radius: 50px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .streak-badge { background: white; border: 2px solid #FFCC00; padding: 8px 20px; border-radius: 50px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         
-        /* Progress Bar Animation */
         .xp-progress-container { background: #f8f9fa; border-radius: 15px; height: 12px; margin-top: 10px; overflow: hidden; border: 1px solid #eee; }
         .xp-progress-bar { background: linear-gradient(90deg, #FFCC00 0%, #FF9800 100%); height: 100%; width: 0%; transition: 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
         
         .icon-box { transition: 0.3s; }
         .sunshine-card:hover .icon-box { transform: rotate(15deg) scale(1.1); }
+
+        /* Custom Scrollbar for Textareas */
+        textarea::-webkit-scrollbar { width: 8px; }
+        textarea::-webkit-scrollbar-thumb { background: var(--sun); border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -54,11 +57,11 @@
         <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
                 <h2 class="fw-bold mb-0" style="color: #4b4b4b;">Rise & Study! ☀️</h2>
-                <p class="text-muted fw-medium">Welcome back, <b id="username-display" class="text-warning">Student</b></p>
+                <p class="text-muted fw-medium">Welcome back, <b id="username-display" class="text-warning">harsh</b></p>
             </div>
-            <div class="streak-badge d-flex align-items-center animate__animated animate__pulse animate__infinite">
-                <i class="fa-solid fa-fire text-danger fs-4 me-2"></i>
-                <span class="fw-bold fs-5" id="streak-display">0 Day Streak</span>
+            <div class="streak-badge d-flex align-items-center animate__animated animate__bounceIn">
+                <i class="fa-solid fa-bolt text-warning fs-4 me-2"></i>
+                <span class="fw-bold fs-5" id="header-xp-display" style="color: #4b4b4b;">0 XP</span>
             </div>
         </div>
     </div>
@@ -131,28 +134,44 @@
         </div>
 
         <div class="col-lg-4">
-            <div class="sunshine-card p-4 mb-4 animate__animated animate__fadeInRight" style="border-left: 6px solid var(--sun);">
+            <div class="sunshine-card p-4 mb-4 animate__animated animate__fadeInRight" style="border-left: 6px solid #FFCC00;">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h6 class="fw-bold text-muted mb-0">STUDENT LEVEL</h6>
+                    <h6 class="fw-bold text-muted mb-0 small">STUDENT PROGRESS</h6>
                     <span class="badge rounded-pill bg-dark px-3" id="level-badge">Lvl 1</span>
                 </div>
-                <h3 class="fw-bold mb-1" id="total-xp-display">0 XP</h3>
+                <div class="d-flex align-items-center mb-1">
+                    <i class="fa-solid fa-bolt text-warning fs-3 me-2"></i>
+                    <h3 class="fw-bold mb-0" id="total-xp-display">0 XP</h3>
+                </div>
                 <div class="xp-progress-container">
                     <div class="xp-progress-bar" id="xp-bar"></div>
                 </div>
-                <p class="extra-small text-muted mt-2 mb-0 fw-bold" id="xp-to-next">Loading progress...</p>
+                <p class="extra-small text-muted mt-2 mb-0 fw-bold" id="xp-to-next">Loading power...</p>
             </div>
 
-            <div class="sunshine-card p-4 mb-4 text-white animate__animated animate__fadeInRight" style="background: linear-gradient(135deg, #FF9800, #FF5722); border-radius: 30px;">
-                <h6 class="fw-bold opacity-75">MASTERED QUESTIONS</h6>
-                <h2 class="fw-bold display-5" id="correct-total">0</h2>
-                <p class="small mb-0">Total across all topics</p>
+            <div class="sunshine-card p-4 mb-4 text-white animate__animated animate__fadeInRight" style="background: linear-gradient(135deg, #0984e3, #74b9ff); border-radius: 30px;">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="rounded-circle bg-white d-flex align-items-center justify-content-center me-2" style="width: 35px; height: 35px;">
+                        <i class="fa-solid fa-language text-primary"></i>
+                    </div>
+                    <h6 class="fw-bold mb-0">IELTS Master Class</h6>
+                </div>
+                <div id="vocab-area">
+                    <h5 class="fw-bold mb-1" id="vocab-word">Loading...</h5>
+                    <p class="extra-small mb-2" id="vocab-type"><i>---</i></p>
+                    <p class="small mb-0 opacity-90" id="vocab-meaning">Fetching a new word for you...</p>
+                </div>
             </div>
 
-            <div class="sunshine-card p-4 text-center animate__animated animate__fadeInRight" style="border: 2px solid #fff4cc;">
-                <h2 class="display-4 fw-bold" style="color: #ffcc00;" id="mistake-count">0</h2>
-                <p class="text-muted fw-bold mb-3">Mistakes in Bank</p>
-                <a href="review.html" class="btn btn-warning w-100 rounded-pill fw-bold shadow-sm py-2">Review Now</a>
+            <div class="sunshine-card p-4 text-center animate__animated animate__fadeInRight" style="border: 2px dashed #dcdde1; background: #f5f6fa; border-radius: 30px;">
+                <div class="d-flex justify-content-around mb-3 opacity-50">
+                    <i class="fa-solid fa-id-card-personal fs-4"></i>
+                    <i class="fa-solid fa-clone fs-2 text-warning opacity-100"></i>
+                    <i class="fa-solid fa-id-card-personal fs-4"></i>
+                </div>
+                <h6 class="fw-bold">Card Collection</h6>
+                <p class="extra-small text-muted">View your earned achievement cards</p>
+                <a href="collections.html" class="btn btn-dark btn-sm rounded-pill w-100 fw-bold py-2 mt-2">Open Vault</a>
             </div>
         </div>
     </div>
@@ -161,19 +180,35 @@
 <script>
 const BACKEND_URL = "https://simrankaurrrrrr-smartquizzer-backend.hf.space";
 
-// 1. DYNAMIC STATS LOADING
+// IELTS Vocab List for Dynamic Card
+const vocabList = [
+    { word: "Mitigate", type: "Verb (Level: 7+)", meaning: "To make something less severe, serious, or painful." },
+    { word: "Once in a blue moon", type: "Idiom", meaning: "Something that happens very rarely." },
+    { word: "Ambiguous", type: "Adj (Level: 8+)", meaning: "Not clear or decided; having more than one meaning." },
+    { word: "Break a leg", type: "Idiom", meaning: "A superstitious way to wish someone good luck." },
+    { word: "Elocution", type: "Noun", meaning: "The skill of clear and expressive speech, especially of distinct pronunciation." },
+    { word: "A Piece of Cake", type: "Idiom", meaning: "Something that is very easy to do." }
+];
+
+// 1. DYNAMIC STATS & VOCAB LOADING
 async function loadStats() {
+    // Set random vocab first
+    const randomVocab = vocabList[Math.floor(Math.random() * vocabList.length)];
+    document.getElementById('vocab-word').innerText = randomVocab.word;
+    document.getElementById('vocab-type').innerText = `(${randomVocab.type})`;
+    document.getElementById('vocab-meaning').innerText = randomVocab.meaning;
+
     try {
         const res = await fetch(`${BACKEND_URL}/api/dashboard_stats`, { credentials: 'include' });
         const data = await res.json();
         
         if (data.success) {
-            document.getElementById('username-display').innerText = data.username || 'Student';
-            document.getElementById('streak-display').innerText = `${data.streak || 0} Day Streak`;
-            document.getElementById('correct-total').innerText = data.correct_total || 0;
-            document.getElementById('mistake-count').innerText = data.mistake_count || 0;
+            document.getElementById('username-display').innerText = data.username || 'harsh';
             
-            // Level Logic (500 XP per level)
+            // Header XP Display (Bolt)
+            document.getElementById('header-xp-display').innerHTML = `<i class="fa-solid fa-bolt text-warning me-1"></i> ${data.total_xp || 0} XP`;
+            
+            // Progress Bar Logic
             const totalXp = data.total_xp || 0;
             const level = Math.floor(totalXp / 500) + 1;
             const xpInCurrentLevel = totalXp % 500;
@@ -183,7 +218,7 @@ async function loadStats() {
             document.getElementById('total-xp-display').innerText = `${totalXp} XP`;
             document.getElementById('level-badge').innerText = `Lvl ${level}`;
             document.getElementById('xp-bar').style.width = `${progressPercent}%`;
-            document.getElementById('xp-to-next').innerText = `${xpLeft} XP to Level ${level + 1}`;
+            document.getElementById('xp-to-next').innerText = `${xpLeft} XP to reach Level ${level + 1}`;
         }
     } catch(e) { 
         console.error('Stats load failed:', e);
@@ -191,7 +226,7 @@ async function loadStats() {
 }
 loadStats();
 
-// 2. SOURCE TOGGLER (Improved UX)
+// 2. SOURCE TOGGLER
 document.getElementById('source-select').onchange = function() {
     const area = document.getElementById('input-area');
     const val = this.value;
@@ -245,7 +280,7 @@ document.getElementById('quiz-form').onsubmit = async function(e) {
             alert(res.message || "Failed to generate quiz.");
         }
     } catch (err) {
-        alert("Connection failed. Check your internet.");
+        alert("Connection failed. Check backend status.");
     } finally {
         btn.innerHTML = "Generate Questions Now 🪄";
         btn.disabled = false;
