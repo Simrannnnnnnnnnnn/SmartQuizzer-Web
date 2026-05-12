@@ -91,12 +91,11 @@
         const password = document.getElementById('password').value;
         const btn = document.getElementById('signupBtn');
 
-        // UI Loading
+        // UI Loading State
         btn.disabled = true;
         btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Creating Account...';
 
         try {
-            // Backend ko registration request bhejna
             const response = await fetch(`${BACKEND_URL}/signup`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -110,15 +109,21 @@
             const result = await response.json();
 
             if (result.success) {
-                alert("Account created successfully! Please Login.");
-                window.location.href = "login.html";
+                // Success Feedback
+                btn.classList.replace('sunshine-btn', 'btn-success');
+                btn.innerHTML = 'Success! Redirecting... ✅';
+                
+                // 1.5 second wait then redirect to login page
+                setTimeout(() => {
+                    window.location.href = "login.html";
+                }, 1500);
             } else {
                 alert("Error: " + (result.message || "Signup failed"));
                 resetBtn(btn);
             }
         } catch (error) {
             console.error("Signup Error:", error);
-            alert("Connection to backend failed.");
+            alert("Connection to backend failed. Please try again later.");
             resetBtn(btn);
         }
     });
@@ -126,6 +131,9 @@
     function resetBtn(btn) {
         btn.disabled = false;
         btn.innerHTML = 'Get Started 🚀';
+        if(btn.classList.contains('btn-success')) {
+            btn.classList.replace('btn-success', 'sunshine-btn');
+        }
     }
 </script>
 
