@@ -115,26 +115,23 @@
         </div>
     </div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // 1. Get Data from LocalStorage
         const quizResult = JSON.parse(localStorage.getItem('lastQuizResult'));
         
         if (!quizResult) {
-            alert("No quiz data found!");
-            window.location.href = "dashboard.html";
+            console.error("No quiz data found!");
             return;
         }
 
-        const score = quizResult.score;
-        const total = quizResult.total;
-        const accuracy = Math.round((score / total) * 100);
-        const userAnswers = quizResult.user_answers;
+        const score = quizResult.score || 0;
+        const total = quizResult.total || 0;
+        const accuracy = total > 0 ? Math.round((score / total) * 100) : 0;
+        const topic = quizResult.topic || 'General';
+        const userAnswers = quizResult.user_answers || []; // Fixed name here
 
         // 2. XP CALCULATION LOGIC
-        // 10 XP for each correct answer + 50 XP bonus for perfect score
         let xpGained = score * 10;
         if (accuracy === 100) {
             xpGained += 50;
@@ -142,15 +139,43 @@
         document.getElementById('xp-gained-display').innerText = `+${xpGained}`;
 
         // 3. Update Header Info
-        document.getElementById('display-topic').innerText = quizResult.topic || 'General';
+        document.getElementById('display-topic').innerText = topic;
         document.getElementById('accuracy-text').innerText = `${accuracy}%`;
 
-        // 4. Initialize Charts
+        // 4. Sync with Backend
+        syncXPWithBackend(score, total, topic, xpGained);
+
+        // 5. Initialize Charts
         initCharts(score, total);
 
-        // 5. Render Questions Review
-        renderReview(userAnswers);
+        // 6. Render Questions Review (FIXED TYPO HERE)
+        renderReview(userAnswers); 
     });
+
+    async function syncXPWithBackend(score, total, topic, xp) {
+        const BACKEND_URL = "https://simrankaurrrrrr-smartquizzer-backend.hf.space";
+        
+        try {
+            const response = await fetch(`${BACKEND_URL}/api/update_xp`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include', 
+                body: JSON.stringify({ 
+                    score: score, 
+                    total_questions: total, 
+                    topic: topic,
+                    xp_gained: xp 
+                })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                console.log("🔥 XP Synced Successfully! Total XP:", data.new_total_xp);
+            }
+        } catch (error) {
+            console.error("❌ Error syncing XP:", error);
+        }
+    }
 
     function initCharts(score, total) {
         const primaryGold = '#FFCC00';
