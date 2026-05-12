@@ -170,7 +170,7 @@ async function loadStats() {
             
             // XP & Level Logic
             const xp = data.total_xp || 0;
-            document.getElementById('total-xp-display').innerText = xp + ' XP';
+            document.getElementById('total-xp-display').innerText =`${data.total_xp} XP`;
             
             // Simple Level Logic: Har 500 XP par Level up
             const level = Math.floor(xp / 500) + 1;
