@@ -1,119 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login - SmartQuizzer</title>
-<style>
-:root {
-  --primary-gold: #B8860B;
-  --accent-orange: #FF8C00;
-  --glass-bg: rgba(255, 255, 255, 0.9);
-}
-body {
-  margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-}
-.glass-card {
-  max-width: 400px;
-  width: 90%;
-  padding: 40px 30px;
-  border-radius: 25px;
-  background: var(--glass-bg);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-  text-align: center;
-  animation: fadeIn 0.6s ease-out;
-}
-h2 { color: var(--primary-gold); font-weight: 900; margin-bottom: 30px; font-size: 2rem; }
-.input-group { text-align: left; margin-bottom: 20px; }
-input {
-  width: 100%;
-  padding: 15px;
-  border-radius: 15px;
-  border: 2px solid #f0f0f0;
-  outline: none;
-  transition: 0.3s;
-  box-sizing: border-box;
-}
-input:focus { border-color: var(--primary-gold); }
-.sunshine-btn {
-  width: 100%;
-  padding: 15px;
-  font-weight: 800;
-  cursor: pointer;
-  background: var(--primary-gold);
-  color: white;
-  border: none;
-  border-radius: 15px;
-  transition: 0.3s;
-}
-.sunshine-btn:disabled { background: #ccc; cursor: not-allowed; }
-.divider { margin: 25px 0; display: flex; align-items: center; opacity: 0.6; }
-.divider-line { flex: 1; height: 1px; background: #EEE; }
-.guest-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-  padding: 14px;
-  border: 2px solid var(--primary-gold);
-  border-radius: 15px;
-  text-decoration: none;
-  color: var(--primary-gold);
-  font-weight: 700;
-  transition: 0.3s;
-  box-sizing: border-box;
-  background: none;
-  cursor: pointer;
-}
-.guest-btn:hover { background-color: var(--primary-gold); color: white; }
-#error-message {
-  color: #d9534f;
-  font-size: 0.9rem;
-  margin-bottom: 15px;
-  display: none;
-  background: #fdf2f2;
-  padding: 10px;
-  border-radius: 10px;
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - SmartQuizzer AI ☀️</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        :root {
+            --primary-gold: #FFCC00;
+            --accent-orange: #FF8C00;
+            --dark-grey: #4b4b4b;
+            --glass-bg: rgba(255, 255, 255, 0.95);
+        }
+        body {
+            margin: 0;
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #FFFDF5; /* Soft sunshine background */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .glass-card {
+            max-width: 420px;
+            width: 90%;
+            padding: 45px 35px;
+            border-radius: 35px;
+            background: var(--glass-bg);
+            border: 2px solid #FFF4CC;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        h2 { color: var(--dark-grey); font-weight: 800; margin-bottom: 10px; font-size: 2.2rem; }
+        p.subtitle { color: #888; margin-bottom: 30px; font-weight: 500; }
+
+        .input-group { text-align: left; margin-bottom: 20px; }
+        input {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: 18px;
+            border: 2px solid #f0f0f0;
+            outline: none;
+            transition: 0.3s;
+            box-sizing: border-box;
+            font-size: 1rem;
+            background: #FAFAFA;
+        }
+        input:focus { border-color: var(--primary-gold); background: white; box-shadow: 0 0 15px rgba(255,204,0,0.1); }
+
+        .sunshine-btn {
+            width: 100%;
+            padding: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            background: linear-gradient(45deg, #ffcc00, #ffb800);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            transition: 0.3s;
+            font-size: 1.1rem;
+            box-shadow: 0 8px 20px rgba(255, 184, 0, 0.3);
+        }
+        .sunshine-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(255, 184, 0, 0.4); }
+        .sunshine-btn:disabled { background: #ccc; transform: none; box-shadow: none; }
+
+        .divider { margin: 25px 0; display: flex; align-items: center; opacity: 0.4; }
+        .divider-line { flex: 1; height: 1px; background: #888; }
+
+        .guest-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--primary-gold);
+            border-radius: 18px;
+            text-decoration: none;
+            color: #b89600;
+            font-weight: 700;
+            transition: 0.3s;
+            box-sizing: border-box;
+            background: transparent;
+        }
+        .guest-btn:hover { background: #FFF9DB; }
+
+        #error-message {
+            color: #d9534f;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            display: none;
+            background: #fff2f2;
+            padding: 12px;
+            border-radius: 15px;
+            border: 1px solid #ffcccc;
+        }
+    </style>
 </head>
 <body>
-<div class="glass-card">
-  <h2>Welcome Back! ✨</h2>
-  <div id="error-message"></div>
-  <form id="loginForm">
-    <div class="input-group">
-      <input type="text" id="login_id" placeholder="Username or Email" required>
+
+<div class="glass-card animate__animated animate__fadeInUp">
+    <h2>SmartQuizzer ☀️</h2>
+    <p class="subtitle">Log in to keep your streak alive!</p>
+    
+    <div id="error-message" class="animate__animated animate__shakeX"></div>
+
+    <form id="loginForm">
+        <div class="input-group">
+            <input type="text" id="login_id" placeholder="Username or Email" required>
+        </div>
+        <div class="input-group">
+            <input type="password" id="password" placeholder="Password" required>
+        </div>
+        <button type="submit" id="submitBtn" class="sunshine-btn">LET'S GO 🚀</button>
+    </form>
+
+    <div class="divider">
+        <div class="divider-line"></div>
+        <span style="margin: 0 15px; font-size: 0.8rem; font-weight: 700; color: #666;">OR</span>
+        <div class="divider-line"></div>
     </div>
-    <div class="input-group">
-      <input type="password" id="password" placeholder="Password" required>
-    </div>
-    <button type="submit" id="submitBtn" class="sunshine-btn">LET'S GO 🚀</button>
-  </form>
-  <div class="divider">
-    <div class="divider-line"></div>
-    <span style="margin: 0 15px; font-size: 0.8rem; font-weight: 700; color: #666;">OR</span>
-    <div class="divider-line"></div>
-  </div>
-  <a href="https://simrankaurrrrrr-smartquizzer-backend.hf.space/guest_login" class="guest-btn">
-    <span>🕵️‍♂️</span> Continue as Guest
-  </a>
-  <p style="margin-top: 25px; font-size: 0.95rem; color: #555;">
-    New here? <a href="signup.html" style="color: var(--accent-orange); font-weight: 700; text-decoration: none;">Create an account</a>
-  </p>
+
+    <button id="guestBtn" class="guest-btn">
+        <span>🕵️‍♂️</span> Continue as Guest
+    </button>
+
+    <p style="margin-top: 25px; font-size: 0.95rem; color: #555;">
+        New here? <a href="signup.html" style="color: var(--accent-orange); font-weight: 700; text-decoration: none;">Create an account</a>
+    </p>
 </div>
 
 <script>
@@ -121,35 +136,64 @@ const BACKEND_URL = "https://simrankaurrrrrr-smartquizzer-backend.hf.space";
 const loginForm = document.getElementById('loginForm');
 const errorMsg = document.getElementById('error-message');
 const submitBtn = document.getElementById('submitBtn');
+const guestBtn = document.getElementById('guestBtn');
 
+// 1. Standard Login Logic
 loginForm.onsubmit = async function(e) {
-  e.preventDefault();
-  submitBtn.disabled = true;
-  submitBtn.innerText = "Checking...";
-  errorMsg.style.display = "none";
+    e.preventDefault();
+    submitBtn.disabled = true;
+    submitBtn.innerText = "Verifying... ⏳";
+    errorMsg.style.display = "none";
 
-  const login_id = document.getElementById('login_id').value;
-  const password = document.getElementById('password').value;
+    const login_id = document.getElementById('login_id').value;
+    const password = document.getElementById('password').value;
 
-  try {
-    const response = await fetch(`${BACKEND_URL}/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ login_id, password })
-    });
-    const data = await response.json();
-    if (data.success) {
-      window.location.href = data.redirect;
-    } else {
-      throw new Error(data.message || "Invalid credentials");
+    try {
+        const response = await fetch(`${BACKEND_URL}/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include', // Cookie save karne ke liye
+            body: JSON.stringify({ login_id, password })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            // Success! Send user to Dashboard
+            window.location.href = "dashboard.html";
+        } else {
+            throw new Error(data.message || "Invalid credentials");
+        }
+    } catch (err) {
+        errorMsg.innerText = "❌ " + err.message;
+        errorMsg.style.display = "block";
+        submitBtn.disabled = false;
+        submitBtn.innerText = "LET'S GO 🚀";
     }
-  } catch (err) {
-    errorMsg.innerText = "❌ " + err.message;
-    errorMsg.style.display = "block";
-    submitBtn.disabled = false;
-    submitBtn.innerText = "LET'S GO 🚀";
-  }
+};
+
+// 2. Guest Login Logic (Fixing Unauthorized here too)
+guestBtn.onclick = async function() {
+    guestBtn.disabled = true;
+    guestBtn.innerText = "Joining... 🕵️‍♂️";
+    
+    try {
+        const response = await fetch(`${BACKEND_URL}/guest_login`, {
+            method: 'GET',
+            credentials: 'include'
+        });
+        const data = await response.json();
+        if (data.success) {
+            window.location.href = "dashboard.html";
+        } else {
+            alert("Guest login failed");
+        }
+    } catch (e) {
+        alert("Server error. Try again later.");
+    } finally {
+        guestBtn.disabled = false;
+        guestBtn.innerText = "Continue as Guest";
+    }
 };
 </script>
 </body>
