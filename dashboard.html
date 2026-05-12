@@ -274,50 +274,66 @@
         </div>
     </div>
 </div>
-
 <script>
 const BACKEND_URL = "https://simrankaurrrrrr-smartquizzer-backend.hf.space";
 
-const vocabList = [
-    { word: "Mitigate", type: "Verb • Formal", meaning: "To make something less severe, serious, or painful.", ex1: "The new laws were designed to mitigate the effects of pollution.", ex2: "Regular exercise can help mitigate the risk of heart disease." },
-    { word: "Pragmatic", type: "Adjective • Smart", meaning: "Dealing with things sensibly and realistically based on practical conditions.", ex1: "He took a pragmatic approach to the problem rather than overthinking it.", ex2: "In business, staying pragmatic is often better than being idealistic." },
-    { word: "Lucid", type: "Adjective • Clear", meaning: "Expressed clearly; easy to understand.", ex1: "The teacher gave a lucid explanation of the complex theory.", ex2: "Despite the chaos, she remained lucid and focused." },
-    { word: "Resilient", type: "Adjective • Strong", meaning: "Able to withstand or recover quickly from difficult conditions.", ex1: "Children are often remarkably resilient in tough situations.", ex2: "The local economy proved resilient despite the global crisis." }
-];
-
+// --- VOCABULARY LOGIC ---
+let vocabList = []; // Khali rakha hai taaki backend se fill ho ske
 let currentVocabIdx = 0;
 
+// Naya function backend se vocabulary fetch karne ke liye
+async function fetchVocabulary() {
+    try {
+        const res = await fetch(`${BACKEND_URL}/api/vocab`, { credentials: 'include' });
+        const data = await res.json();
+        
+        if (data.success && data.vocab && data.vocab.length > 0) {
+            vocabList = data.vocab; // Backend list se update
+            updateVocabUI(); // Pehla word show karein
+        } else {
+            console.warn("Vocab list empty or fetch failed.");
+            // Fallback text agar backend se kuch na aaye
+            document.getElementById('vocab-word').innerText = "Stay Tuned!";
+            document.getElementById('vocab-meaning').innerText = "Fresh words coming soon.";
+        }
+    } catch (e) {
+        console.error("Error fetching vocab:", e);
+    }
+}
+
 function updateVocabUI() {
+    if (vocabList.length === 0) return;
+
     const item = vocabList[currentVocabIdx];
     const content = document.getElementById('vocab-content');
+    if (!content) return;
+    
+    // Animation trigger
     content.classList.remove('animate__fadeIn');
     void content.offsetWidth; 
     content.classList.add('animate__animated', 'animate__fadeIn');
-    document.getElementById('vocab-word').innerText = item.word;
-    document.getElementById('vocab-type').innerText = item.type;
-    document.getElementById('vocab-meaning').innerText = item.meaning;
-    document.getElementById('vocab-ex-1').innerText = item.ex1;
-    document.getElementById('vocab-ex-2').innerText = item.ex2;
+    
+    // UI Update
+    document.getElementById('vocab-word').innerText = item.word || "N/A";
+    document.getElementById('vocab-type').innerText = item.type || "Word";
+    document.getElementById('vocab-meaning').innerText = item.meaning || "No definition available.";
+    document.getElementById('vocab-ex-1').innerText = item.ex1 || "Learning makes you smarter!";
+    document.getElementById('vocab-ex-2').innerText = item.ex2 || "Keep practicing daily.";
 }
 
 function changeVocab(direction) {
+    if (vocabList.length === 0) return;
     currentVocabIdx += direction;
     if (currentVocabIdx >= vocabList.length) currentVocabIdx = 0;
     if (currentVocabIdx < 0) currentVocabIdx = vocabList.length - 1;
     updateVocabUI();
 }
 
-// Range input listener for feedback
-document.getElementById('countRange').addEventListener('input', function(e) {
-    const output = document.getElementById('countOutput');
-    output.innerText = e.target.value;
-    output.classList.remove('animate__bounceIn');
-    void output.offsetWidth;
-    output.classList.add('animate__bounceIn');
-});
-
+// --- DASHBOARD STATS & XP ---
 async function loadStats() {
-    updateVocabUI();
+    // Stats aur Vocab dono ek sath call honge
+    fetchVocabulary(); 
+    
     try {
         const res = await fetch(`${BACKEND_URL}/api/dashboard_stats`, { credentials: 'include' });
         const data = await res.json();
@@ -337,10 +353,12 @@ async function loadStats() {
             document.getElementById('xp-bar').style.width = `${progressPercent}%`;
             document.getElementById('xp-to-next').innerText = `${xpLeft} XP to Level ${level + 1}`;
         }
-    } catch(e) { console.error('Stats load failed:', e); }
+    } catch(e) { 
+        console.error('Stats load failed:', e); 
+    }
 }
-loadStats();
 
+// --- INPUT AREA TOGGLE ---
 document.getElementById('source-select').onchange = function() {
     const area = document.getElementById('input-area');
     const val = this.value;
@@ -359,24 +377,57 @@ document.getElementById('source-select').onchange = function() {
     }
 };
 
+// --- QUIZ GENERATION & REDIRECT ---
 document.getElementById('quiz-form').onsubmit = async function(e) {
     e.preventDefault();
     const btn = document.getElementById('submitBtn');
     const formData = new FormData(this);
+    
     btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Summoning Quiz...`;
     btn.disabled = true;
 
     try {
-        const response = await fetch(`${BACKEND_URL}/handle_generation`, { method: "POST", body: formData, credentials: 'include' });
+        const response = await fetch(`${BACKEND_URL}/handle_generation`, { 
+            method: "POST", 
+            body: formData, 
+            credentials: 'include' 
+        });
+        
         const res = await response.json();
+        
         if (res.success) {
-            localStorage.setItem('quiz_questions', JSON.stringify(res.questions));
-            localStorage.setItem('quiz_topic', res.topic);
-            window.location.href = "quiz.html";
-        } else { alert(res.message); }
-    } catch (err) { alert("Backend Unreachable."); }
-    finally { btn.innerHTML = "Generate Questions Now 🪄"; btn.disabled = false; }
+            if (res.questions) localStorage.setItem('quiz_questions', JSON.stringify(res.questions));
+            if (res.topic) localStorage.setItem('quiz_topic', res.topic);
+
+            if (res.redirect_url) {
+                window.location.href = res.redirect_url;
+            } else {
+                window.location.href = "quiz.html";
+            }
+        } else { 
+            alert(res.message || "Failed to generate quiz."); 
+        }
+    } catch (err) { 
+        console.error("Fetch error:", err);
+        alert("Backend Unreachable. Please try again later."); 
+    } finally { 
+        btn.innerHTML = "Generate Questions Now 🪄"; 
+        btn.disabled = false; 
+    }
 };
+
+// --- UI EVENT LISTENERS ---
+document.getElementById('countRange').addEventListener('input', function(e) {
+    const output = document.getElementById('countOutput');
+    output.innerText = e.target.value;
+    output.classList.remove('animate__bounceIn');
+    void output.offsetWidth;
+    output.classList.add('animate__bounceIn');
+});
+
+// Run load on page start
+loadStats();
 </script>
+
 </body>
 </html>
