@@ -30,10 +30,15 @@
         .xp-progress-container { background: #f8f9fa; border-radius: 15px; height: 12px; margin-top: 10px; overflow: hidden; border: 1px solid #eee; }
         .xp-progress-bar { background: linear-gradient(90deg, #FFCC00 0%, #FF9800 100%); height: 100%; width: 0%; transition: 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
         
+        /* IELTS Card Styling */
+        .vocab-card { background: linear-gradient(135deg, #0984e3, #6c5ce7); color: white; min-height: 280px; display: flex; flex-direction: column; justify-content: space-between; }
+        .vocab-nav-btn { background: rgba(255, 255, 255, 0.2); border: none; color: white; border-radius: 50%; width: 35px; height: 35px; transition: 0.2s; }
+        .vocab-nav-btn:hover { background: rgba(255, 255, 255, 0.4); transform: scale(1.1); }
+        .example-box { background: rgba(255, 255, 255, 0.1); border-left: 3px solid #FFCC00; padding: 8px 12px; border-radius: 8px; font-size: 0.85rem; margin-top: 10px; }
+
         .icon-box { transition: 0.3s; }
         .sunshine-card:hover .icon-box { transform: rotate(15deg) scale(1.1); }
 
-        /* Custom Scrollbar for Textareas */
         textarea::-webkit-scrollbar { width: 8px; }
         textarea::-webkit-scrollbar-thumb { background: var(--sun); border-radius: 10px; }
     </style>
@@ -57,7 +62,7 @@
         <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
                 <h2 class="fw-bold mb-0" style="color: #4b4b4b;">Rise & Study! ☀️</h2>
-                <p class="text-muted fw-medium">Welcome back, <b id="username-display" class="text-warning">harsh</b></p>
+                <p class="text-muted fw-medium">Welcome back, <b id="username-display" class="text-warning">Loading...</b></p>
             </div>
             <div class="streak-badge d-flex align-items-center animate__animated animate__bounceIn">
                 <i class="fa-solid fa-bolt text-warning fs-4 me-2"></i>
@@ -146,21 +151,40 @@
                 <div class="xp-progress-container">
                     <div class="xp-progress-bar" id="xp-bar"></div>
                 </div>
-                <p class="extra-small text-muted mt-2 mb-0 fw-bold" id="xp-to-next">Loading power...</p>
+                <p class="extra-small text-muted mt-2 mb-0 fw-bold" id="xp-to-next">0 XP to next level</p>
             </div>
 
-            <div class="sunshine-card p-4 mb-4 text-white animate__animated animate__fadeInRight" style="background: linear-gradient(135deg, #0984e3, #74b9ff); border-radius: 30px;">
-                <div class="d-flex align-items-center mb-3">
-                    <div class="rounded-circle bg-white d-flex align-items-center justify-content-center me-2" style="width: 35px; height: 35px;">
-                        <i class="fa-solid fa-language text-primary"></i>
+            <div class="sunshine-card p-4 mb-4 vocab-card animate__animated animate__fadeInRight">
+                <div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="rounded-circle bg-white d-flex align-items-center justify-content-center me-2" style="width: 35px; height: 35px;">
+                                <i class="fa-solid fa-language text-primary"></i>
+                            </div>
+                            <h6 class="fw-bold mb-0">IELTS Vocabulary</h6>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="vocab-nav-btn" onclick="changeVocab(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button class="vocab-nav-btn" onclick="changeVocab(1)"><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
                     </div>
-                    <h6 class="fw-bold mb-0">IELTS Master Class</h6>
+                    
+                    <div id="vocab-content">
+                        <h4 class="fw-bold mb-1 text-warning" id="vocab-word">Loading...</h4>
+                        <span class="badge bg-white text-primary mb-3" id="vocab-type">---</span>
+                        <p class="small mb-3" id="vocab-meaning">Loading meaning...</p>
+                        
+                        <div class="example-box">
+                            <i class="fa-solid fa-quote-left text-warning me-1"></i>
+                            <span id="vocab-ex-1">Example 1 loading...</span>
+                        </div>
+                        <div class="example-box">
+                            <i class="fa-solid fa-quote-left text-warning me-1"></i>
+                            <span id="vocab-ex-2">Example 2 loading...</span>
+                        </div>
+                    </div>
                 </div>
-                <div id="vocab-area">
-                    <h5 class="fw-bold mb-1" id="vocab-word">Loading...</h5>
-                    <p class="extra-small mb-2" id="vocab-type"><i>---</i></p>
-                    <p class="small mb-0 opacity-90" id="vocab-meaning">Fetching a new word for you...</p>
-                </div>
+                <p class="extra-small text-center mt-3 opacity-75 mb-0">Learn 10 words daily to score Band 8.0!</p>
             </div>
 
             <div class="sunshine-card p-4 text-center animate__animated animate__fadeInRight" style="border: 2px dashed #dcdde1; background: #f5f6fa; border-radius: 30px;">
@@ -180,23 +204,73 @@
 <script>
 const BACKEND_URL = "https://simrankaurrrrrr-smartquizzer-backend.hf.space";
 
-// IELTS Vocab List for Dynamic Card
+// Enhanced IELTS List with Examples
 const vocabList = [
-    { word: "Mitigate", type: "Verb (Level: 7+)", meaning: "To make something less severe, serious, or painful." },
-    { word: "Once in a blue moon", type: "Idiom", meaning: "Something that happens very rarely." },
-    { word: "Ambiguous", type: "Adj (Level: 8+)", meaning: "Not clear or decided; having more than one meaning." },
-    { word: "Break a leg", type: "Idiom", meaning: "A superstitious way to wish someone good luck." },
-    { word: "Elocution", type: "Noun", meaning: "The skill of clear and expressive speech, especially of distinct pronunciation." },
-    { word: "A Piece of Cake", type: "Idiom", meaning: "Something that is very easy to do." }
+    { 
+        word: "Mitigate", 
+        type: "Verb (Level: 7+)", 
+        meaning: "To make something less severe, serious, or painful.",
+        ex1: "The government implemented new laws to mitigate the effects of climate change.",
+        ex2: "Drainage systems were upgraded to mitigate the risk of flooding."
+    },
+    { 
+        word: "Pragmatic", 
+        type: "Adj (Level: 8+)", 
+        meaning: "Dealing with things sensibly and realistically based on practical considerations.",
+        ex1: "We need to take a pragmatic approach to solve this complex business issue.",
+        ex2: "The scientist offered a pragmatic solution rather than a theoretical one."
+    },
+    { 
+        word: "Acquiesce", 
+        type: "Verb (Level: 8.5+)", 
+        meaning: "To accept something reluctantly but without protest.",
+        ex1: "The company decided to acquiesce to the union's demands for better safety.",
+        ex2: "Sara did not agree with the plan, but she chose to acquiesce to keep the peace."
+    },
+    { 
+        word: "Ambiguous", 
+        type: "Adj (Level: 7+)", 
+        meaning: "Open to more than one interpretation; not having one obvious meaning.",
+        ex1: "The ending of the movie was deliberately ambiguous.",
+        ex2: "Please avoid using ambiguous language in your official reports."
+    },
+    { 
+        word: "Exacerbate", 
+        type: "Verb (Level: 8+)", 
+        meaning: "To make a problem, bad situation, or negative feeling worse.",
+        ex1: "Loud music will only exacerbate your headache.",
+        ex2: "The lack of rainfall has exacerbated the water shortage in the city."
+    }
 ];
 
-// 1. DYNAMIC STATS & VOCAB LOADING
+let currentVocabIdx = 0;
+
+function updateVocabUI() {
+    const item = vocabList[currentVocabIdx];
+    const content = document.getElementById('vocab-content');
+    
+    // Add animation effect
+    content.classList.remove('animate__fadeIn');
+    void content.offsetWidth; // trigger reflow
+    content.classList.add('animate__animated', 'animate__fadeIn');
+    
+    document.getElementById('vocab-word').innerText = item.word;
+    document.getElementById('vocab-type').innerText = item.type;
+    document.getElementById('vocab-meaning').innerText = item.meaning;
+    document.getElementById('vocab-ex-1').innerText = item.ex1;
+    document.getElementById('vocab-ex-2').innerText = item.ex2;
+}
+
+function changeVocab(direction) {
+    currentVocabIdx += direction;
+    if (currentVocabIdx >= vocabList.length) currentVocabIdx = 0;
+    if (currentVocabIdx < 0) currentVocabIdx = vocabList.length - 1;
+    updateVocabUI();
+}
+
+// 1. DYNAMIC STATS LOADING
 async function loadStats() {
-    // Set random vocab first
-    const randomVocab = vocabList[Math.floor(Math.random() * vocabList.length)];
-    document.getElementById('vocab-word').innerText = randomVocab.word;
-    document.getElementById('vocab-type').innerText = `(${randomVocab.type})`;
-    document.getElementById('vocab-meaning').innerText = randomVocab.meaning;
+    updateVocabUI(); // Load first vocab
 
     try {
         const res = await fetch(`${BACKEND_URL}/api/dashboard_stats`, { credentials: 'include' });
@@ -204,8 +278,6 @@ async function loadStats() {
         
         if (data.success) {
             document.getElementById('username-display').innerText = data.username || 'harsh';
-            
-            // Header XP Display (Bolt)
             document.getElementById('header-xp-display').innerHTML = `<i class="fa-solid fa-bolt text-warning me-1"></i> ${data.total_xp || 0} XP`;
             
             // Progress Bar Logic
