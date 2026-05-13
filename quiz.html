@@ -4,17 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live Quiz | SmartQuizzer</title>
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-
     <style>
         :root { --primary-gold: #FFD700; --text-color: #2d3436; }
         body { background-color: #f8f9fa; font-family: 'Inter', sans-serif; }
         .glass-card { background: white; border-radius: 30px; border: 1px solid #eee; }
         .option-card { border: 2px solid #eee; background-color: #ffffff; transition: all 0.2s; cursor: pointer; color: #333; }
-        .btn-check:checked + .option-card { border-color: #D4A017 !important; background-color: #FFD700 !important; color: #000 !important; transform: translateY(-3px); box-shadow: 0 4px 12px rgba(212, 160, 23, 0.4) !important; }
+        .btn-check:checked + .option-card { border-color: #D4A017 !important; background-color: #FFD700 !important; color: #000 !important; transform: translateY(-3px); box-shadow: 0 4px 12px rgba(212,160,23,0.4) !important; }
         .sunshine-btn { background: var(--primary-gold); border: none; border-radius: 15px; font-weight: bold; color: black; box-shadow: 0 5px 0 #D4A017; transition: all 0.1s; }
         .sunshine-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #D4A017; }
         #ghost-bar { transition: width 1s linear; border-radius: 20px; }
@@ -59,8 +57,7 @@
         </div>
 
         <form id="quiz-form">
-            <div id="options-container" class="row g-3">
-                </div>
+            <div id="options-container" class="row g-3"></div>
 
             <div class="mt-5 p-4 rounded-4 text-center" style="background: #FFF9E6; border: 2px dashed #D4A017;">
                 <p class="small fw-bold text-muted mb-3">HOW CONFIDENT ARE YOU?</p>
@@ -82,37 +79,43 @@
 </div>
 
 <script>
-    // Configuration
+    const BACKEND_URL = "https://simrankaurrrrrr-smartquizzer-backend.hf.space";
+
+    // Clean old session data
     localStorage.removeItem('current_q_index');
     localStorage.removeItem('user_answers_pool');
+
     let questions = JSON.parse(localStorage.getItem('quiz_questions')) || [];
     let currentIndex = 0;
     let userAnswers = [];
-    const quizGoal = localStorage.getItem('quiz_goal') || 'quiz'; // 'quiz' or 'revision'
+    const quizGoal = localStorage.getItem('quiz_goal') || 'quiz';
 
     let timeLeft = 30;
     let timerInterval;
 
     function initQuiz() {
+        if (questions.length === 0) {
+            alert("No questions found! Please generate a quiz first.");
+            window.location.href = "dashboard.html";
+            return;
+        }
         if (currentIndex >= questions.length) {
             calculateAndRedirect();
             return;
         }
 
         const q = questions[currentIndex];
-        
-        // Update UI
+
         document.getElementById('mode-badge').innerText = quizGoal.toUpperCase() + " MODE";
         document.getElementById('mode-badge').className = `badge px-4 py-2 rounded-pill fs-6 shadow-sm ${quizGoal === 'quiz' ? 'bg-danger' : 'bg-warning text-dark'}`;
         document.getElementById('current-q-num').innerText = currentIndex + 1;
         document.getElementById('total-q-num').innerText = questions.length;
         document.getElementById('question-text').innerText = q.question;
-        
+
         const progress = ((currentIndex + 1) / questions.length) * 100;
         document.getElementById('main-progress-bar').style.width = progress + "%";
         document.getElementById('progress-percent').innerText = Math.round(progress) + "%";
 
-        // Render Options
         const container = document.getElementById('options-container');
         container.innerHTML = Object.entries(q.options).map(([key, val]) => `
             <div class="col-md-6">
@@ -123,30 +126,27 @@
             </div>
         `).join('');
 
-        // Mode specific logic
         if (quizGoal === 'quiz') {
             document.getElementById('ghost-container').classList.remove('d-none');
             document.getElementById('timer-box').classList.remove('d-none');
             startTimer();
         }
 
-        document.getElementById('action-btn').innerText = quizGoal === 'revision' ? "Check Answer" : "Lock In Answer 🔒";
+        document.getElementById('action-btn').innerText = quizGoal === 'revision' ? "Check Answer ✅" : "Lock In Answer 🔒";
+        document.getElementById('action-btn').style.background = "#FFD700";
+        document.getElementById('action-btn').onclick = () => handleSubmission(false);
     }
 
     function startTimer() {
         timeLeft = 30;
         document.getElementById('timer').innerText = timeLeft;
         document.getElementById('ghost-bar').style.width = "0%";
-        
         clearInterval(timerInterval);
         timerInterval = setInterval(() => {
             timeLeft--;
             document.getElementById('timer').innerText = timeLeft;
             document.getElementById('ghost-bar').style.width = ((30 - timeLeft) / 30 * 100) + "%";
-
-            if (timeLeft <= 0) {
-                handleSubmission(true); // Auto-submit on timeout
-            }
+            if (timeLeft <= 0) handleSubmission(true);
         }, 1000);
     }
 
@@ -155,12 +155,14 @@
         const selected = document.querySelector('input[name="answer"]:checked');
         const ansValue = isTimeout ? null : selected?.value;
 
-        if (!isTimeout && !selected) return alert("Please select an answer!");
+        if (!isTimeout && !selected) {
+            alert("Please select an answer!");
+            return;
+        }
 
         const q = questions[currentIndex];
         const isCorrect = ansValue === q.correct_answer;
 
-        // Save result
         userAnswers.push({
             question: q.question,
             user_ans: ansValue ? q.options[ansValue] : "Time Out",
@@ -182,7 +184,7 @@
         area.className = `alert ${isCorrect ? 'alert-success' : 'alert-danger'} mb-4 rounded-4 shadow-sm animate__animated animate__bounceIn`;
         document.getElementById('feedback-status').innerText = isCorrect ? "✨ Correct!" : "❌ Incorrect";
         document.getElementById('explanation-text').innerText = q.explanation;
-        
+
         const btn = document.getElementById('action-btn');
         btn.innerText = "Next Question →";
         btn.style.background = "#333";
@@ -191,25 +193,24 @@
 
     function nextQuestion() {
         currentIndex++;
-        localStorage.setItem('current_q_index', currentIndex);
-        localStorage.setItem('user_answers_pool', JSON.stringify(userAnswers));
-        
-        // Reset feedback UI
         document.getElementById('feedback-area').classList.add('d-none');
-        document.getElementById('action-btn').onclick = () => handleSubmission(false);
-        
         initQuiz();
     }
 
-    function calculateAndRedirect() {
+    // FIXED: async function + BACKEND_URL inside script
+    async function calculateAndRedirect() {
         const correctCount = userAnswers.filter(a => a.is_correct).length;
-        const finalData = {
-            topic: localStorage.getItem('quiz_topic'),
+        const topic = localStorage.getItem('quiz_topic') || 'General';
+        const xp = correctCount * 10;
+
+        localStorage.setItem('lastQuizResult', JSON.stringify({
+            topic: topic,
             score: correctCount,
             total: questions.length,
             user_answers: userAnswers
-        };
-        localStorage.setItem('lastQuizResult', JSON.stringify(finalData));
+        }));
+
+        // Save XP to backend
         try {
             await fetch(`${BACKEND_URL}/save-result`, {
                 method: 'POST',
@@ -218,17 +219,17 @@
                 body: JSON.stringify({
                     score: correctCount,
                     total: questions.length,
-                    topic: localStorage.getItem('quiz_topic') || 'General',
-                    xp: correctCount * 10
+                    topic: topic,
+                    xp: xp
                 })
             });
-    } catch(e) {
-             console.error('XP save failed:', e);
-    }
+        } catch(e) {
+            console.error('XP save failed:', e);
+        }
+
         window.location.href = "results.html";
     }
 
-    document.getElementById('action-btn').onclick = () => handleSubmission(false);
     initQuiz();
 </script>
 
