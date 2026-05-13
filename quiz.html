@@ -210,6 +210,21 @@
             user_answers: userAnswers
         };
         localStorage.setItem('lastQuizResult', JSON.stringify(finalData));
+        try {
+            await fetch(`${BACKEND_URL}/save-result`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({
+                    score: correctCount,
+                    total: questions.length,
+                    topic: localStorage.getItem('quiz_topic') || 'General',
+                    xp: correctCount * 10
+                })
+            });
+    } catch(e) {
+             console.error('XP save failed:', e);
+    }
         window.location.href = "results.html";
     }
 
