@@ -12,104 +12,50 @@
             --sun: #FFCC00; 
             --sun-light: #FFF4CC;
             --warm-bg: #FFFDF5; 
-            --sky-blue: #E3F2FD;
-            --ocean-blue: #0077b6;
             --text-dark: #2d3436;
             --gold-primary: #FFD700;
             --gold-dark: #b8860B;
         }
-        
         body { background-color: var(--warm-bg) !important; font-family: 'Inter', sans-serif; color: var(--text-dark); }
-        
         .sun-nav { background: white; border-bottom: 3px solid var(--sun-light); padding: 12px 0; }
         .nav-link-custom { font-weight: 700; color: #444 !important; margin: 0 12px; text-decoration: none; transition: 0.3s; font-size: 0.95rem; }
         .nav-link-custom:hover { color: var(--sun) !important; transform: translateY(-2px); }
         .nav-link-custom i { color: var(--sun); margin-right: 5px; }
-        
         .sunshine-card { background: #ffffff; border-radius: 30px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: 0.3s; }
         .sunshine-input { background: #ffffff !important; border: 2px solid var(--sun-light) !important; border-radius: 15px !important; }
-        .sunshine-input:focus { border-color: var(--sun) !important; box-shadow: 0 0 15px rgba(255, 204, 0, 0.2) !important; }
-        
+        .sunshine-input:focus { border-color: var(--sun) !important; box-shadow: 0 0 15px rgba(255,204,0,0.2) !important; }
         .sunshine-outline { border: 2px solid var(--sun) !important; color: #b89600 !important; background: transparent; }
         .btn-check:checked + .sunshine-outline { background: var(--sun) !important; color: white !important; }
-        
         .sunshine-main-btn { background: linear-gradient(45deg, #ffcc00, #ffb800) !important; color: white !important; border: none !important; border-radius: 20px !important; transition: 0.3s; font-size: 1.1rem; }
-        .sunshine-main-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255, 184, 0, 0.4) !important; }
-        
-        /* --- GOLDEN XP BAR STYLING --- */
+        .sunshine-main-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255,184,0,0.4) !important; }
+
+        /* XP CARD */
         .xp-card { border-top: 5px solid var(--gold-primary); background: #fff; }
-        
-        .xp-progress-container { 
-            background: #f1f2f6; 
-            border-radius: 50px; 
-            height: 18px; 
-            margin: 15px 0; 
-            overflow: hidden; 
-            position: relative;
-            border: 1px solid #eee;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
-        }
+        .xp-progress-container { background: #f1f2f6; border-radius: 50px; height: 18px; margin: 15px 0; overflow: hidden; position: relative; border: 1px solid #eee; }
+        .xp-progress-bar { background: linear-gradient(90deg, #FFD700 0%, #FFCC00 50%, #FFA500 100%); height: 100%; border-radius: 50px; width: 0%; transition: 1.5s cubic-bezier(0.4,0,0.2,1); position: relative; }
+        .xp-progress-bar::after { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%); animation: shine-bar 3s infinite; }
+        @keyframes shine-bar { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        .level-circle { width: 50px; height: 50px; background: linear-gradient(135deg, #FFD700, #FFA500); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2rem; box-shadow: 0 4px 15px rgba(255,165,0,0.4); border: 2px solid white; }
 
-        .xp-progress-bar { 
-            background: linear-gradient(90deg, #FFD700 0%, #FFCC00 50%, #FFA500 100%); 
-            height: 100%; 
-            border-radius: 50px;
-            width: 0%; 
-            transition: 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
-            position: relative;
-        }
+        /* BULB */
+        .bulb-wrap { position: relative; display: inline-block; cursor: pointer; }
+        .bulb-icon { font-size: 1.4rem; color: #FFD700; transition: transform 0.2s, filter 0.2s; }
+        .bulb-wrap:hover .bulb-icon, .bulb-wrap:focus .bulb-icon { transform: scale(1.2); filter: drop-shadow(0 0 6px #FFD700); outline: none; }
+        .fact-popup { display: none; position: absolute; bottom: 38px; right: 0; background: #fff; border: 1.5px solid #FFD700; border-radius: 16px; padding: 14px 16px; width: 230px; z-index: 99; font-size: 0.82rem; color: #444; line-height: 1.5; box-shadow: 0 8px 24px rgba(255,204,0,0.15); }
+        .fact-popup::after { content: ''; position: absolute; bottom: -8px; right: 16px; width: 12px; height: 12px; background: #fff; border-right: 1.5px solid #FFD700; border-bottom: 1.5px solid #FFD700; transform: rotate(45deg); }
+        .fact-label { font-weight: 700; font-size: 0.75rem; color: #b8860b; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+        .bulb-wrap:hover .fact-popup, .bulb-wrap:focus-within .fact-popup { display: block; }
 
-        .xp-progress-bar::after {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(
-                90deg, 
-                rgba(255,255,255,0) 0%, 
-                rgba(255,255,255,0.4) 50%, 
-                rgba(255,255,255,0) 100%
-            );
-            animation: shine-bar 3s infinite;
-        }
-
-        @keyframes shine-bar {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-
-        .level-circle {
-            width: 50px; height: 50px; 
-            background: linear-gradient(135deg, #FFD700, #FFA500); 
-            color: #fff;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: 1.2rem;
-            box-shadow: 0 4px 15px rgba(255, 165, 0, 0.4);
-            border: 2px solid white;
-        }
-
-        .power-word-card { 
-            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); 
-            color: #0369a1; 
-            min-height: 300px;
-            border: 1px solid #7dd3fc;
-        }
+        /* POWER WORDS */
+        .power-word-card { background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); color: #0369a1; min-height: 300px; border: 1px solid #7dd3fc; }
         .power-word-card .badge { background: #0ea5e9 !important; color: white; }
         .vocab-nav-btn { background: white; border: none; color: #0ea5e9; border-radius: 50%; width: 35px; height: 35px; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .vocab-nav-btn:hover { background: #0ea5e9; color: white; transform: scale(1.1); }
-        .example-box { background: rgba(255, 255, 255, 0.6); border-left: 4px solid #0ea5e9; padding: 10px 15px; border-radius: 12px; font-size: 0.88rem; margin-top: 12px; color: #0c4a6e; font-style: italic; }
-
+        .example-box { background: rgba(255,255,255,0.6); border-left: 4px solid #0ea5e9; padding: 10px 15px; border-radius: 12px; font-size: 0.88rem; margin-top: 12px; color: #0c4a6e; font-style: italic; }
+        .streak-badge { background: white; border: 2px solid #FFCC00; padding: 8px 20px; border-radius: 50px; }
         .icon-box { transition: 0.3s; }
         .sunshine-card:hover .icon-box { transform: rotate(15deg) scale(1.1); }
-
-        .streak-badge { background: white; border: 2px solid #FFCC00; padding: 8px 20px; border-radius: 50px; }
-        
-        /* New Smooth Range Styling */
-        input[type=range]::-webkit-slider-thumb {
-            background: var(--sun);
-            border: 3px solid white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
+        input[type=range]::-webkit-slider-thumb { background: var(--sun); border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
@@ -141,6 +87,7 @@
     </div>
 
     <div class="row g-4">
+        <!-- LEFT: Quiz Engine -->
         <div class="col-lg-8">
             <div class="sunshine-card p-4 p-md-5 animate__animated animate__fadeInLeft">
                 <div class="d-flex align-items-center mb-4">
@@ -209,16 +156,29 @@
             </div>
         </div>
 
+        <!-- RIGHT: XP Card + Power Words + Collection -->
         <div class="col-lg-4">
+
+            <!-- XP CARD with Bulb -->
             <div class="sunshine-card p-4 mb-4 xp-card animate__animated animate__fadeInRight">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div>
                         <h6 class="fw-bold text-muted mb-1 small">CURRENT RANK</h6>
                         <h3 class="fw-bold mb-0" id="total-xp-display" style="color: var(--gold-dark);">0 XP</h3>
                     </div>
-                    <div class="level-circle" id="level-badge">1</div>
+                    <!-- Level circle + Bulb side by side -->
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="bulb-wrap" tabindex="0">
+                            <i class="fa-solid fa-lightbulb bulb-icon"></i>
+                            <div class="fact-popup">
+                                <p class="fact-label">did you know?</p>
+                                <p id="fact-text" style="margin:0;">Loading...</p>
+                            </div>
+                        </div>
+                        <div class="level-circle" id="level-badge">1</div>
+                    </div>
                 </div>
-                
+
                 <div class="xp-progress-container">
                     <div class="xp-progress-bar" id="xp-bar"></div>
                 </div>
@@ -230,6 +190,7 @@
                 </div>
             </div>
 
+            <!-- POWER WORDS -->
             <div class="sunshine-card p-4 mb-4 power-word-card animate__animated animate__fadeInRight">
                 <div>
                     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -244,76 +205,65 @@
                             <button class="vocab-nav-btn" onclick="changeVocab(1)"><i class="fa-solid fa-chevron-right"></i></button>
                         </div>
                     </div>
-                    
                     <div id="vocab-content">
                         <h4 class="fw-bold mb-1" id="vocab-word" style="color: #0c4a6e;">Loading...</h4>
                         <span class="badge mb-3" id="vocab-type">---</span>
                         <p class="small mb-3" id="vocab-meaning" style="line-height: 1.5;">Loading meaning...</p>
-                        
-                        <div class="example-box">
-                            <span id="vocab-ex-1">Example 1 loading...</span>
-                        </div>
-                        <div class="example-box">
-                            <span id="vocab-ex-2">Example 2 loading...</span>
-                        </div>
+                        <div class="example-box"><span id="vocab-ex-1">Example 1 loading...</span></div>
+                        <div class="example-box"><span id="vocab-ex-2">Example 2 loading...</span></div>
                     </div>
                 </div>
                 <p class="extra-small text-center mt-3 opacity-75 mb-0 fw-bold">Daily boost for your vocabulary!</p>
             </div>
 
+            <!-- COLLECTION VAULT -->
             <div class="sunshine-card p-4 text-center animate__animated animate__fadeInRight" style="border: 2px dashed #dcdde1; background: #f8fafc; border-radius: 30px;">
                 <div class="d-flex justify-content-around mb-3 opacity-50">
-                    <i class="fa-solid fa-id-card-personal fs-4"></i>
+                    <i class="fa-solid fa-id-card-clip fs-4"></i>
                     <i class="fa-solid fa-clone fs-2 text-warning opacity-100"></i>
-                    <i class="fa-solid fa-id-card-personal fs-4"></i>
+                    <i class="fa-solid fa-id-card-clip fs-4"></i>
                 </div>
                 <h6 class="fw-bold">Card Collection</h6>
                 <p class="extra-small text-muted">View your earned achievement cards</p>
                 <a href="collections.html" class="btn btn-dark btn-sm rounded-pill w-100 fw-bold py-2 mt-2">Open Vault</a>
             </div>
+
         </div>
     </div>
 </div>
+
 <script>
 const BACKEND_URL = "https://simrankaurrrrrr-smartquizzer-backend.hf.space";
 
-// --- VOCABULARY LOGIC ---
-let vocabList = []; // Khali rakha hai taaki backend se fill ho ske
+// ==========================================
+// VOCABULARY
+// ==========================================
+let vocabList = [];
 let currentVocabIdx = 0;
 
-// Naya function backend se vocabulary fetch karne ke liye
 async function fetchVocabulary() {
     try {
         const res = await fetch(`${BACKEND_URL}/get-vocab`, { credentials: 'include' });
         const data = await res.json();
-        
         if (data.success && data.vocab && data.vocab.length > 0) {
-            vocabList = data.vocab; // Backend list se update
-            updateVocabUI(); // Pehla word show karein
+            vocabList = data.vocab;
+            updateVocabUI();
         } else {
-            console.warn("Vocab list empty or fetch failed.");
-            // Fallback text agar backend se kuch na aaye
             document.getElementById('vocab-word').innerText = "Stay Tuned!";
             document.getElementById('vocab-meaning').innerText = "Fresh words coming soon.";
         }
     } catch (e) {
-        console.error("Error fetching vocab:", e);
+        console.error("Vocab fetch error:", e);
     }
 }
 
 function updateVocabUI() {
     if (vocabList.length === 0) return;
-
     const item = vocabList[currentVocabIdx];
     const content = document.getElementById('vocab-content');
-    if (!content) return;
-    
-    // Animation trigger
     content.classList.remove('animate__fadeIn');
-    void content.offsetWidth; 
+    void content.offsetWidth;
     content.classList.add('animate__animated', 'animate__fadeIn');
-    
-    // UI Update
     document.getElementById('vocab-word').innerText = item.word || "N/A";
     document.getElementById('vocab-type').innerText = item.type || "Word";
     document.getElementById('vocab-meaning').innerText = item.meaning || "No definition available.";
@@ -329,19 +279,36 @@ function changeVocab(direction) {
     updateVocabUI();
 }
 
-// --- DASHBOARD STATS & XP ---
+// ==========================================
+// FUN FACT (Bulb)
+// ==========================================
+async function fetchFunFact() {
+    try {
+        const res = await fetch(`${BACKEND_URL}/get-fun-fact`, { credentials: 'include' });
+        const data = await res.json();
+        if (data.fact) {
+            document.getElementById('fact-text').innerText = data.fact;
+        }
+    } catch (e) {
+        document.getElementById('fact-text').innerText = "AI can now detect diseases from a single blood drop!";
+    }
+}
+
+// ==========================================
+// DASHBOARD STATS & XP
+// ==========================================
 async function loadStats() {
-    // Stats aur Vocab dono ek sath call honge
-    fetchVocabulary(); 
-    
+    fetchVocabulary();
+    fetchFunFact();
+
     try {
         const res = await fetch(`${BACKEND_URL}/api/dashboard_stats`, { credentials: 'include' });
         const data = await res.json();
-        
+
         if (data.success) {
             document.getElementById('username-display').innerText = data.username || 'User';
             document.getElementById('header-xp-display').innerHTML = `<i class="fa-solid fa-bolt text-warning me-1"></i> ${data.total_xp || 0} XP`;
-            
+
             const totalXp = data.total_xp || 0;
             const level = Math.floor(totalXp / 500) + 1;
             const xpInCurrentLevel = totalXp % 500;
@@ -350,26 +317,33 @@ async function loadStats() {
 
             document.getElementById('total-xp-display').innerText = `${totalXp} XP`;
             document.getElementById('level-badge').innerText = level;
-            document.getElementById('xp-bar').style.width = `${progressPercent}%`;
+
+            // Animate bar after small delay so transition is visible
+            setTimeout(() => {
+                document.getElementById('xp-bar').style.width = `${progressPercent}%`;
+            }, 300);
+
             document.getElementById('xp-to-next').innerText = `${xpLeft} XP to Level ${level + 1}`;
         }
-    } catch(e) { 
-        console.error('Stats load failed:', e); 
+    } catch(e) {
+        console.error('Stats load failed:', e);
     }
 }
 
-// --- INPUT AREA TOGGLE ---
+// ==========================================
+// INPUT AREA TOGGLE
+// ==========================================
 document.getElementById('source-select').onchange = function() {
     const area = document.getElementById('input-area');
     const val = this.value;
     area.className = "mt-4 animate__animated animate__fadeInUp";
-    
+
     if (val === 'topic') {
         area.innerHTML = `<input type="text" name="topic_name" id="topicInput" class="form-control sunshine-input p-4 rounded-pill" placeholder="Enter topic..." required>`;
     } else if (val === 'pdf') {
-        area.innerHTML = `<div class="p-4 text-center rounded-4 border-2 shadow-sm" style="background: #fffef0; border: 2px dashed #ffe082;"><i class="fa-solid fa-file-pdf fa-2x text-warning mb-2"></i><p class="text-muted small fw-bold">Select PDF Document</p><input type="file" name="pdf_file" class="form-control" accept=".pdf" required></div>`;
+        area.innerHTML = `<div class="p-4 text-center rounded-4 border-2 shadow-sm" style="background:#fffef0;border:2px dashed #ffe082;"><i class="fa-solid fa-file-pdf fa-2x text-warning mb-2"></i><p class="text-muted small fw-bold">Select PDF Document</p><input type="file" name="pdf_file" class="form-control" accept=".pdf" required></div>`;
     } else if (val === 'image') {
-        area.innerHTML = `<div class="p-4 text-center rounded-4 border-2 shadow-sm" style="background: #fffef0; border: 2px dashed #ffcc00;"><i class="fa-solid fa-image fa-2x text-warning mb-2"></i><p class="text-muted small fw-bold">Select Study Image</p><input type="file" name="image_file" class="form-control" accept="image/*" required></div>`;
+        area.innerHTML = `<div class="p-4 text-center rounded-4 border-2 shadow-sm" style="background:#fffef0;border:2px dashed #ffcc00;"><i class="fa-solid fa-image fa-2x text-warning mb-2"></i><p class="text-muted small fw-bold">Select Study Image</p><input type="file" name="image_file" class="form-control" accept="image/*" required></div>`;
     } else if (val === 'text') {
         area.innerHTML = `<textarea name="raw_text" class="form-control sunshine-input p-4" rows="5" placeholder="Paste your notes here..." required></textarea>`;
     } else if (val === 'mistake') {
@@ -377,42 +351,45 @@ document.getElementById('source-select').onchange = function() {
     }
 };
 
-// --- QUIZ GENERATION & REDIRECT ---
+// ==========================================
+// QUIZ GENERATION
+// ==========================================
 document.getElementById('quiz-form').onsubmit = async function(e) {
     e.preventDefault();
     const btn = document.getElementById('submitBtn');
     const formData = new FormData(this);
-    
+
     btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Summoning Quiz...`;
     btn.disabled = true;
 
     try {
-        const response = await fetch(`${BACKEND_URL}/handle_generation`, { 
-            method: "POST", 
-            body: formData, 
-            credentials: 'include' 
+        const response = await fetch(`${BACKEND_URL}/handle_generation`, {
+            method: "POST",
+            body: formData,
+            credentials: 'include'
         });
-        
         const res = await response.json();
-        
+
         if (res.success) {
             if (res.questions) localStorage.setItem('quiz_questions', JSON.stringify(res.questions));
             if (res.topic) localStorage.setItem('quiz_topic', res.topic);
-            localStorage.setItem('quiz_goal', formData.get('quiz_goal')); // ← naya line
-
+            localStorage.setItem('quiz_goal', formData.get('quiz_goal'));
             window.location.href = "quiz.html";
-            
+        } else {
+            alert(res.message || "Failed to generate quiz.");
         }
-    } catch (err) { 
+    } catch (err) {
         console.error("Fetch error:", err);
-        alert("Backend Unreachable. Please try again later."); 
-    } finally { 
-        btn.innerHTML = "Generate Questions Now 🪄"; 
-        btn.disabled = false; 
+        alert("Backend Unreachable. Please try again later.");
+    } finally {
+        btn.innerHTML = "Generate Questions Now 🪄";
+        btn.disabled = false;
     }
 };
 
-// --- UI EVENT LISTENERS ---
+// ==========================================
+// RANGE SLIDER
+// ==========================================
 document.getElementById('countRange').addEventListener('input', function(e) {
     const output = document.getElementById('countOutput');
     output.innerText = e.target.value;
@@ -421,7 +398,7 @@ document.getElementById('countRange').addEventListener('input', function(e) {
     output.classList.add('animate__bounceIn');
 });
 
-// Run load on page start
+// INIT
 loadStats();
 </script>
 
