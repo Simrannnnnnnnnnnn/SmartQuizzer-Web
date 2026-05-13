@@ -284,7 +284,7 @@ let currentVocabIdx = 0;
 // Naya function backend se vocabulary fetch karne ke liye
 async function fetchVocabulary() {
     try {
-        const res = await fetch(`${BACKEND_URL}/api/vocab`, { credentials: 'include' });
+        const res = await fetch(`${BACKEND_URL}/get-vocab`, { credentials: 'include' });
         const data = await res.json();
         
         if (data.success && data.vocab && data.vocab.length > 0) {
