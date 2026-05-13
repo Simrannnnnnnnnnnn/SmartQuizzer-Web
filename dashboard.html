@@ -398,14 +398,10 @@ document.getElementById('quiz-form').onsubmit = async function(e) {
         if (res.success) {
             if (res.questions) localStorage.setItem('quiz_questions', JSON.stringify(res.questions));
             if (res.topic) localStorage.setItem('quiz_topic', res.topic);
+            localStorage.setItem('quiz_goal', formData.get('quiz_goal')); // ← naya line
 
-            if (res.redirect_url) {
-                window.location.href = res.redirect_url;
-            } else {
-                window.location.href = "quiz.html";
-            }
-        } else { 
-            alert(res.message || "Failed to generate quiz."); 
+            window.location.href = "quiz.html";
+            
         }
     } catch (err) { 
         console.error("Fetch error:", err);
