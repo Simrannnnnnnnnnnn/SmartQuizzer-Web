@@ -31,7 +31,6 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 html { scroll-behavior:smooth; }
 
-/* ─── BODY ─── */
 body {
   font-family: 'Outfit', sans-serif;
   background: var(--charcoal);
@@ -41,7 +40,6 @@ body {
   position: relative;
 }
 
-/* deep texture bg */
 body::before {
   content: '';
   position: fixed; inset: 0; z-index: 0;
@@ -52,7 +50,6 @@ body::before {
   pointer-events: none;
 }
 
-/* subtle grid noise */
 body::after {
   content: '';
   position: fixed; inset: 0; z-index: 0;
@@ -77,7 +74,7 @@ body::after {
   text-decoration: none;
   font-family: 'Cinzel', serif;
   font-weight: 900;
-  font-size: 1.7rem;
+  font-size: clamp(1.1rem, 4vw, 1.7rem);
   background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--gold-deep));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -86,59 +83,129 @@ body::after {
 }
 
 .nav-link-custom {
-  margin-left: 28px;
+  margin-left: 20px;
   text-decoration: none;
   color: var(--muted);
   font-weight: 600;
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   letter-spacing: 0.5px;
   transition: color 0.25s;
 }
 .nav-link-custom:hover { color: var(--gold-light); }
 .nav-link-custom i { margin-right: 6px; color: var(--gold); opacity: 0.8; }
 
+/* mobile hamburger menu */
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--gold);
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.mobile-menu-btn:hover { background: rgba(212,168,67,0.1); }
+
+.mobile-nav-drawer {
+  display: none;
+  position: fixed;
+  top: 0; right: 0;
+  width: min(280px, 80vw);
+  height: 100vh;
+  background: rgba(14,14,18,0.98);
+  border-left: 1px solid var(--border);
+  z-index: 9999;
+  padding: 24px;
+  flex-direction: column;
+  gap: 8px;
+  backdrop-filter: blur(20px);
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+.mobile-nav-drawer.open { transform: translateX(0); display: flex; }
+
+.drawer-close {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 1.4rem;
+  cursor: pointer;
+  align-self: flex-end;
+  margin-bottom: 16px;
+  padding: 4px;
+}
+
+.drawer-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+.drawer-link:hover { background: rgba(212,168,67,0.08); border-color: var(--border); color: var(--gold-light); }
+.drawer-link i { color: var(--gold); width: 20px; text-align: center; }
+
+.nav-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 9998;
+  backdrop-filter: blur(2px);
+}
+.nav-overlay.open { display: block; }
+
 /* ─── HERO ─── */
 .vault-hero {
   text-align: center;
-  padding: 72px 20px 28px;
+  padding: clamp(40px, 8vw, 72px) 20px 24px;
   position: relative; z-index: 1;
 }
 
 .vault-hero h1 {
   font-family: 'Cinzel Decorative', serif;
-  font-size: 3.8rem;
+  font-size: clamp(1.8rem, 7vw, 3.8rem);
   font-weight: 900;
   background: linear-gradient(135deg, #fff5d6, var(--gold-light), var(--gold), #9a6a10);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  letter-spacing: 3px;
-  line-height: 1.15;
+  letter-spacing: clamp(1px, 0.5vw, 3px);
+  line-height: 1.2;
   filter: drop-shadow(0 0 30px rgba(212,168,67,0.25));
 }
 
 .hero-sub {
   color: var(--muted);
-  margin-top: 14px;
+  margin-top: 12px;
   font-style: italic;
-  font-size: 1rem;
+  font-size: clamp(0.85rem, 2.5vw, 1rem);
   letter-spacing: 0.3px;
+  padding: 0 16px;
 }
 
-/* ─── GOLD DIVIDER ─── */
 .gold-divider {
-  width: 120px;
+  width: 100px;
   height: 2px;
   background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  margin: 20px auto 0;
+  margin: 18px auto 0;
   border-radius: 2px;
 }
 
 /* ─── XP BAR ─── */
 .xp-vault-bar {
   max-width: 760px;
-  margin: 40px auto 0;
-  padding: 26px 32px;
+  margin: 32px auto 0;
+  padding: clamp(16px, 4vw, 26px) clamp(16px, 4vw, 32px);
   background: var(--surface);
   border-radius: 20px;
   border: 1px solid var(--border);
@@ -176,17 +243,19 @@ body::after {
 .vault-stats {
   display: flex;
   justify-content: center;
-  gap: 16px;
+  gap: 12px;
   flex-wrap: wrap;
-  margin: 32px 0;
+  margin: 28px 16px;
   position: relative; z-index: 1;
 }
 
 .stat-pill {
   background: var(--surface);
-  padding: 20px 26px;
+  padding: clamp(14px, 3vw, 20px) clamp(18px, 4vw, 26px);
   border-radius: 18px;
-  min-width: 140px;
+  min-width: clamp(100px, 25vw, 140px);
+  flex: 1;
+  max-width: 160px;
   text-align: center;
   border: 1px solid var(--border);
   box-shadow: 0 8px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(212,168,67,0.06);
@@ -195,7 +264,7 @@ body::after {
 .stat-pill:hover { transform: translateY(-3px); box-shadow: 0 14px 32px rgba(0,0,0,0.5), 0 0 20px rgba(212,168,67,0.1); }
 
 .stat-pill .num {
-  font-size: 1.8rem;
+  font-size: clamp(1.4rem, 4vw, 1.8rem);
   font-weight: 800;
   background: linear-gradient(135deg, var(--gold-light), var(--gold));
   -webkit-background-clip: text;
@@ -204,7 +273,7 @@ body::after {
 }
 
 .stat-pill .lbl {
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 1.5px;
@@ -215,24 +284,26 @@ body::after {
 .filter-tabs {
   display: flex;
   justify-content: center;
-  gap: 12px;
+  gap: 10px;
   flex-wrap: wrap;
-  margin-bottom: 40px;
+  margin-bottom: 32px;
+  padding: 0 16px;
   position: relative; z-index: 1;
 }
 
 .filter-btn {
   border: 1px solid rgba(212,168,67,0.3);
-  padding: 10px 26px;
+  padding: 10px clamp(16px, 4vw, 26px);
   border-radius: 50px;
   background: transparent;
   color: var(--gold);
   font-weight: 700;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   letter-spacing: 1px;
   text-transform: uppercase;
   transition: all 0.25s;
   cursor: pointer;
+  white-space: nowrap;
 }
 .filter-btn:hover { background: rgba(212,168,67,0.08); border-color: var(--gold); }
 .filter-btn.active {
@@ -246,16 +317,16 @@ body::after {
 .cards-grid {
   max-width: 1440px;
   margin: auto;
-  padding: 10px 28px 80px;
+  padding: 10px clamp(12px, 4vw, 28px) 80px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 28px;
+  grid-template-columns: repeat(auto-fill, minmax(min(230px, 44vw), 1fr));
+  gap: clamp(12px, 3vw, 28px);
   position: relative; z-index: 1;
 }
 
 /* ─── CARD ─── */
 .card-wrapper {
-  height: 360px;
+  height: clamp(220px, 50vw, 360px);
   border-radius: 20px;
   overflow: hidden;
   position: relative;
@@ -263,32 +334,29 @@ body::after {
   background: var(--charcoal3);
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
   transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.4s;
+  animation: cardEntrance 0.5s ease both;
+}
+
+@media (hover: hover) {
+  .card-wrapper.unlocked:hover {
+    transform: translateY(-12px) scale(1.03);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(212,168,67,0.25);
+  }
+  .card-wrapper.unlocked:hover .card-img { transform: scale(1.04); }
+  .card-wrapper.unlocked:hover::after { opacity: 1; }
 }
 
 .card-wrapper.unlocked { cursor: pointer; }
 
-.card-wrapper.unlocked:hover {
-  transform: translateY(-12px) scale(1.03);
-  box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(212,168,67,0.25);
-}
-
-/* holographic sheen on hover */
 .card-wrapper.unlocked::after {
   content: '';
   position: absolute; inset: 0;
-  background: linear-gradient(
-    105deg,
-    transparent 30%,
-    rgba(212,168,67,0.08) 50%,
-    rgba(255,255,255,0.04) 55%,
-    transparent 70%
-  );
+  background: linear-gradient(105deg, transparent 30%, rgba(212,168,67,0.08) 50%, rgba(255,255,255,0.04) 55%, transparent 70%);
   opacity: 0;
   transition: opacity 0.4s;
   pointer-events: none;
   border-radius: 20px;
 }
-.card-wrapper.unlocked:hover::after { opacity: 1; }
 
 .card-img {
   width: 100%; height: 100%;
@@ -296,32 +364,29 @@ body::after {
   display: block;
   transition: transform 0.4s;
 }
-.card-wrapper.unlocked:hover .card-img { transform: scale(1.04); }
 
-/* rarity tag */
 .rarity-tag {
   position: absolute;
-  top: 12px; right: 12px;
-  padding: 5px 14px;
+  top: 10px; right: 10px;
+  padding: 4px 12px;
   border-radius: 50px;
   color: #0e0e12;
-  font-size: 0.62rem;
+  font-size: 0.58rem;
   font-weight: 800;
   letter-spacing: 1px;
   text-transform: uppercase;
   box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 }
 
-/* tap badge */
 .flip-hint-badge {
   position: absolute;
-  bottom: 14px; left: 50%;
+  bottom: 12px; left: 50%;
   transform: translateX(-50%);
   background: rgba(14,14,18,0.75);
   color: var(--gold-light);
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-weight: 700;
-  padding: 6px 18px;
+  padding: 5px 14px;
   border-radius: 50px;
   white-space: nowrap;
   backdrop-filter: blur(8px);
@@ -330,7 +395,6 @@ body::after {
   pointer-events: none;
 }
 
-/* locked */
 .card-wrapper.card-locked .card-img {
   filter: blur(3px) grayscale(1) brightness(0.45);
 }
@@ -343,21 +407,21 @@ body::after {
   color: white; text-align: center;
 }
 .lock-overlay i {
-  font-size: 2.8rem;
-  margin-bottom: 12px;
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  margin-bottom: 10px;
   color: var(--gold);
   opacity: 0.7;
 }
 .lock-overlay .xp-need {
   font-weight: 800;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   letter-spacing: 1.5px;
   color: var(--muted);
   text-transform: uppercase;
 }
 
 /* ════════════════════════════════════════════
-   SHOWCASE CHAMBER MODAL
+   MODAL
 ════════════════════════════════════════════ */
 .card-modal-overlay {
   display: none;
@@ -365,11 +429,11 @@ body::after {
   z-index: 6000;
   overflow-y: auto;
   overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 .card-modal-overlay.active { display: block; }
 
-/* cinematic blurred backdrop */
 .modal-backdrop-blur {
   position: fixed; inset: 0;
   background:
@@ -379,7 +443,6 @@ body::after {
   z-index: 0;
 }
 
-/* animated chamber particles */
 .chamber-particles {
   position: fixed; inset: 0; z-index: 1; pointer-events: none;
   overflow: hidden;
@@ -401,10 +464,9 @@ body::after {
   100% { opacity: 0; transform: translateY(-100vh) scale(1.5); }
 }
 
-/* close btn */
 .modal-close-btn {
   position: fixed;
-  top: 20px; right: 24px;
+  top: 16px; right: 16px;
   background: rgba(30,30,42,0.9);
   border: 1px solid var(--border);
   color: var(--muted);
@@ -423,14 +485,13 @@ body::after {
   border-color: var(--gold);
 }
 
-/* modal scroll wrapper */
 .modal-scroll-wrap {
   position: relative; z-index: 2;
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: 50px 24px 60px;
+  padding: clamp(50px, 8vw, 70px) clamp(12px, 4vw, 24px) 60px;
 }
 
 .modal-body {
@@ -442,7 +503,7 @@ body::after {
   align-items: start;
 }
 
-/* ─── LEFT: CARD STAGE ─── */
+/* ─── LEFT ─── */
 .modal-left {
   position: sticky;
   top: 50px;
@@ -452,7 +513,6 @@ body::after {
   gap: 20px;
 }
 
-/* chamber glow platform */
 .card-stage {
   position: relative;
   display: flex;
@@ -460,7 +520,6 @@ body::after {
   align-items: center;
 }
 
-/* spotlight beam from above */
 .spotlight {
   position: absolute;
   top: -60px; left: 50%;
@@ -477,7 +536,6 @@ body::after {
   50%      { opacity: 1;   transform: translateX(-50%) scaleX(1.15); }
 }
 
-/* ground reflection */
 .card-reflection {
   width: 85%;
   height: 30px;
@@ -527,18 +585,10 @@ body::after {
   display: block;
 }
 
-/* holographic shimmer overlay on modal card */
 .modal-card-face::after {
   content: '';
   position: absolute; inset: 0;
-  background: linear-gradient(
-    125deg,
-    transparent 20%,
-    rgba(255,215,100,0.06) 38%,
-    rgba(255,255,255,0.08) 44%,
-    rgba(120,200,255,0.05) 50%,
-    transparent 60%
-  );
+  background: linear-gradient(125deg, transparent 20%, rgba(255,215,100,0.06) 38%, rgba(255,255,255,0.08) 44%, rgba(120,200,255,0.05) 50%, transparent 60%);
   background-size: 200% 200%;
   animation: holoShimmer 4s ease-in-out infinite;
   border-radius: 22px;
@@ -551,7 +601,6 @@ body::after {
   100% { background-position: 0% 50%; opacity: 0.4; }
 }
 
-/* gold foil border pulse */
 .modal-card-face::before {
   content: '';
   position: absolute; inset: 0;
@@ -569,7 +618,6 @@ body::after {
 
 .modal-card-back-face { transform: rotateY(180deg); }
 
-/* flip hint */
 .modal-hint {
   color: var(--muted);
   font-size: 0.75rem;
@@ -587,15 +635,14 @@ body::after {
 .modal-right {
   display: flex;
   flex-direction: column;
-  gap: 26px;
+  gap: 24px;
   min-width: 0;
   padding-top: 10px;
 }
 
-/* scientist header */
 .scientist-name {
   font-family: 'Cinzel', serif;
-  font-size: 3.2rem;
+  font-size: clamp(1.8rem, 5vw, 3.2rem);
   font-weight: 900;
   background: linear-gradient(135deg, #fff8e0, var(--gold-light), var(--gold));
   -webkit-background-clip: text;
@@ -608,8 +655,8 @@ body::after {
 
 .scientist-title {
   color: var(--muted);
-  font-size: 1.05rem;
-  margin-bottom: 18px;
+  font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+  margin-bottom: 16px;
   font-style: italic;
 }
 
@@ -624,23 +671,19 @@ body::after {
   color: #0e0e12;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.4);
 }
-.rarity-pill::before {
-  content: '✦';
-  font-size: 0.7rem;
-}
+.rarity-pill::before { content: '✦'; font-size: 0.7rem; }
 
-/* quote block */
 .quote-block {
   background: linear-gradient(135deg, rgba(212,168,67,0.07), rgba(212,168,67,0.02));
   border-left: 3px solid var(--gold);
-  padding: 18px 22px;
+  padding: 16px 20px;
   border-radius: 0 14px 14px 0;
   font-style: italic;
   color: var(--text);
-  font-size: 1rem;
+  font-size: clamp(0.88rem, 2.5vw, 1rem);
   line-height: 1.7;
   position: relative;
 }
@@ -655,17 +698,16 @@ body::after {
   line-height: 1;
 }
 
-/* detail grid */
 .top-detail-grid {
   display: grid;
-  grid-template-columns: repeat(3,1fr);
-  gap: 16px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
 }
 
 .detail-card {
   background: var(--surface);
   border-radius: 16px;
-  padding: 20px;
+  padding: clamp(14px, 3vw, 20px);
   border: 1px solid var(--border);
   box-shadow: 0 6px 20px rgba(0,0,0,0.35);
   transition: border-color 0.25s;
@@ -674,73 +716,71 @@ body::after {
 
 .detail-card .label {
   color: var(--gold);
-  font-size: 0.66rem;
+  font-size: 0.65rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 .detail-card .value {
-  font-size: 1rem;
+  font-size: clamp(0.85rem, 2.5vw, 1rem);
   font-weight: 700;
   color: var(--text);
 }
 
-/* extra sections */
 .extra-sections {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 16px;
 }
 
 .info-panel {
   background: var(--surface);
   border-radius: 20px;
-  padding: 26px;
+  padding: clamp(16px, 4vw, 26px);
   border: 1px solid var(--border);
   box-shadow: 0 8px 28px rgba(0,0,0,0.35);
 }
 
 .info-panel h3 {
   color: var(--gold);
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 800;
   letter-spacing: 2px;
   text-transform: uppercase;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--border);
 }
 
 .info-panel ul { padding-left: 18px; margin: 0; }
 .info-panel ul li {
-  margin-bottom: 10px;
+  margin-bottom: 9px;
   color: rgba(240,232,208,0.82);
-  line-height: 1.7;
-  font-size: 0.9rem;
+  line-height: 1.6;
+  font-size: clamp(0.82rem, 2.5vw, 0.9rem);
 }
 .info-panel p {
   color: rgba(240,232,208,0.82);
-  line-height: 1.9;
-  font-size: 0.9rem;
+  line-height: 1.85;
+  font-size: clamp(0.82rem, 2.5vw, 0.9rem);
 }
 
-/* timeline */
 .timeline-box {
   background: var(--surface);
   border-radius: 20px;
-  padding: 28px;
+  padding: clamp(18px, 4vw, 28px);
   border: 1px solid var(--border);
   box-shadow: 0 8px 28px rgba(0,0,0,0.35);
 }
 
 .timeline-box h3 {
   color: var(--gold);
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 800;
   letter-spacing: 2px;
   text-transform: uppercase;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--border);
 }
@@ -748,9 +788,9 @@ body::after {
 .timeline-item {
   position: relative;
   padding-left: 26px;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
   color: rgba(240,232,208,0.85);
-  font-size: 0.9rem;
+  font-size: clamp(0.82rem, 2.5vw, 0.9rem);
   line-height: 1.65;
 }
 .timeline-item::before {
@@ -770,19 +810,18 @@ body::after {
 }
 .timeline-item:last-child::after { display: none; }
 
-/* fun fact */
 .fun-fact {
   background: linear-gradient(135deg, rgba(212,168,67,0.1), rgba(212,168,67,0.03));
   border-left: 3px solid var(--gold);
   border-radius: 0 18px 18px 0;
-  padding: 22px 26px;
+  padding: clamp(16px, 4vw, 22px) clamp(18px, 4vw, 26px);
   color: #fff8e0;
-  font-size: 0.92rem;
+  font-size: clamp(0.85rem, 2.5vw, 0.92rem);
   line-height: 1.85;
   box-shadow: 0 8px 24px rgba(0,0,0,0.3);
 }
 
-/* ─── UNLOCK TOAST ─── */
+/* ─── TOAST ─── */
 .unlock-toast {
   position: fixed;
   bottom: 30px; left: 50%;
@@ -801,41 +840,86 @@ body::after {
 }
 .unlock-toast.show { transform: translateX(-50%) translateY(0); }
 
-/* ─── RESPONSIVE ─── */
-@media(max-width:1100px) {
-  .modal-body { grid-template-columns: 1fr; gap: 36px; }
-  .modal-left { position: relative; top: auto; }
-  .modal-card-scene { width: 300px; height: 460px; }
-  .scientist-name { font-size: 2.4rem; }
-  .top-detail-grid { grid-template-columns: 1fr 1fr; }
-}
-
-@media(max-width:768px) {
-  .vault-hero h1 { font-size: 2.5rem; }
-  .cards-grid { grid-template-columns: repeat(2,1fr); gap: 16px; }
-  .card-wrapper { height: 290px; }
-  .extra-sections { grid-template-columns: 1fr; }
-  .top-detail-grid { grid-template-columns: 1fr; }
-  .scientist-name { font-size: 2rem; }
-}
-
-@media(max-width:520px) {
-  .vault-hero h1 { font-size: 2rem; letter-spacing: 1px; }
-  .brand { font-size: 1.4rem; }
-  .card-wrapper { height: 250px; }
-  .modal-card-scene { width: 260px; height: 400px; }
-  .modal-scroll-wrap { padding: 40px 16px 50px; }
-}
-
-/* ─── ENTRANCE ANIMATION ─── */
-.card-wrapper {
-  animation: cardEntrance 0.5s ease both;
-}
+/* ─── CARD ANIMATION ─── */
 @keyframes cardEntrance {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
+/* ══════════════════════════════════════
+   RESPONSIVE BREAKPOINTS
+══════════════════════════════════════ */
+
+/* Tablet */
+@media (max-width: 1100px) {
+  .modal-body {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .modal-left {
+    position: relative;
+    top: auto;
+  }
+  .modal-card-scene { width: 300px; height: 460px; }
+  .top-detail-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* Phablet & below */
+@media (max-width: 768px) {
+  .mobile-menu-btn { display: flex; }
+  .desktop-nav { display: none !important; }
+
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 10px 12px 80px;
+  }
+  .card-wrapper { height: 240px; }
+
+  .extra-sections { grid-template-columns: 1fr; }
+  .top-detail-grid { grid-template-columns: 1fr 1fr; }
+  .modal-scroll-wrap { padding: 56px 12px 48px; }
+  .modal-card-scene { width: 260px; height: 400px; }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .vault-hero { padding: 40px 16px 20px; }
+
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 8px 10px 70px;
+  }
+  .card-wrapper { height: 200px; border-radius: 14px; }
+  .rarity-tag { font-size: 0.5rem; padding: 3px 9px; top: 7px; right: 7px; }
+  .flip-hint-badge { font-size: 0.58rem; padding: 4px 10px; bottom: 8px; }
+
+  .vault-stats { gap: 8px; margin: 20px 12px; }
+  .stat-pill { min-width: 0; padding: 12px 14px; border-radius: 14px; }
+
+  .filter-tabs { gap: 8px; margin-bottom: 24px; }
+  .filter-btn { padding: 8px 16px; font-size: 0.72rem; }
+
+  .top-detail-grid { grid-template-columns: 1fr; gap: 10px; }
+  .modal-card-scene { width: 220px; height: 340px; }
+  .modal-scroll-wrap { padding: 52px 10px 40px; }
+  .scientist-name { font-size: 1.7rem; }
+}
+
+/* Very small phones */
+@media (max-width: 360px) {
+  .cards-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .card-wrapper { height: 170px; }
+}
+
+/* Touch: active state for cards */
+@media (hover: none) {
+  .card-wrapper.unlocked:active {
+    transform: scale(0.97);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  }
+}
 </style>
 </head>
 <body>
@@ -844,7 +928,9 @@ body::after {
 <nav class="vault-nav">
   <div class="container d-flex justify-content-between align-items-center">
     <a href="dashboard.html" class="brand">SmartQuizzer ☀️</a>
-    <div class="d-none d-md-flex align-items-center">
+
+    <!-- Desktop nav -->
+    <div class="desktop-nav d-none d-md-flex align-items-center">
       <a href="dashboard.html" class="nav-link-custom"><i class="fa-solid fa-house"></i>Home</a>
       <a href="#" class="nav-link-custom"><i class="fa-solid fa-book-open"></i>Study Hub</a>
       <a href="#" class="nav-link-custom"><i class="fa-solid fa-fire"></i>Mistakes</a>
@@ -852,8 +938,27 @@ body::after {
         <i class="fa-solid fa-power-off" style="color:#e05555;"></i>Logout
       </a>
     </div>
+
+    <!-- Mobile hamburger -->
+    <button class="mobile-menu-btn" id="menuToggle" aria-label="Open menu">
+      <i class="fa-solid fa-bars"></i>
+    </button>
   </div>
 </nav>
+
+<!-- Mobile drawer -->
+<div class="nav-overlay" id="navOverlay"></div>
+<div class="mobile-nav-drawer" id="mobileDrawer">
+  <button class="drawer-close" id="drawerClose">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+  <a href="dashboard.html" class="drawer-link"><i class="fa-solid fa-house"></i>Home</a>
+  <a href="#" class="drawer-link"><i class="fa-solid fa-book-open"></i>Study Hub</a>
+  <a href="#" class="drawer-link"><i class="fa-solid fa-fire"></i>Mistakes</a>
+  <a href="https://simrankaurrrrrr-smartquizzer-backend.hf.space/logout" class="drawer-link" style="color:#e05555;">
+    <i class="fa-solid fa-power-off"></i>Logout
+  </a>
+</div>
 
 <!-- HERO -->
 <div class="vault-hero">
@@ -868,7 +973,7 @@ body::after {
   <div class="xp-track">
     <div class="xp-fill" id="vault-xp-bar"></div>
   </div>
-  <div class="d-flex justify-content-between mt-3 fw-bold" style="font-size:0.85rem;">
+  <div class="d-flex justify-content-between mt-3 fw-bold" style="font-size:0.83rem;">
     <span id="vault-xp-text" style="color:var(--gold);">0 XP</span>
     <span id="vault-cards-text" style="color:var(--muted);">0 / 10 Unlocked</span>
   </div>
@@ -900,14 +1005,9 @@ body::after {
 <!-- GRID -->
 <div class="cards-grid" id="cards-grid"></div>
 
-<!-- ══════════════════════════════════════
-     SCHOLAR SHOWCASE CHAMBER MODAL
-══════════════════════════════════════ -->
+<!-- ══ MODAL ══ -->
 <div class="card-modal-overlay" id="cardModal">
-
   <div class="modal-backdrop-blur"></div>
-
-  <!-- floating particles -->
   <div class="chamber-particles" id="chamberParticles"></div>
 
   <button class="modal-close-btn" id="modalCloseBtn">
@@ -917,11 +1017,10 @@ body::after {
   <div class="modal-scroll-wrap">
     <div class="modal-body">
 
-      <!-- LEFT: CARD STAGE -->
+      <!-- LEFT -->
       <div class="modal-left">
         <div class="card-stage">
           <div class="spotlight"></div>
-
           <div class="modal-card-scene" id="modalCardScene">
             <div class="modal-card-inner" id="modalCardInner">
               <div class="modal-card-face">
@@ -932,29 +1031,22 @@ body::after {
               </div>
             </div>
           </div>
-
           <div class="card-reflection"></div>
         </div>
-
         <div class="modal-hint">
           <i class="fa-solid fa-rotate"></i>
-          Click card to flip
+          Tap card to flip
         </div>
       </div>
 
-      <!-- RIGHT: INFO -->
+      <!-- RIGHT -->
       <div class="modal-right">
-
         <div>
           <div class="scientist-name" id="modalName"></div>
           <div class="scientist-title" id="modalTitle"></div>
           <div class="rarity-pill" id="modalRarity"></div>
-
-          <!-- quote -->
           <div class="quote-block" id="modalQuote"></div>
         </div>
-
-        <!-- top details -->
         <div class="top-detail-grid">
           <div class="detail-card">
             <div class="label">Field</div>
@@ -969,8 +1061,6 @@ body::after {
             <div class="value" id="modalBorn"></div>
           </div>
         </div>
-
-        <!-- achievements + about -->
         <div class="extra-sections">
           <div class="info-panel">
             <h3>🏆 Achievements</h3>
@@ -981,17 +1071,13 @@ body::after {
             <p id="modalAbout"></p>
           </div>
         </div>
-
-        <!-- timeline -->
         <div class="timeline-box">
           <h3>📜 Timeline</h3>
           <div id="modalTimeline"></div>
         </div>
-
-        <!-- fun fact -->
         <div class="fun-fact" id="modalFact"></div>
-
       </div>
+
     </div>
   </div>
 </div>
@@ -1044,7 +1130,27 @@ const ALL_CARDS = [
 let userXP = 40;
 let activeFilter = 'all';
 
-/* ── RENDER ALL ── */
+/* ── MOBILE DRAWER ── */
+const menuToggle = document.getElementById('menuToggle');
+const mobileDrawer = document.getElementById('mobileDrawer');
+const navOverlay = document.getElementById('navOverlay');
+const drawerClose = document.getElementById('drawerClose');
+
+function openDrawer() {
+  mobileDrawer.classList.add('open');
+  navOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer() {
+  mobileDrawer.classList.remove('open');
+  navOverlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+menuToggle.addEventListener('click', openDrawer);
+drawerClose.addEventListener('click', closeDrawer);
+navOverlay.addEventListener('click', closeDrawer);
+
+/* ── RENDER ── */
 function renderAll() {
   const unlocked = ALL_CARDS.filter(c => userXP >= c.xp_required).length;
   document.getElementById('stat-unlocked').textContent = unlocked;
@@ -1058,7 +1164,6 @@ function renderAll() {
   renderCards();
 }
 
-/* ── RENDER CARDS ── */
 function renderCards() {
   const grid = document.getElementById('cards-grid');
   grid.innerHTML = '';
@@ -1100,27 +1205,22 @@ function openModal(card) {
   document.getElementById('modalName').textContent  = card.name;
   document.getElementById('modalTitle').textContent = card.title;
   document.getElementById('modalAbout').textContent = card.about;
-
   const rarity = document.getElementById('modalRarity');
   rarity.textContent = card.rarity.toUpperCase();
   rarity.style.background = `var(--${card.rarity})`;
-
   document.getElementById('modalField').textContent   = card.field;
   document.getElementById('modalCountry').textContent = card.country;
   document.getElementById('modalBorn').textContent    = card.born;
   document.getElementById('modalQuote').textContent   = card.quote;
-
   document.getElementById('modalAchievements').innerHTML =
     card.achievements.map(a => `<li>${a}</li>`).join('');
-
   document.getElementById('modalTimeline').innerHTML =
     card.timeline.map(t => `<div class="timeline-item">${t}</div>`).join('');
-
   document.getElementById('modalFact').textContent = card.fact;
-
   cardInner.classList.remove('flipped');
   modal.classList.add('active');
   document.body.style.overflow = 'hidden';
+  modal.scrollTop = 0;
   spawnParticles();
 }
 
