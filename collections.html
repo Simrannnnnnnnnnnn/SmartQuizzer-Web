@@ -177,6 +177,7 @@ body{
     border:2px solid var(--primary-blue);
     font-weight:600;
     transition:0.3s;
+    cursor:pointer;
 }
 
 .filter-btn:hover,
@@ -196,107 +197,34 @@ body{
     gap:25px;
 }
 
-/* CARD */
+/* CARD (grid — no flip here) */
 
 .card-wrapper{
-    perspective:1000px;
     height:350px;
-    transition:0.3s;
-}
-
-.card-wrapper:hover{
-    transform:translateY(-5px);
-}
-
-.card-inner{
-    width:100%;
-    height:100%;
-    position:relative;
-    transform-style:preserve-3d;
-    transition:transform 0.7s;
-}
-
-.card-wrapper.flipped .card-inner{
-    transform:rotateY(180deg);
-}
-
-.card-front,
-.card-back{
-    position:absolute;
-    width:100%;
-    height:100%;
     border-radius:18px;
     overflow:hidden;
-    backface-visibility:hidden;
+    position:relative;
     box-shadow:0 10px 24px rgba(0,0,0,0.12);
+    transition:transform 0.3s, box-shadow 0.3s;
 }
 
-/* FRONT */
+.card-wrapper.unlocked{
+    cursor:pointer;
+}
 
-.card-front img{
+.card-wrapper.unlocked:hover{
+    transform:translateY(-6px);
+    box-shadow:0 16px 32px rgba(52,152,219,0.25);
+}
+
+.card-wrapper img.card-img{
     width:100%;
     height:100%;
     object-fit:cover;
+    display:block;
 }
 
-/* BACK */
-
-.card-back{
-    transform:rotateY(180deg);
-    background:linear-gradient(180deg,#ffffff,#f8fbff);
-    border:3px solid var(--primary-blue);
-    padding:16px;
-}
-
-.card-back-content{
-    height:100%;
-    display:flex;
-    flex-direction:column;
-}
-
-.back-title{
-    font-family:'Cinzel',serif;
-    font-weight:800;
-    color:var(--primary-blue);
-    font-size:0.9rem;
-    border-bottom:1px solid #dde7f0;
-    padding-bottom:6px;
-}
-
-.back-sub{
-    color:#7b8da1;
-    font-size:0.72rem;
-    margin-top:5px;
-}
-
-.ach-label{
-    margin-top:12px;
-    color:#f39c12;
-    font-size:0.72rem;
-    font-weight:700;
-}
-
-.card-back ul{
-    padding-left:18px;
-    margin-top:8px;
-    font-size:0.73rem;
-    flex-grow:1;
-}
-
-.card-back li{
-    margin-bottom:5px;
-}
-
-.back-quote{
-    border-top:1px solid #dde7f0;
-    padding-top:10px;
-    font-size:0.68rem;
-    color:#6f7c8a;
-    font-style:italic;
-    text-align:center;
-}
-
-/* RARITY */
+/* RARITY TAG */
 
 .rarity-tag{
     position:absolute;
@@ -310,9 +238,27 @@ body{
     box-shadow:0 3px 10px rgba(0,0,0,0.2);
 }
 
+/* FLIP HINT on unlocked grid card */
+
+.flip-hint-badge{
+    position:absolute;
+    bottom:12px;
+    left:50%;
+    transform:translateX(-50%);
+    background:rgba(0,0,0,0.55);
+    color:white;
+    font-size:0.68rem;
+    font-weight:600;
+    padding:5px 14px;
+    border-radius:50px;
+    white-space:nowrap;
+    backdrop-filter:blur(4px);
+    pointer-events:none;
+}
+
 /* LOCKED */
 
-.card-locked .card-front{
+.card-wrapper.card-locked img.card-img{
     filter:blur(2px) grayscale(0.8) brightness(0.7);
 }
 
@@ -337,6 +283,197 @@ body{
 .lock-overlay div{
     font-weight:800;
     font-size:0.9rem;
+}
+
+/* ============================================
+   MODAL SHOWCASE — dark holographic
+   ============================================ */
+
+.card-modal-overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:1000;
+    background:rgba(10,14,26,0.88);
+    backdrop-filter:blur(6px);
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.card-modal-overlay.active{
+    display:flex;
+}
+
+/* close button */
+.modal-close-btn{
+    position:absolute;
+    top:20px;
+    right:24px;
+    background:rgba(255,255,255,0.1);
+    border:none;
+    color:white;
+    font-size:1.4rem;
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    cursor:pointer;
+    transition:0.3s;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.modal-close-btn:hover{
+    background:rgba(255,255,255,0.22);
+}
+
+/* modal card flip container */
+.modal-card-scene{
+    perspective:1200px;
+    width:min(320px, 80vw);
+    height:min(480px, 70vh);
+    cursor:pointer;
+    flex-shrink:0;
+}
+
+.modal-card-inner{
+    width:100%;
+    height:100%;
+    position:relative;
+    transform-style:preserve-3d;
+    transition:transform 0.75s cubic-bezier(0.4,0,0.2,1);
+}
+
+.modal-card-inner.flipped{
+    transform:rotateY(180deg);
+}
+
+.modal-card-face{
+    position:absolute;
+    width:100%;
+    height:100%;
+    border-radius:22px;
+    overflow:hidden;
+    backface-visibility:hidden;
+    box-shadow:
+        0 0 0 2px rgba(255,255,255,0.08),
+        0 20px 60px rgba(0,0,0,0.6),
+        0 0 40px rgba(52,152,219,0.18);
+}
+
+.modal-card-face img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.modal-card-back-face{
+    transform:rotateY(180deg);
+}
+
+/* hint text under modal card */
+.modal-hint{
+    color:rgba(255,255,255,0.55);
+    font-size:0.78rem;
+    text-align:center;
+    margin-top:14px;
+    letter-spacing:0.04em;
+}
+
+.modal-hint i{
+    margin-right:5px;
+    color:var(--sunny-yellow);
+}
+
+/* info panel beside the card */
+.modal-info{
+    color:white;
+    max-width:300px;
+    padding:10px 0 10px 36px;
+}
+
+.modal-info .scientist-name{
+    font-family:'Cinzel',serif;
+    font-size:1.5rem;
+    font-weight:900;
+    line-height:1.2;
+}
+
+.modal-info .scientist-title{
+    color:rgba(255,255,255,0.55);
+    font-size:0.85rem;
+    margin-top:6px;
+    margin-bottom:18px;
+}
+
+.modal-info .rarity-pill{
+    display:inline-block;
+    padding:4px 14px;
+    border-radius:50px;
+    font-size:0.7rem;
+    font-weight:800;
+    color:white;
+    margin-bottom:20px;
+}
+
+.modal-info .section-label{
+    color:var(--sunny-yellow);
+    font-size:0.72rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    margin-bottom:8px;
+}
+
+.modal-info ul{
+    padding-left:18px;
+    font-size:0.82rem;
+    color:rgba(255,255,255,0.85);
+    margin-bottom:20px;
+}
+
+.modal-info ul li{
+    margin-bottom:6px;
+}
+
+.modal-info .modal-quote{
+    font-style:italic;
+    font-size:0.8rem;
+    color:rgba(255,255,255,0.6);
+    border-left:3px solid var(--primary-blue);
+    padding-left:12px;
+    line-height:1.5;
+}
+
+/* modal layout stacks on mobile */
+.modal-body{
+    display:flex;
+    align-items:center;
+    gap:0;
+    position:relative;
+    max-width:700px;
+    width:100%;
+}
+
+@media(max-width:640px){
+    .modal-body{
+        flex-direction:column;
+        align-items:center;
+        overflow-y:auto;
+        max-height:90vh;
+    }
+    .modal-info{
+        padding:20px 0 0 0;
+        text-align:center;
+        max-width:100%;
+    }
+    .modal-info ul{
+        text-align:left;
+    }
+    .modal-info .modal-quote{
+        text-align:left;
+    }
 }
 
 /* MOBILE */
@@ -460,6 +597,50 @@ Locked
 
 <div class="cards-grid" id="cards-grid"></div>
 
+<!-- ============================================
+     MODAL SHOWCASE
+     ============================================ -->
+
+<div class="card-modal-overlay" id="cardModal">
+
+    <button class="modal-close-btn" id="modalCloseBtn">
+        <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <div class="modal-body">
+
+        <!-- Card flip area -->
+        <div>
+            <div class="modal-card-scene" id="modalCardScene">
+                <div class="modal-card-inner" id="modalCardInner">
+                    <div class="modal-card-face">
+                        <img id="modalFrontImg" src="" alt="Front">
+                    </div>
+                    <div class="modal-card-face modal-card-back-face">
+                        <img id="modalBackImg" src="" alt="Back">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-hint" id="modalHint">
+                <i class="fa-solid fa-rotate"></i> Click card to see more
+            </div>
+        </div>
+
+        <!-- Info panel -->
+        <div class="modal-info">
+            <div class="scientist-name" id="modalName"></div>
+            <div class="scientist-title" id="modalTitle"></div>
+            <div class="rarity-pill" id="modalRarity"></div>
+
+            <div class="section-label">🏆 Achievements</div>
+            <ul id="modalAchievements"></ul>
+
+            <div class="modal-quote" id="modalQuote"></div>
+        </div>
+
+    </div>
+</div>
+
 <script>
 
 const BACKEND_URL =
@@ -469,245 +650,274 @@ const BASE_IMG =
 "https://raw.githubusercontent.com/Simrannnnnnnnnnnn/SmartQuizzer-Web/main/cards";
 
 const ALL_CARDS = [
-
 {
-id:1,
-name:"APJ Abdul Kalam",
-title:"Missile Man of India",
-rarity:"legendary",
-xp_required:0,
-achievements:[
-"Led IGMDP Program",
-"11th President of India",
-"Developed Agni Missile"
-],
-quote:"Dream big, dreams transform into action.",
-front:`${BASE_IMG}/front_side/Apj_Abdul_kalam_Front.png`
+    id:1,
+    name:"APJ Abdul Kalam",
+    title:"Missile Man of India",
+    rarity:"legendary",
+    xp_required:0,
+    achievements:["Led IGMDP Program","11th President of India","Developed Agni Missile"],
+    quote:"Dream big, dreams transform into action.",
+    front:`${BASE_IMG}/front_side/Apj_Abdul_kalam_Front.png`,
+    back:`${BASE_IMG}/back_side/APJ_Abdul_Kalam_Back.png`
 },
-
 {
-id:2,
-name:"Srinivasa Ramanujan",
-title:"Math Wizard",
-rarity:"legendary",
-xp_required:500,
-achievements:[
-"Hardy-Ramanujan Number",
-"Infinite Series for Pi",
-"Mock Theta Functions"
-],
-quote:"Equations express thoughts of God.",
-front:`${BASE_IMG}/front_side/Srinivasa_Ramanujan_front.png`
+    id:2,
+    name:"Srinivasa Ramanujan",
+    title:"Math Wizard",
+    rarity:"legendary",
+    xp_required:500,
+    achievements:["Hardy-Ramanujan Number","Infinite Series for Pi","Mock Theta Functions"],
+    quote:"Equations express thoughts of God.",
+    front:`${BASE_IMG}/front_side/Srinivasa_Ramanujan_front.png`,
+    back:`${BASE_IMG}/back_side/Srinivasa_back.png`
 },
-
 {
-id:3,
-name:"C.V. Raman",
-title:"Nobel Physicist",
-rarity:"legendary",
-xp_required:1200,
-achievements:[
-"Discovered Raman Effect",
-"Nobel Prize 1930",
-"Explained Blue Sky"
-],
-quote:"Success requires courage.",
-front:`${BASE_IMG}/front_side/CV_RAMAN_Front.png`
+    id:3,
+    name:"C.V. Raman",
+    title:"Nobel Physicist",
+    rarity:"legendary",
+    xp_required:1200,
+    achievements:["Discovered Raman Effect","Nobel Prize 1930","Explained Blue Sky"],
+    quote:"Success requires courage.",
+    front:`${BASE_IMG}/front_side/CV_RAMAN_Front.png`,
+    back:`${BASE_IMG}/back_side/CV_Raman_Back.png`
+},
+{
+    id:4,
+    name:"Albert Einstein",
+    title:"Modern Physics Father",
+    rarity:"legendary",
+    xp_required:1500,
+    achievements:["E=mc² Theory","Photoelectric Effect","Theory of Relativity"],
+    quote:"Imagination is everything.",
+    front:`${BASE_IMG}/front_side/Albert_einstein_front.png`,
+    back:`${BASE_IMG}/back_side/albert_einstein_back.png`
+},
+{
+    id:5,
+    name:"Marie Curie",
+    title:"Radioactivity Pioneer",
+    rarity:"legendary",
+    xp_required:2000,
+    achievements:["Discovered Radium","Two Nobel Prizes","Mobile X-rays"],
+    quote:"Understand, don't fear.",
+    front:`${BASE_IMG}/front_side/Marie_curie_front.png`,
+    back:`${BASE_IMG}/back_side/Marie_Curie_back.png`
+},
+{
+    id:6,
+    name:"Nikola Tesla",
+    title:"Electrical Master",
+    rarity:"legendary",
+    xp_required:2500,
+    achievements:["Invented AC System","Tesla Coil","Radio Pioneer"],
+    quote:"The future is mine.",
+    front:`${BASE_IMG}/front_side/Nikola_tesla_Front.png`,
+    back:`${BASE_IMG}/back_side/nikola_tesla_back.png`
+},
+{
+    id:7,
+    name:"Isaac Newton",
+    title:"Gravity Discoverer",
+    rarity:"epic",
+    xp_required:3000,
+    achievements:["3 Laws of Motion","Calculus Co-inventor","Universal Gravitation"],
+    quote:"Standing on shoulders of giants.",
+    front:`${BASE_IMG}/front_side/ISaac_newton_front.png`,
+    back:`${BASE_IMG}/back_side/Isaac_newton_Back.png`
+},
+{
+    id:8,
+    name:"Alan Turing",
+    title:"Computing Father",
+    rarity:"legendary",
+    xp_required:3500,
+    achievements:["Cracked Enigma Code","Turing Machine","Turing Test"],
+    quote:"Imagine the unimaginable.",
+    front:`${BASE_IMG}/front_side/Alan_Turing_front.png`,
+    back:`${BASE_IMG}/back_side/Alan_turing_back.png`
+},
+{
+    id:9,
+    name:"Ada Lovelace",
+    title:"First Programmer",
+    rarity:"epic",
+    xp_required:4000,
+    achievements:["First Algorithm","Visioned Computing","Analytical Engine"],
+    quote:"Brain is more than mortal.",
+    front:`${BASE_IMG}/front_side/ADA_LoveLace_front.png`,
+    back:`${BASE_IMG}/back_side/Ada_Lovelace_back.png`
+},
+{
+    id:10,
+    name:"Tim Berners-Lee",
+    title:"WWW Inventor",
+    rarity:"legendary",
+    xp_required:4500,
+    achievements:["Invented HTTP & HTML","First Web Browser","Gave Web for Free"],
+    quote:"The Web is a social creation.",
+    front:`${BASE_IMG}/front_side/TIM_Berners_lee_front.png`,
+    back:`${BASE_IMG}/back_side/Tim_Berners_Lee_Back.png`
 }
-
 ];
 
 let userXP = 0;
 let activeFilter = 'all';
 
+/* ---- XP LOAD ---- */
+
 async function loadUserXP(){
-
-try{
-
-const res = await fetch(
-`${BACKEND_URL}/api/dashboard_stats`,
-{
-credentials:'include'
-}
-);
-
-const data = await res.json();
-
-if(data.success){
-
-userXP = data.total_xp || 0;
-renderAll();
-
+    try{
+        const res = await fetch(
+            `${BACKEND_URL}/api/dashboard_stats`,
+            { credentials:'include' }
+        );
+        const data = await res.json();
+        if(data.success){
+            userXP = data.total_xp || 0;
+            renderAll();
+        }
+    }catch(err){
+        console.log("XP Load Failed");
+        renderAll(); // still render with 0 XP so page isn't blank
+    }
 }
 
-}catch(err){
-
-console.log("XP Load Failed");
-
-}
-
-}
+/* ---- RENDER ALL ---- */
 
 function renderAll(){
+    const unlocked = ALL_CARDS.filter(c => userXP >= c.xp_required).length;
 
-const unlocked =
-ALL_CARDS.filter(c =>
-userXP >= c.xp_required).length;
+    document.getElementById('stat-unlocked').textContent = unlocked;
+    document.getElementById('stat-xp').textContent = userXP;
+    document.getElementById('vault-xp-text').textContent = `${userXP} XP`;
+    document.getElementById('vault-cards-text').textContent = `${unlocked} / ${ALL_CARDS.length} Unlocked`;
 
-document.getElementById('stat-unlocked').textContent = unlocked;
-document.getElementById('stat-xp').textContent = userXP;
+    const nextCard = ALL_CARDS.find(c => userXP < c.xp_required);
+    document.getElementById('stat-next').textContent =
+        nextCard ? `${nextCard.xp_required - userXP}` : "DONE";
 
-document.getElementById('vault-xp-text').textContent =
-`${userXP} XP`;
+    const percent = Math.min((userXP / 5000) * 100, 100);
+    document.getElementById('vault-xp-bar').style.width = percent + "%";
 
-document.getElementById('vault-cards-text').textContent =
-`${unlocked} / ${ALL_CARDS.length} Unlocked`;
-
-const nextCard =
-ALL_CARDS.find(c =>
-userXP < c.xp_required);
-
-document.getElementById('stat-next').textContent =
-nextCard
-? `${nextCard.xp_required - userXP}`
-: "DONE";
-
-const percent =
-Math.min((userXP / 5000) * 100,100);
-
-document.getElementById('vault-xp-bar').style.width =
-percent + "%";
-
-renderCards();
-
+    renderCards();
 }
+
+/* ---- RENDER CARDS (grid only — no flip) ---- */
 
 function renderCards(){
+    const grid = document.getElementById('cards-grid');
+    grid.innerHTML = '';
 
-const grid =
-document.getElementById('cards-grid');
+    ALL_CARDS
+    .filter(card => {
+        if(activeFilter === 'unlocked') return userXP >= card.xp_required;
+        if(activeFilter === 'locked')   return userXP < card.xp_required;
+        return true;
+    })
+    .forEach(card => {
+        const isUnlocked = userXP >= card.xp_required;
 
-grid.innerHTML = '';
+        const wrapper = document.createElement('div');
+        wrapper.className = `card-wrapper ${isUnlocked ? 'unlocked' : 'card-locked'}`;
 
-ALL_CARDS
-.filter(card => {
+        wrapper.innerHTML = `
+            <img class="card-img"
+                 src="${card.front}"
+                 onerror="this.src='https://via.placeholder.com/220x340?text=Scholar'">
 
-if(activeFilter === 'unlocked')
-return userXP >= card.xp_required;
+            <div class="rarity-tag" style="background:var(--${card.rarity})">
+                ${card.rarity.toUpperCase()}
+            </div>
 
-if(activeFilter === 'locked')
-return userXP < card.xp_required;
+            ${isUnlocked
+                ? `<div class="flip-hint-badge">
+                       <i class="fa-solid fa-rotate" style="margin-right:5px;"></i>Tap to explore
+                   </div>`
+                : `<div class="lock-overlay">
+                       <i class="fa-solid fa-lock"></i>
+                       <div>${card.xp_required - userXP} XP NEEDED</div>
+                   </div>`
+            }
+        `;
 
-return true;
+        // Only unlocked cards open modal
+        if(isUnlocked){
+            wrapper.addEventListener('click', () => openModal(card));
+        }
 
-})
-.forEach(card => {
-
-const unlocked =
-userXP >= card.xp_required;
-
-const wrapper =
-document.createElement('div');
-
-wrapper.className =
-`card-wrapper ${unlocked ? '' : 'card-locked'}`;
-
-wrapper.innerHTML = `
-
-<div class="card-inner">
-
-<div class="card-front">
-
-<img src="${card.front}"
-onerror="this.src='https://via.placeholder.com/220x340?text=Scholar'">
-
-<div class="rarity-tag"
-style="background:var(--${card.rarity})">
-${card.rarity.toUpperCase()}
-</div>
-
-${!unlocked ? `
-<div class="lock-overlay">
-
-<i class="fa-solid fa-lock"></i>
-
-<div>
-${card.xp_required - userXP} XP NEEDED
-</div>
-
-</div>
-` : ''}
-
-</div>
-
-<div class="card-back">
-
-${unlocked ? `
-
-<div class="card-back-content">
-
-<div class="back-title">
-${card.name.toUpperCase()}
-</div>
-
-<div class="back-sub">
-${card.title}
-</div>
-
-<div class="ach-label">
-🏆 ACHIEVEMENTS
-</div>
-
-<ul>
-${card.achievements
-.map(a => `<li>${a}</li>`)
-.join('')}
-</ul>
-
-<div class="back-quote">
-"${card.quote}"
-</div>
-
-</div>
-
-`
-:
-`
-<div class="d-flex justify-content-center align-items-center h-100 fw-bold text-secondary">
-LOCKED
-</div>
-`
+        grid.appendChild(wrapper);
+    });
 }
 
-</div>
-</div>
-`;
+/* ---- MODAL ---- */
 
-wrapper.addEventListener('click', () => {
+const modal       = document.getElementById('cardModal');
+const cardInner   = document.getElementById('modalCardInner');
+const modalHint   = document.getElementById('modalHint');
 
-if(!unlocked) return;
+function openModal(card){
+    // Populate images
+    document.getElementById('modalFrontImg').src = card.front;
+    document.getElementById('modalBackImg').src  = card.back;
 
-wrapper.classList.toggle('flipped');
+    // Populate info
+    document.getElementById('modalName').textContent  = card.name;
+    document.getElementById('modalTitle').textContent = card.title;
 
-});
+    const rarityPill = document.getElementById('modalRarity');
+    rarityPill.textContent = card.rarity.toUpperCase();
+    rarityPill.style.background = `var(--${card.rarity})`;
 
-grid.appendChild(wrapper);
+    const achList = document.getElementById('modalAchievements');
+    achList.innerHTML = card.achievements.map(a => `<li>${a}</li>`).join('');
 
-});
+    document.getElementById('modalQuote').textContent = `"${card.quote}"`;
 
+    // Reset flip state
+    cardInner.classList.remove('flipped');
+    modalHint.innerHTML = '<i class="fa-solid fa-rotate"></i> Click card to see more';
+
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
 }
 
-function filterCards(type,btn){
+function closeModal(){
+    modal.classList.remove('active');
+    cardInner.classList.remove('flipped');
+    document.body.style.overflow = '';
+}
 
-activeFilter = type;
+// Flip card inside modal
+document.getElementById('modalCardScene').addEventListener('click', () => {
+    cardInner.classList.toggle('flipped');
+    const isFlipped = cardInner.classList.contains('flipped');
+    modalHint.innerHTML = isFlipped
+        ? '<i class="fa-solid fa-rotate"></i> Click to flip back'
+        : '<i class="fa-solid fa-rotate"></i> Click card to see more';
+});
 
-document.querySelectorAll('.filter-btn')
-.forEach(b => b.classList.remove('active'));
+// Close on X button
+document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
 
-btn.classList.add('active');
+// Close on overlay click (outside modal body)
+modal.addEventListener('click', (e) => {
+    if(e.target === modal) closeModal();
+});
 
-renderCards();
+// Close on Escape key
+document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape') closeModal();
+});
 
+/* ---- FILTER ---- */
+
+function filterCards(type, btn){
+    activeFilter = type;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderCards();
 }
 
 loadUserXP();
