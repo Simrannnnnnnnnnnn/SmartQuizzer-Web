@@ -3,1118 +3,1174 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Scholar's Vault | SmartQuizzer</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-<!-- PREMIUM FONTS -->
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700;900&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
+:root {
+  --gold:       #d4a843;
+  --gold-light: #f0c96a;
+  --gold-deep:  #a07820;
+  --charcoal:   #0e0e12;
+  --charcoal2:  #161620;
+  --charcoal3:  #1e1e2a;
+  --surface:    rgba(30,30,42,0.85);
+  --border:     rgba(212,168,67,0.18);
+  --text:       #f0e8d0;
+  --muted:      rgba(240,232,208,0.5);
 
-:root{
-    --primary:#f4b400;
-    --primary-dark:#d89d00;
-    --blue:#3498db;
-    --dark:#07111f;
-    --dark2:#0d1b2e;
-    --soft:#edf3fb;
-    --card:#ffffff;
-    --gold:#f1c40f;
-
-    --legendary:linear-gradient(135deg,#f1c40f,#f39c12);
-    --epic:linear-gradient(135deg,#8e44ad,#6c2eb9);
-    --rare:linear-gradient(135deg,#3498db,#2980b9);
+  --legendary:  linear-gradient(135deg,#f0c96a,#d4a843,#a07820);
+  --epic:       linear-gradient(135deg,#c084fc,#9b59b6,#6d28d9);
+  --rare:       linear-gradient(135deg,#60a5fa,#3498db,#1e40af);
+  --common:     linear-gradient(135deg,#9ca3af,#6b7280,#4b5563);
 }
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+/* ─── BODY ─── */
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--charcoal);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
 }
 
-body{
-    background:#f5f6f8;
-    font-family:'Outfit',sans-serif;
-    color:#2c3e50;
-    overflow-x:hidden;
+/* deep texture bg */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(212,168,67,0.09) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(212,168,67,0.05) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 40% at 0% 80%, rgba(52,152,219,0.04) 0%, transparent 50%);
+  pointer-events: none;
 }
 
-/* =========================
-   NAVBAR
-========================= */
-
-.vault-nav{
-    background:white;
-    border-bottom:2px solid #f1c40f;
-    padding:16px 0;
-    position:sticky;
-    top:0;
-    z-index:100;
+/* subtle grid noise */
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background-image:
+    linear-gradient(rgba(212,168,67,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212,168,67,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
 }
 
-.brand{
-    text-decoration:none;
-    font-family:'Cinzel',serif;
-    font-size:1.8rem;
-    font-weight:900;
-    color:#3498db;
+/* ─── NAVBAR ─── */
+.vault-nav {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(14,14,18,0.96);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 0;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 2px 30px rgba(0,0,0,0.6), 0 0 0 1px rgba(212,168,67,0.05);
 }
 
-.nav-link-custom{
-    margin-left:22px;
-    text-decoration:none;
-    color:#2c3e50;
-    font-weight:700;
-    transition:0.3s;
+.brand {
+  text-decoration: none;
+  font-family: 'Cinzel', serif;
+  font-weight: 900;
+  font-size: 1.7rem;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--gold-deep));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 1px;
 }
 
-.nav-link-custom:hover{
-    color:#f1c40f;
+.nav-link-custom {
+  margin-left: 28px;
+  text-decoration: none;
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.88rem;
+  letter-spacing: 0.5px;
+  transition: color 0.25s;
+}
+.nav-link-custom:hover { color: var(--gold-light); }
+.nav-link-custom i { margin-right: 6px; color: var(--gold); opacity: 0.8; }
+
+/* ─── HERO ─── */
+.vault-hero {
+  text-align: center;
+  padding: 72px 20px 28px;
+  position: relative; z-index: 1;
 }
 
-.nav-link-custom i{
-    margin-right:6px;
+.vault-hero h1 {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 3.8rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #fff5d6, var(--gold-light), var(--gold), #9a6a10);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 3px;
+  line-height: 1.15;
+  filter: drop-shadow(0 0 30px rgba(212,168,67,0.25));
 }
 
-/* =========================
-   HERO
-========================= */
-
-.vault-hero{
-    text-align:center;
-    padding:50px 20px 30px;
+.hero-sub {
+  color: var(--muted);
+  margin-top: 14px;
+  font-style: italic;
+  font-size: 1rem;
+  letter-spacing: 0.3px;
 }
 
-.vault-hero h1{
-    font-family:'Cinzel',serif;
-    font-size:3rem;
-    font-weight:900;
-    color:#1b2f48;
+/* ─── GOLD DIVIDER ─── */
+.gold-divider {
+  width: 120px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 20px auto 0;
+  border-radius: 2px;
 }
 
-.vault-hero p{
-    margin-top:10px;
-    color:#6d7b8b;
-    font-size:1.05rem;
-    font-style:italic;
+/* ─── XP BAR ─── */
+.xp-vault-bar {
+  max-width: 760px;
+  margin: 40px auto 0;
+  padding: 26px 32px;
+  background: var(--surface);
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(212,168,67,0.08);
+  position: relative; z-index: 1;
 }
 
-/* =========================
-   XP BOX
-========================= */
-
-.xp-vault-bar{
-    background:white;
-    max-width:750px;
-    margin:auto;
-    padding:26px;
-    border-radius:24px;
-    box-shadow:0 8px 28px rgba(0,0,0,0.06);
+.xp-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
 }
 
-.xp-label{
-    color:#3498db;
-    font-weight:800;
-    margin-bottom:10px;
-    font-size:0.82rem;
+.xp-track {
+  height: 10px;
+  border-radius: 50px;
+  background: rgba(255,255,255,0.05);
+  overflow: hidden;
+  border: 1px solid rgba(212,168,67,0.1);
 }
 
-.xp-track{
-    height:16px;
-    background:#e9eef5;
-    border-radius:50px;
-    overflow:hidden;
+.xp-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--gold-deep), var(--gold), var(--gold-light));
+  box-shadow: 0 0 16px rgba(212,168,67,0.6);
+  transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+  border-radius: 50px;
 }
 
-.xp-fill{
-    height:100%;
-    width:0%;
-    background:linear-gradient(90deg,#f1c40f,#f39c12);
-    transition:1s;
+/* ─── STATS ─── */
+.vault-stats {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 32px 0;
+  position: relative; z-index: 1;
 }
 
-/* =========================
-   STATS
-========================= */
+.stat-pill {
+  background: var(--surface);
+  padding: 20px 26px;
+  border-radius: 18px;
+  min-width: 140px;
+  text-align: center;
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(212,168,67,0.06);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.stat-pill:hover { transform: translateY(-3px); box-shadow: 0 14px 32px rgba(0,0,0,0.5), 0 0 20px rgba(212,168,67,0.1); }
 
-.vault-stats{
-    display:flex;
-    justify-content:center;
-    flex-wrap:wrap;
-    gap:18px;
-    margin:35px 0;
+.stat-pill .num {
+  font-size: 1.8rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.stat-pill{
-    background:white;
-    width:120px;
-    height:120px;
-    border-radius:50%;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    box-shadow:0 6px 18px rgba(0,0,0,0.08);
-    border-bottom:5px solid #3498db;
+.stat-pill .lbl {
+  font-size: 0.68rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-top: 6px;
 }
 
-.stat-pill .num{
-    font-size:1.7rem;
-    font-weight:900;
-    color:#3498db;
+/* ─── FILTERS ─── */
+.filter-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+  position: relative; z-index: 1;
 }
 
-.stat-pill .lbl{
-    font-size:0.72rem;
-    text-transform:uppercase;
-    color:#7b8b9a;
-    margin-top:4px;
+.filter-btn {
+  border: 1px solid rgba(212,168,67,0.3);
+  padding: 10px 26px;
+  border-radius: 50px;
+  background: transparent;
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 0.82rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: all 0.25s;
+  cursor: pointer;
+}
+.filter-btn:hover { background: rgba(212,168,67,0.08); border-color: var(--gold); }
+.filter-btn.active {
+  background: linear-gradient(135deg, var(--gold-deep), var(--gold));
+  color: #0e0e12;
+  border-color: transparent;
+  box-shadow: 0 4px 16px rgba(212,168,67,0.35);
 }
 
-/* =========================
-   FILTERS
-========================= */
-
-.filter-tabs{
-    display:flex;
-    justify-content:center;
-    gap:12px;
-    margin-bottom:35px;
-    flex-wrap:wrap;
+/* ─── GRID ─── */
+.cards-grid {
+  max-width: 1440px;
+  margin: auto;
+  padding: 10px 28px 80px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 28px;
+  position: relative; z-index: 1;
 }
 
-.filter-btn{
-    border:none;
-    background:white;
-    padding:12px 24px;
-    border-radius:50px;
-    border:2px solid #3498db;
-    color:#3498db;
-    font-weight:700;
-    transition:0.3s;
-    cursor:pointer;
+/* ─── CARD ─── */
+.card-wrapper {
+  height: 360px;
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid var(--border);
+  background: var(--charcoal3);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.4s;
 }
 
-.filter-btn.active,
-.filter-btn:hover{
-    background:#3498db;
-    color:white;
+.card-wrapper.unlocked { cursor: pointer; }
+
+.card-wrapper.unlocked:hover {
+  transform: translateY(-12px) scale(1.03);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(212,168,67,0.25);
 }
 
-/* =========================
-   CARD GRID
-========================= */
+/* holographic sheen on hover */
+.card-wrapper.unlocked::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(212,168,67,0.08) 50%,
+    rgba(255,255,255,0.04) 55%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+  border-radius: 20px;
+}
+.card-wrapper.unlocked:hover::after { opacity: 1; }
 
-.cards-grid{
-    max-width:1300px;
-    margin:auto;
-    padding:20px;
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
-    gap:28px;
+.card-img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s;
+}
+.card-wrapper.unlocked:hover .card-img { transform: scale(1.04); }
+
+/* rarity tag */
+.rarity-tag {
+  position: absolute;
+  top: 12px; right: 12px;
+  padding: 5px 14px;
+  border-radius: 50px;
+  color: #0e0e12;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 }
 
-.card-wrapper{
-    position:relative;
-    height:370px;
-    border-radius:22px;
-    overflow:hidden;
-    cursor:pointer;
-    transition:0.35s;
-    box-shadow:0 10px 30px rgba(0,0,0,0.18);
+/* tap badge */
+.flip-hint-badge {
+  position: absolute;
+  bottom: 14px; left: 50%;
+  transform: translateX(-50%);
+  background: rgba(14,14,18,0.75);
+  color: var(--gold-light);
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 6px 18px;
+  border-radius: 50px;
+  white-space: nowrap;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(212,168,67,0.25);
+  letter-spacing: 0.5px;
+  pointer-events: none;
 }
 
-.card-wrapper:hover{
-    transform:translateY(-10px) scale(1.02);
+/* locked */
+.card-wrapper.card-locked .card-img {
+  filter: blur(3px) grayscale(1) brightness(0.45);
+}
+.lock-overlay {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(2px);
+  color: white; text-align: center;
+}
+.lock-overlay i {
+  font-size: 2.8rem;
+  margin-bottom: 12px;
+  color: var(--gold);
+  opacity: 0.7;
+}
+.lock-overlay .xp-need {
+  font-weight: 800;
+  font-size: 0.82rem;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  text-transform: uppercase;
 }
 
-.card-img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
+/* ════════════════════════════════════════════
+   SHOWCASE CHAMBER MODAL
+════════════════════════════════════════════ */
+.card-modal-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  z-index: 6000;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
-.rarity-tag{
-    position:absolute;
-    top:14px;
-    right:14px;
-    padding:6px 14px;
-    border-radius:50px;
-    color:white;
-    font-size:0.7rem;
-    font-weight:800;
+.card-modal-overlay.active { display: block; }
+
+/* cinematic blurred backdrop */
+.modal-backdrop-blur {
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 20%, rgba(212,168,67,0.13) 0%, transparent 60%),
+    rgba(6,6,10,0.97);
+  backdrop-filter: blur(14px) saturate(0.7);
+  z-index: 0;
 }
 
-.flip-hint-badge{
-    position:absolute;
-    bottom:12px;
-    left:50%;
-    transform:translateX(-50%);
-    background:rgba(0,0,0,0.65);
-    color:white;
-    font-size:0.72rem;
-    padding:6px 16px;
-    border-radius:50px;
-    backdrop-filter:blur(5px);
+/* animated chamber particles */
+.chamber-particles {
+  position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  overflow: hidden;
 }
 
-/* =========================
-   LOCKED
-========================= */
-
-.card-locked img{
-    filter:blur(3px) grayscale(1) brightness(0.55);
+.particle {
+  position: absolute;
+  width: 2px; height: 2px;
+  background: var(--gold);
+  border-radius: 50%;
+  animation: floatUp linear infinite;
+  opacity: 0;
 }
 
-.lock-overlay{
-    position:absolute;
-    inset:0;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    color:white;
-    background:rgba(0,0,0,0.35);
+@keyframes floatUp {
+  0%   { opacity: 0; transform: translateY(0) scale(0.5); }
+  15%  { opacity: 0.7; }
+  85%  { opacity: 0.4; }
+  100% { opacity: 0; transform: translateY(-100vh) scale(1.5); }
 }
 
-.lock-overlay i{
-    font-size:3rem;
-    margin-bottom:12px;
+/* close btn */
+.modal-close-btn {
+  position: fixed;
+  top: 20px; right: 24px;
+  background: rgba(30,30,42,0.9);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 1.1rem;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000;
+}
+.modal-close-btn:hover {
+  background: rgba(212,168,67,0.15);
+  color: var(--gold-light);
+  transform: rotate(90deg);
+  border-color: var(--gold);
 }
 
-.lock-overlay div{
-    font-weight:800;
+/* modal scroll wrapper */
+.modal-scroll-wrap {
+  position: relative; z-index: 2;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 50px 24px 60px;
 }
 
-/* =====================================================
-   PREMIUM MODAL
-===================================================== */
-
-.card-modal-overlay{
-    position:fixed;
-    inset:0;
-    z-index:9999;
-
-    display:none;
-    justify-content:center;
-    align-items:center;
-
-    padding:30px;
-
-    background:
-    radial-gradient(circle at top left,#17345f 0%,#081120 40%,#02060d 100%);
-
-    overflow:hidden;
+.modal-body {
+  width: 100%;
+  max-width: 1480px;
+  display: grid;
+  grid-template-columns: 440px 1fr;
+  gap: 64px;
+  align-items: start;
 }
 
-.card-modal-overlay.active{
-    display:flex;
+/* ─── LEFT: CARD STAGE ─── */
+.modal-left {
+  position: sticky;
+  top: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 }
 
-.card-modal-overlay::before{
-    content:'';
-    position:absolute;
-    width:700px;
-    height:700px;
-    border-radius:50%;
-    background:rgba(52,152,219,0.14);
-    filter:blur(120px);
-    top:-180px;
-    left:-120px;
+/* chamber glow platform */
+.card-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.stars{
-    position:absolute;
-    inset:0;
-    opacity:0.08;
-    background-image:
-    radial-gradient(white 1px, transparent 1px);
-    background-size:40px 40px;
-    pointer-events:none;
+/* spotlight beam from above */
+.spotlight {
+  position: absolute;
+  top: -60px; left: 50%;
+  transform: translateX(-50%);
+  width: 200px; height: 120px;
+  background: radial-gradient(ellipse at top, rgba(212,168,67,0.22) 0%, transparent 70%);
+  pointer-events: none;
+  border-radius: 50%;
+  animation: pulseSpot 3s ease-in-out infinite;
 }
 
-/* CLOSE */
-
-.modal-close-btn{
-    position:absolute;
-    top:24px;
-    right:24px;
-    width:50px;
-    height:50px;
-    border:none;
-    border-radius:50%;
-    background:rgba(255,255,255,0.1);
-    color:white;
-    font-size:1.3rem;
-    cursor:pointer;
-    z-index:5;
-    transition:0.3s;
+@keyframes pulseSpot {
+  0%,100% { opacity: 0.6; transform: translateX(-50%) scaleX(1); }
+  50%      { opacity: 1;   transform: translateX(-50%) scaleX(1.15); }
 }
 
-.modal-close-btn:hover{
-    background:rgba(255,255,255,0.2);
+/* ground reflection */
+.card-reflection {
+  width: 85%;
+  height: 30px;
+  background: radial-gradient(ellipse, rgba(212,168,67,0.2) 0%, transparent 70%);
+  border-radius: 50%;
+  margin-top: -8px;
+  filter: blur(6px);
+  animation: breatheReflect 3s ease-in-out infinite;
+}
+@keyframes breatheReflect {
+  0%,100% { opacity: 0.6; transform: scaleX(1); }
+  50%      { opacity: 1; transform: scaleX(1.1); }
 }
 
-/* LAYOUT */
-
-.modal-body{
-    position:relative;
-    width:100%;
-    max-width:1250px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:70px;
-
-    z-index:2;
+/* ─── FLIP CARD ─── */
+.modal-card-scene {
+  perspective: 1400px;
+  width: 340px;
+  height: 520px;
+  cursor: pointer;
+  position: relative; z-index: 2;
 }
 
-/* CARD */
-
-.modal-card-scene{
-    perspective:1200px;
-    width:min(400px,90vw);
-    height:min(600px,82vh);
-    flex-shrink:0;
+.modal-card-inner {
+  width: 100%; height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.9s cubic-bezier(0.4,0,0.2,1);
 }
 
-.modal-card-inner{
-    position:relative;
-    width:100%;
-    height:100%;
-    transform-style:preserve-3d;
-    transition:0.8s;
+.modal-card-inner.flipped { transform: rotateY(180deg); }
+
+.modal-card-face {
+  position: absolute; inset: 0;
+  border-radius: 22px;
+  overflow: hidden;
+  backface-visibility: hidden;
+  box-shadow:
+    0 0 0 1px rgba(212,168,67,0.15),
+    0 24px 70px rgba(0,0,0,0.7),
+    0 0 50px rgba(212,168,67,0.08);
 }
 
-.modal-card-inner.flipped{
-    transform:rotateY(180deg);
+.modal-card-face img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
-.modal-card-face{
-    position:absolute;
-    width:100%;
-    height:100%;
-    border-radius:26px;
-    overflow:hidden;
-    backface-visibility:hidden;
-
-    border:1px solid rgba(241,196,15,0.35);
-
-    box-shadow:
-    0 0 0 1px rgba(255,255,255,0.05),
-    0 0 45px rgba(241,196,15,0.18),
-    0 25px 70px rgba(0,0,0,0.7);
+/* holographic shimmer overlay on modal card */
+.modal-card-face::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    125deg,
+    transparent 20%,
+    rgba(255,215,100,0.06) 38%,
+    rgba(255,255,255,0.08) 44%,
+    rgba(120,200,255,0.05) 50%,
+    transparent 60%
+  );
+  background-size: 200% 200%;
+  animation: holoShimmer 4s ease-in-out infinite;
+  border-radius: 22px;
+  pointer-events: none;
 }
 
-.modal-card-face img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
+@keyframes holoShimmer {
+  0%   { background-position: 0% 50%; opacity: 0.4; }
+  50%  { background-position: 100% 50%; opacity: 1; }
+  100% { background-position: 0% 50%; opacity: 0.4; }
 }
 
-.modal-card-back-face{
-    transform:rotateY(180deg);
+/* gold foil border pulse */
+.modal-card-face::before {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: 22px;
+  border: 1.5px solid transparent;
+  background: linear-gradient(var(--charcoal3), var(--charcoal3)) padding-box,
+              linear-gradient(135deg, rgba(212,168,67,0.6), rgba(255,255,255,0.1), rgba(212,168,67,0.4)) border-box;
+  pointer-events: none;
+  animation: borderPulse 3s ease-in-out infinite;
+}
+@keyframes borderPulse {
+  0%,100% { opacity: 0.5; }
+  50%      { opacity: 1; }
 }
 
-.modal-hint{
-    margin-top:18px;
-    color:rgba(255,255,255,0.7);
-    text-align:center;
-    font-size:0.85rem;
+.modal-card-back-face { transform: rotateY(180deg); }
+
+/* flip hint */
+.modal-hint {
+  color: var(--muted);
+  font-size: 0.75rem;
+  text-align: center;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.modal-hint i { color: var(--gold); animation: spinHint 3s linear infinite; }
+@keyframes spinHint { to { transform: rotate(360deg); } }
+
+/* ─── RIGHT ─── */
+.modal-right {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  min-width: 0;
+  padding-top: 10px;
 }
 
-.modal-hint i{
-    color:#f1c40f;
+/* scientist header */
+.scientist-name {
+  font-family: 'Cinzel', serif;
+  font-size: 3.2rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #fff8e0, var(--gold-light), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.1;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 0 20px rgba(212,168,67,0.2));
 }
 
-/* INFO PANEL */
-
-.modal-info{
-    width:100%;
-    max-width:520px;
-    color:white;
+.scientist-title {
+  color: var(--muted);
+  font-size: 1.05rem;
+  margin-bottom: 18px;
+  font-style: italic;
 }
 
-.scientist-name{
-    font-family:'Cinzel',serif;
-    font-size:3rem;
-    line-height:1.1;
-    font-weight:900;
-    color:#ffe082;
-    margin-bottom:10px;
+.rarity-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 18px;
+  border-radius: 50px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #0e0e12;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+.rarity-pill::before {
+  content: '✦';
+  font-size: 0.7rem;
 }
 
-.scientist-title{
-    font-size:1.1rem;
-    color:rgba(255,255,255,0.7);
-    margin-bottom:22px;
+/* quote block */
+.quote-block {
+  background: linear-gradient(135deg, rgba(212,168,67,0.07), rgba(212,168,67,0.02));
+  border-left: 3px solid var(--gold);
+  padding: 18px 22px;
+  border-radius: 0 14px 14px 0;
+  font-style: italic;
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.7;
+  position: relative;
+}
+.quote-block::before {
+  content: '"';
+  position: absolute;
+  top: -10px; left: 16px;
+  font-size: 4rem;
+  color: var(--gold);
+  opacity: 0.25;
+  font-family: 'Cinzel', serif;
+  line-height: 1;
 }
 
-.rarity-pill{
-    display:inline-block;
-    padding:8px 18px;
-    border-radius:50px;
-    font-size:0.72rem;
-    font-weight:800;
-    color:white;
-    margin-bottom:28px;
+/* detail grid */
+.top-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 16px;
 }
 
-.section-label{
-    color:#f1c40f;
-    font-size:0.8rem;
-    font-weight:800;
-    margin-bottom:12px;
-    letter-spacing:1px;
-    text-transform:uppercase;
+.detail-card {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+  transition: border-color 0.25s;
+}
+.detail-card:hover { border-color: rgba(212,168,67,0.4); }
+
+.detail-card .label {
+  color: var(--gold);
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 10px;
+}
+.detail-card .value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
 }
 
-/* MINI INFO */
-
-.info-mini-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:14px;
-    margin-bottom:28px;
+/* extra sections */
+.extra-sections {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 }
 
-.mini-info-card{
-    background:rgba(255,255,255,0.06);
-    border:1px solid rgba(255,255,255,0.08);
-    padding:16px;
-    border-radius:16px;
-    text-align:center;
-    backdrop-filter:blur(10px);
+.info-panel {
+  background: var(--surface);
+  border-radius: 20px;
+  padding: 26px;
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.35);
 }
 
-.mini-label{
-    font-size:0.65rem;
-    color:#f1c40f;
-    margin-bottom:6px;
-    font-weight:800;
+.info-panel h3 {
+  color: var(--gold);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
 }
 
-.mini-value{
-    font-size:0.9rem;
-    font-weight:700;
+.info-panel ul { padding-left: 18px; margin: 0; }
+.info-panel ul li {
+  margin-bottom: 10px;
+  color: rgba(240,232,208,0.82);
+  line-height: 1.7;
+  font-size: 0.9rem;
+}
+.info-panel p {
+  color: rgba(240,232,208,0.82);
+  line-height: 1.9;
+  font-size: 0.9rem;
 }
 
-/* ACHIEVEMENTS */
-
-.modal-info ul{
-    padding-left:20px;
-    margin-bottom:26px;
+/* timeline */
+.timeline-box {
+  background: var(--surface);
+  border-radius: 20px;
+  padding: 28px;
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.35);
 }
 
-.modal-info ul li{
-    margin-bottom:8px;
-    line-height:1.5;
-    color:rgba(255,255,255,0.88);
+.timeline-box h3 {
+  color: var(--gold);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
 }
 
-/* TIMELINE */
+.timeline-item {
+  position: relative;
+  padding-left: 26px;
+  margin-bottom: 20px;
+  color: rgba(240,232,208,0.85);
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+.timeline-item::before {
+  content: '';
+  position: absolute; left: 0; top: 8px;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 10px rgba(212,168,67,0.7);
+}
+.timeline-item::after {
+  content: '';
+  position: absolute; left: 4px; top: 18px;
+  width: 2px;
+  height: calc(100% + 6px);
+  background: linear-gradient(to bottom, rgba(212,168,67,0.3), transparent);
+}
+.timeline-item:last-child::after { display: none; }
 
-.timeline-box{
-    display:flex;
-    flex-direction:column;
-    gap:12px;
-    margin-bottom:28px;
+/* fun fact */
+.fun-fact {
+  background: linear-gradient(135deg, rgba(212,168,67,0.1), rgba(212,168,67,0.03));
+  border-left: 3px solid var(--gold);
+  border-radius: 0 18px 18px 0;
+  padding: 22px 26px;
+  color: #fff8e0;
+  font-size: 0.92rem;
+  line-height: 1.85;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
 }
 
-.timeline-item{
-    background:rgba(255,255,255,0.06);
-    border:1px solid rgba(255,255,255,0.08);
-    padding:14px;
-    border-radius:14px;
-    color:rgba(255,255,255,0.85);
-    font-size:0.84rem;
-    backdrop-filter:blur(8px);
+/* ─── UNLOCK TOAST ─── */
+.unlock-toast {
+  position: fixed;
+  bottom: 30px; left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: linear-gradient(135deg, var(--gold-deep), var(--gold));
+  color: #0e0e12;
+  padding: 14px 28px;
+  border-radius: 50px;
+  font-weight: 800;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  z-index: 9999;
+  box-shadow: 0 8px 30px rgba(212,168,67,0.5);
+  transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+  pointer-events: none;
+}
+.unlock-toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:1100px) {
+  .modal-body { grid-template-columns: 1fr; gap: 36px; }
+  .modal-left { position: relative; top: auto; }
+  .modal-card-scene { width: 300px; height: 460px; }
+  .scientist-name { font-size: 2.4rem; }
+  .top-detail-grid { grid-template-columns: 1fr 1fr; }
 }
 
-/* FUN FACT */
-
-.did-you-know{
-    background:rgba(241,196,15,0.08);
-    border-left:4px solid #f1c40f;
-    padding:16px;
-    border-radius:14px;
-    line-height:1.7;
-    margin-bottom:22px;
-    color:#f5f5f5;
-    font-size:0.85rem;
+@media(max-width:768px) {
+  .vault-hero h1 { font-size: 2.5rem; }
+  .cards-grid { grid-template-columns: repeat(2,1fr); gap: 16px; }
+  .card-wrapper { height: 290px; }
+  .extra-sections { grid-template-columns: 1fr; }
+  .top-detail-grid { grid-template-columns: 1fr; }
+  .scientist-name { font-size: 2rem; }
 }
 
-/* QUOTE */
-
-.modal-quote{
-    border-left:4px solid #3498db;
-    padding-left:16px;
-    color:rgba(255,255,255,0.75);
-    font-style:italic;
-    line-height:1.7;
+@media(max-width:520px) {
+  .vault-hero h1 { font-size: 2rem; letter-spacing: 1px; }
+  .brand { font-size: 1.4rem; }
+  .card-wrapper { height: 250px; }
+  .modal-card-scene { width: 260px; height: 400px; }
+  .modal-scroll-wrap { padding: 40px 16px 50px; }
 }
 
-/* MOBILE */
-
-@media(max-width:900px){
-
-    .modal-body{
-        flex-direction:column;
-        gap:35px;
-        overflow-y:auto;
-        max-height:90vh;
-        padding-top:30px;
-    }
-
-    .scientist-name{
-        font-size:2.3rem;
-        text-align:center;
-    }
-
-    .scientist-title{
-        text-align:center;
-    }
-
-    .modal-info{
-        max-width:100%;
-    }
-
+/* ─── ENTRANCE ANIMATION ─── */
+.card-wrapper {
+  animation: cardEntrance 0.5s ease both;
 }
-
-@media(max-width:576px){
-
-    .vault-hero h1{
-        font-size:2.2rem;
-    }
-
-    .cards-grid{
-        grid-template-columns:repeat(2,1fr);
-        gap:14px;
-    }
-
-    .card-wrapper{
-        height:290px;
-    }
-
-    .info-mini-grid{
-        grid-template-columns:1fr;
-    }
-
+@keyframes cardEntrance {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 </style>
 </head>
-
 <body>
 
 <!-- NAVBAR -->
-
 <nav class="vault-nav">
-<div class="container d-flex justify-content-between align-items-center">
-
-<a href="dashboard.html" class="brand">
-SmartQuizzer ☀️
-</a>
-
-<div class="d-none d-md-flex">
-
-<a href="dashboard.html" class="nav-link-custom">
-<i class="fa-solid fa-house"></i>Home
-</a>
-
-<a href="#" class="nav-link-custom">
-<i class="fa-solid fa-book-open"></i>Study Hub
-</a>
-
-<a href="#" class="nav-link-custom">
-<i class="fa-solid fa-fire"></i>Mistakes
-</a>
-
-<a href="https://simrankaurrrrrr-smartquizzer-backend.hf.space/logout"
-class="nav-link-custom text-danger">
-<i class="fa-solid fa-power-off"></i>Logout
-</a>
-
-</div>
-</div>
+  <div class="container d-flex justify-content-between align-items-center">
+    <a href="dashboard.html" class="brand">SmartQuizzer ☀️</a>
+    <div class="d-none d-md-flex align-items-center">
+      <a href="dashboard.html" class="nav-link-custom"><i class="fa-solid fa-house"></i>Home</a>
+      <a href="#" class="nav-link-custom"><i class="fa-solid fa-book-open"></i>Study Hub</a>
+      <a href="#" class="nav-link-custom"><i class="fa-solid fa-fire"></i>Mistakes</a>
+      <a href="https://simrankaurrrrrr-smartquizzer-backend.hf.space/logout" class="nav-link-custom" style="color:#e05555;">
+        <i class="fa-solid fa-power-off" style="color:#e05555;"></i>Logout
+      </a>
+    </div>
+  </div>
 </nav>
 
 <!-- HERO -->
-
 <div class="vault-hero">
-<h1>Scholar’s Vault</h1>
-<p>Unlock legendary minds as you earn XP through quizzes!</p>
+  <h1>Scholar's Vault</h1>
+  <p class="hero-sub">Unlock legendary minds as you earn XP through quizzes</p>
+  <div class="gold-divider"></div>
 </div>
 
-<!-- XP -->
-
+<!-- XP BAR -->
 <div class="xp-vault-bar mx-3 mx-md-auto">
-
-<div class="xp-label">YOUR PROGRESS</div>
-
-<div class="xp-track">
-<div class="xp-fill" id="vault-xp-bar"></div>
-</div>
-
-<div class="d-flex justify-content-between mt-2 fw-bold">
-<span id="vault-xp-text">0 XP</span>
-<span id="vault-cards-text">0 / 10 Unlocked</span>
-</div>
-
+  <div class="xp-label">⚡ Your Progress</div>
+  <div class="xp-track">
+    <div class="xp-fill" id="vault-xp-bar"></div>
+  </div>
+  <div class="d-flex justify-content-between mt-3 fw-bold" style="font-size:0.85rem;">
+    <span id="vault-xp-text" style="color:var(--gold);">0 XP</span>
+    <span id="vault-cards-text" style="color:var(--muted);">0 / 10 Unlocked</span>
+  </div>
 </div>
 
 <!-- STATS -->
-
 <div class="vault-stats">
-
-<div class="stat-pill">
-<div class="num" id="stat-unlocked">0</div>
-<div class="lbl">Unlocked</div>
-</div>
-
-<div class="stat-pill">
-<div class="num" id="stat-xp">0</div>
-<div class="lbl">Your XP</div>
-</div>
-
-<div class="stat-pill">
-<div class="num" id="stat-next">500</div>
-<div class="lbl">Next Unlock</div>
-</div>
-
+  <div class="stat-pill">
+    <div class="num" id="stat-unlocked">0</div>
+    <div class="lbl">Unlocked</div>
+  </div>
+  <div class="stat-pill">
+    <div class="num" id="stat-xp">0</div>
+    <div class="lbl">Your XP</div>
+  </div>
+  <div class="stat-pill">
+    <div class="num" id="stat-next">—</div>
+    <div class="lbl">XP to Next</div>
+  </div>
 </div>
 
 <!-- FILTERS -->
-
 <div class="filter-tabs">
-
-<button class="filter-btn active"
-onclick="filterCards('all',this)">
-All
-</button>
-
-<button class="filter-btn"
-onclick="filterCards('unlocked',this)">
-Unlocked
-</button>
-
-<button class="filter-btn"
-onclick="filterCards('locked',this)">
-Locked
-</button>
-
+  <button class="filter-btn active" onclick="filterCards('all',this)">All</button>
+  <button class="filter-btn" onclick="filterCards('unlocked',this)">Unlocked</button>
+  <button class="filter-btn" onclick="filterCards('locked',this)">Locked</button>
 </div>
 
 <!-- GRID -->
-
 <div class="cards-grid" id="cards-grid"></div>
 
-<!-- ======================================================
-     PREMIUM MODAL
-====================================================== -->
-
+<!-- ══════════════════════════════════════
+     SCHOLAR SHOWCASE CHAMBER MODAL
+══════════════════════════════════════ -->
 <div class="card-modal-overlay" id="cardModal">
 
-<div class="stars"></div>
+  <div class="modal-backdrop-blur"></div>
 
-<button class="modal-close-btn" id="modalCloseBtn">
-<i class="fa-solid fa-xmark"></i>
-</button>
+  <!-- floating particles -->
+  <div class="chamber-particles" id="chamberParticles"></div>
 
-<div class="modal-body">
+  <button class="modal-close-btn" id="modalCloseBtn">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
 
-<div>
+  <div class="modal-scroll-wrap">
+    <div class="modal-body">
 
-<div class="modal-card-scene" id="modalCardScene">
+      <!-- LEFT: CARD STAGE -->
+      <div class="modal-left">
+        <div class="card-stage">
+          <div class="spotlight"></div>
 
-<div class="modal-card-inner" id="modalCardInner">
+          <div class="modal-card-scene" id="modalCardScene">
+            <div class="modal-card-inner" id="modalCardInner">
+              <div class="modal-card-face">
+                <img id="modalFrontImg" src="" alt="Front">
+              </div>
+              <div class="modal-card-face modal-card-back-face">
+                <img id="modalBackImg" src="" alt="Back">
+              </div>
+            </div>
+          </div>
 
-<div class="modal-card-face">
-<img id="modalFrontImg" src="">
+          <div class="card-reflection"></div>
+        </div>
+
+        <div class="modal-hint">
+          <i class="fa-solid fa-rotate"></i>
+          Click card to flip
+        </div>
+      </div>
+
+      <!-- RIGHT: INFO -->
+      <div class="modal-right">
+
+        <div>
+          <div class="scientist-name" id="modalName"></div>
+          <div class="scientist-title" id="modalTitle"></div>
+          <div class="rarity-pill" id="modalRarity"></div>
+
+          <!-- quote -->
+          <div class="quote-block" id="modalQuote"></div>
+        </div>
+
+        <!-- top details -->
+        <div class="top-detail-grid">
+          <div class="detail-card">
+            <div class="label">Field</div>
+            <div class="value" id="modalField"></div>
+          </div>
+          <div class="detail-card">
+            <div class="label">Country</div>
+            <div class="value" id="modalCountry"></div>
+          </div>
+          <div class="detail-card">
+            <div class="label">Born</div>
+            <div class="value" id="modalBorn"></div>
+          </div>
+        </div>
+
+        <!-- achievements + about -->
+        <div class="extra-sections">
+          <div class="info-panel">
+            <h3>🏆 Achievements</h3>
+            <ul id="modalAchievements"></ul>
+          </div>
+          <div class="info-panel">
+            <h3>📖 About</h3>
+            <p id="modalAbout"></p>
+          </div>
+        </div>
+
+        <!-- timeline -->
+        <div class="timeline-box">
+          <h3>📜 Timeline</h3>
+          <div id="modalTimeline"></div>
+        </div>
+
+        <!-- fun fact -->
+        <div class="fun-fact" id="modalFact"></div>
+
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="modal-card-face modal-card-back-face">
-<img id="modalBackImg" src="">
-</div>
-
-</div>
-</div>
-
-<div class="modal-hint" id="modalHint">
-<i class="fa-solid fa-rotate"></i>
-Click card to flip
-</div>
-
-</div>
-
-<!-- RIGHT INFO -->
-
-<div class="modal-info">
-
-<div class="scientist-name" id="modalName"></div>
-
-<div class="scientist-title" id="modalTitle"></div>
-
-<div class="rarity-pill" id="modalRarity"></div>
-
-<!-- MINI INFO -->
-
-<div class="info-mini-grid">
-
-<div class="mini-info-card">
-<div class="mini-label">FIELD</div>
-<div class="mini-value" id="modalField"></div>
-</div>
-
-<div class="mini-info-card">
-<div class="mini-label">COUNTRY</div>
-<div class="mini-value" id="modalCountry"></div>
-</div>
-
-<div class="mini-info-card">
-<div class="mini-label">BORN</div>
-<div class="mini-value" id="modalBorn"></div>
-</div>
-
-</div>
-
-<!-- ACHIEVEMENTS -->
-
-<div class="section-label">
-🏆 Achievements
-</div>
-
-<ul id="modalAchievements"></ul>
-
-<!-- TIMELINE -->
-
-<div class="section-label">
-📜 Timeline
-</div>
-
-<div class="timeline-box" id="modalTimeline"></div>
-
-<!-- DID YOU KNOW -->
-
-<div class="did-you-know" id="modalFact"></div>
-
-<!-- QUOTE -->
-
-<div class="modal-quote" id="modalQuote"></div>
-
-</div>
-
-</div>
-</div>
+<!-- TOAST -->
+<div class="unlock-toast" id="unlockToast">✦ Card Unlocked!</div>
 
 <script>
-
-const BASE_IMG =
-"https://raw.githubusercontent.com/Simrannnnnnnnnnnn/SmartQuizzer-Web/main/cards";
+const BASE_IMG = "https://raw.githubusercontent.com/Simrannnnnnnnnnnn/SmartQuizzer-Web/main/cards";
 
 const ALL_CARDS = [
-
 {
-id:1,
-name:"APJ Abdul Kalam",
-title:"Missile Man of India",
-rarity:"legendary",
-xp_required:0,
-
-field:"Aerospace Science",
-country:"India",
-born:"1931",
-
-achievements:[
-"Led IGMDP Program",
-"11th President of India",
-"Developed Agni Missile",
-"Inspired millions of students",
-"Known as People's President"
-],
-
-timeline:[
-"1960 → Joined DRDO",
-"1980 → Led SLV-III",
-"1998 → Pokhran-II",
-"2002 → Became President"
-],
-
-fact:"💡 Did you know? Kalam sold newspapers as a child before becoming one of India's greatest scientists.",
-
-quote:"Dream big, dreams transform into action.",
-
-front:`${BASE_IMG}/front_side/Apj_Abdul_kalam_Front.png`,
-back:`${BASE_IMG}/back_side/APJ_Abdul_Kalam_Back.png`
+  id:1, name:"APJ Abdul Kalam", title:"Missile Man of India",
+  rarity:"legendary", xp_required:0,
+  field:"Aerospace Science", country:"India 🇮🇳", born:"1931",
+  about:"A visionary scientist and beloved statesman who led India's space and missile programmes before becoming the 11th President. Known affectionately as the People's President.",
+  achievements:["Led IGMDP Missile Program","11th President of India","Developed Agni & Prithvi Missiles","Inspired millions of young students","Bharat Ratna Awardee"],
+  timeline:["1960 → Joined DRDO as scientist","1980 → Led SLV-III successfully","1998 → Supervised Pokhran-II tests","2002 → Sworn in as President of India"],
+  fact:"💡 Did you know? Kalam delivered newspapers as a child to fund his own education — before becoming India's greatest scientist.",
+  quote:"Dream, dream, dream. Dreams transform into thoughts and thoughts result in action.",
+  front:`${BASE_IMG}/front_side/Apj_Abdul_kalam_Front.png`,
+  back:`${BASE_IMG}/back_side/APJ_Abdul_Kalam_Back.png`
 },
-
 {
-id:2,
-name:"Albert Einstein",
-title:"Father of Modern Physics",
-rarity:"legendary",
-xp_required:500,
-
-field:"Physics",
-country:"Germany",
-born:"1879",
-
-achievements:[
-"Developed Theory of Relativity",
-"Created E = mc²",
-"Nobel Prize Winner",
-"Changed modern science forever"
-],
-
-timeline:[
-"1905 → Annus Mirabilis Papers",
-"1915 → General Relativity",
-"1921 → Nobel Prize",
-"1933 → Moved to USA"
-],
-
-fact:"💡 Einstein did not speak fluently until around age 9.",
-
-quote:"Imagination is more important than knowledge.",
-
-front:`${BASE_IMG}/front_side/Albert_einstein_front.png`,
-back:`${BASE_IMG}/back_side/albert_einstein_back.png`
+  id:2, name:"Albert Einstein", title:"Father of Modern Physics",
+  rarity:"legendary", xp_required:500,
+  field:"Theoretical Physics", country:"Germany 🇩🇪", born:"1879",
+  about:"Einstein revolutionised our understanding of space, time, and energy. His theory of relativity and the equation E=mc² changed science forever, earning him the Nobel Prize in Physics.",
+  achievements:["Developed Special & General Relativity","Created E = mc²","Nobel Prize in Physics 1921","Explained Photoelectric Effect","Time Magazine Person of the Century"],
+  timeline:["1905 → Annus Mirabilis — 4 landmark papers","1915 → Completed General Theory of Relativity","1921 → Awarded Nobel Prize in Physics","1933 → Fled to USA, joined Princeton"],
+  fact:"💡 Einstein didn't speak fluently until around age 9, and his teachers thought he was slow — yet he changed the universe.",
+  quote:"Imagination is more important than knowledge. Knowledge is limited; imagination encircles the world.",
+  front:`${BASE_IMG}/front_side/Albert_einstein_front.png`,
+  back:`${BASE_IMG}/back_side/albert_einstein_back.png`
 },
-
 {
-id:3,
-name:"Marie Curie",
-title:"Radioactivity Pioneer",
-rarity:"legendary",
-xp_required:1500,
-
-field:"Chemistry",
-country:"Poland",
-born:"1867",
-
-achievements:[
-"Discovered Radium",
-"First woman Nobel winner",
-"Won 2 Nobel Prizes",
-"Advanced cancer treatment"
-],
-
-timeline:[
-"1898 → Discovered Radium",
-"1903 → Nobel Prize Physics",
-"1911 → Nobel Prize Chemistry",
-"1914 → Mobile X-Ray Units"
-],
-
-fact:"💡 Marie Curie carried radioactive samples in her pockets without knowing the dangers.",
-
-quote:"Nothing in life is to be feared, only understood.",
-
-front:`${BASE_IMG}/front_side/Marie_curie_front.png`,
-back:`${BASE_IMG}/back_side/Marie_Curie_back.png`
+  id:3, name:"Marie Curie", title:"Radioactivity Pioneer",
+  rarity:"legendary", xp_required:1500,
+  field:"Chemistry & Physics", country:"Poland 🇵🇱", born:"1867",
+  about:"Marie Curie was the first woman to win a Nobel Prize, and the only person in history to win Nobel Prizes in two different sciences. Her discovery of radium transformed medicine.",
+  achievements:["Discovered Polonium & Radium","First woman to win Nobel Prize","Won 2 Nobel Prizes (Physics & Chemistry)","Pioneered cancer radiotherapy","First female professor at Univ. of Paris"],
+  timeline:["1898 → Discovered Radium & Polonium","1903 → Nobel Prize in Physics","1911 → Nobel Prize in Chemistry","1914 → Deployed mobile X-ray units in WWI"],
+  fact:"💡 Marie carried radioactive samples in her pockets, unaware of the danger. Her notebooks are still so radioactive they're stored in lead-lined boxes.",
+  quote:"Nothing in life is to be feared, only to be understood. Now is the time to understand more, so that we may fear less.",
+  front:`${BASE_IMG}/front_side/Marie_curie_front.png`,
+  back:`${BASE_IMG}/back_side/Marie_Curie_back.png`
 }
-
 ];
 
 let userXP = 40;
 let activeFilter = 'all';
 
-/* =========================
-   RENDER
-========================= */
-
-function renderAll(){
-
-const unlocked =
-ALL_CARDS.filter(c => userXP >= c.xp_required).length;
-
-document.getElementById('stat-unlocked').textContent = unlocked;
-document.getElementById('stat-xp').textContent = userXP;
-
-document.getElementById('vault-xp-text').textContent =
-`${userXP} XP`;
-
-document.getElementById('vault-cards-text').textContent =
-`${unlocked} / ${ALL_CARDS.length} Unlocked`;
-
-const nextCard =
-ALL_CARDS.find(c => userXP < c.xp_required);
-
-document.getElementById('stat-next').textContent =
-nextCard ? nextCard.xp_required - userXP : "DONE";
-
-const percent = Math.min((userXP / 5000) * 100,100);
-
-document.getElementById('vault-xp-bar').style.width =
-percent + "%";
-
-renderCards();
+/* ── RENDER ALL ── */
+function renderAll() {
+  const unlocked = ALL_CARDS.filter(c => userXP >= c.xp_required).length;
+  document.getElementById('stat-unlocked').textContent = unlocked;
+  document.getElementById('stat-xp').textContent = userXP;
+  document.getElementById('vault-xp-text').textContent = `${userXP} XP`;
+  document.getElementById('vault-cards-text').textContent = `${unlocked} / ${ALL_CARDS.length} Unlocked`;
+  const nextCard = ALL_CARDS.find(c => userXP < c.xp_required);
+  document.getElementById('stat-next').textContent = nextCard ? (nextCard.xp_required - userXP) : '✓';
+  const percent = Math.min((userXP / 5000) * 100, 100);
+  document.getElementById('vault-xp-bar').style.width = percent + '%';
+  renderCards();
 }
 
-/* =========================
-   CARDS
-========================= */
-
-function renderCards(){
-
-const grid = document.getElementById('cards-grid');
-
-grid.innerHTML = '';
-
-ALL_CARDS
-.filter(card => {
-
-if(activeFilter === 'unlocked')
-return userXP >= card.xp_required;
-
-if(activeFilter === 'locked')
-return userXP < card.xp_required;
-
-return true;
-
-})
-.forEach(card => {
-
-const isUnlocked = userXP >= card.xp_required;
-
-const wrapper = document.createElement('div');
-
-wrapper.className =
-`card-wrapper ${isUnlocked ? '' : 'card-locked'}`;
-
-wrapper.innerHTML = `
-
-<img class="card-img" src="${card.front}">
-
-<div class="rarity-tag"
-style="background:var(--${card.rarity})">
-${card.rarity.toUpperCase()}
-</div>
-
-${isUnlocked
-?
-`<div class="flip-hint-badge">
-<i class="fa-solid fa-rotate"></i>
-Tap to Explore
-</div>`
-
-:
-
-`<div class="lock-overlay">
-<i class="fa-solid fa-lock"></i>
-<div>${card.xp_required - userXP} XP Needed</div>
-</div>`
-
+/* ── RENDER CARDS ── */
+function renderCards() {
+  const grid = document.getElementById('cards-grid');
+  grid.innerHTML = '';
+  const filtered = ALL_CARDS.filter(card => {
+    if (activeFilter === 'unlocked') return userXP >= card.xp_required;
+    if (activeFilter === 'locked')   return userXP < card.xp_required;
+    return true;
+  });
+  filtered.forEach((card, idx) => {
+    const isUnlocked = userXP >= card.xp_required;
+    const wrapper = document.createElement('div');
+    wrapper.className = `card-wrapper ${isUnlocked ? 'unlocked' : 'card-locked'}`;
+    wrapper.style.animationDelay = `${idx * 0.07}s`;
+    wrapper.innerHTML = `
+      <img class="card-img" src="${card.front}" alt="${card.name}">
+      <div class="rarity-tag" style="background:var(--${card.rarity});">
+        ${card.rarity.toUpperCase()}
+      </div>
+      ${isUnlocked
+        ? `<div class="flip-hint-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> &nbsp;Explore</div>`
+        : `<div class="lock-overlay">
+             <i class="fa-solid fa-lock"></i>
+             <div class="xp-need">${card.xp_required - userXP} XP Needed</div>
+           </div>`
+      }
+    `;
+    if (isUnlocked) wrapper.addEventListener('click', () => openModal(card));
+    grid.appendChild(wrapper);
+  });
 }
 
-`;
-
-if(isUnlocked){
-wrapper.addEventListener('click',() => openModal(card));
-}
-
-grid.appendChild(wrapper);
-
-});
-
-}
-
-/* =========================
-   MODAL
-========================= */
-
-const modal = document.getElementById('cardModal');
+/* ── MODAL ── */
+const modal     = document.getElementById('cardModal');
 const cardInner = document.getElementById('modalCardInner');
 
-function openModal(card){
+function openModal(card) {
+  document.getElementById('modalFrontImg').src  = card.front;
+  document.getElementById('modalBackImg').src   = card.back;
+  document.getElementById('modalName').textContent  = card.name;
+  document.getElementById('modalTitle').textContent = card.title;
+  document.getElementById('modalAbout').textContent = card.about;
 
-document.getElementById('modalFrontImg').src = card.front;
-document.getElementById('modalBackImg').src = card.back;
+  const rarity = document.getElementById('modalRarity');
+  rarity.textContent = card.rarity.toUpperCase();
+  rarity.style.background = `var(--${card.rarity})`;
 
-document.getElementById('modalName').textContent = card.name;
-document.getElementById('modalTitle').textContent = card.title;
+  document.getElementById('modalField').textContent   = card.field;
+  document.getElementById('modalCountry').textContent = card.country;
+  document.getElementById('modalBorn').textContent    = card.born;
+  document.getElementById('modalQuote').textContent   = card.quote;
 
-const rarity = document.getElementById('modalRarity');
+  document.getElementById('modalAchievements').innerHTML =
+    card.achievements.map(a => `<li>${a}</li>`).join('');
 
-rarity.textContent = card.rarity.toUpperCase();
-rarity.style.background = `var(--${card.rarity})`;
+  document.getElementById('modalTimeline').innerHTML =
+    card.timeline.map(t => `<div class="timeline-item">${t}</div>`).join('');
 
-document.getElementById('modalField').textContent = card.field;
-document.getElementById('modalCountry').textContent = card.country;
-document.getElementById('modalBorn').textContent = card.born;
+  document.getElementById('modalFact').textContent = card.fact;
 
-document.getElementById('modalAchievements').innerHTML =
-card.achievements.map(a => `<li>${a}</li>`).join('');
-
-document.getElementById('modalTimeline').innerHTML =
-card.timeline.map(t =>
-`<div class="timeline-item">${t}</div>`
-).join('');
-
-document.getElementById('modalFact').textContent =
-card.fact;
-
-document.getElementById('modalQuote').textContent =
-`"${card.quote}"`;
-
-cardInner.classList.remove('flipped');
-
-modal.classList.add('active');
-
-document.body.style.overflow = 'hidden';
-
+  cardInner.classList.remove('flipped');
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+  spawnParticles();
 }
 
-function closeModal(){
-
-modal.classList.remove('active');
-
-document.body.style.overflow = '';
-
+function closeModal() {
+  modal.classList.remove('active');
+  document.body.style.overflow = '';
+  document.getElementById('chamberParticles').innerHTML = '';
 }
 
-/* FLIP */
+/* ── PARTICLES ── */
+function spawnParticles() {
+  const container = document.getElementById('chamberParticles');
+  container.innerHTML = '';
+  for (let i = 0; i < 28; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `
+      left: ${Math.random() * 100}%;
+      bottom: ${Math.random() * 20}%;
+      width: ${1 + Math.random() * 2}px;
+      height: ${1 + Math.random() * 2}px;
+      animation-duration: ${4 + Math.random() * 6}s;
+      animation-delay: ${Math.random() * 4}s;
+      opacity: ${0.3 + Math.random() * 0.5};
+    `;
+    container.appendChild(p);
+  }
+}
 
-document.getElementById('modalCardScene')
-.addEventListener('click', () => {
-
-cardInner.classList.toggle('flipped');
-
+/* ── FLIP ── */
+document.getElementById('modalCardScene').addEventListener('click', () => {
+  cardInner.classList.toggle('flipped');
 });
 
-/* CLOSE */
-
-document.getElementById('modalCloseBtn')
-.addEventListener('click', closeModal);
-
+/* ── CLOSE ── */
+document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
 modal.addEventListener('click', e => {
-if(e.target === modal){
-closeModal();
-}
+  if (e.target === modal || e.target.classList.contains('modal-backdrop-blur') || e.target.classList.contains('modal-scroll-wrap')) closeModal();
 });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-/* FILTER */
-
-function filterCards(type,btn){
-
-activeFilter = type;
-
-document.querySelectorAll('.filter-btn')
-.forEach(b => b.classList.remove('active'));
-
-btn.classList.add('active');
-
-renderCards();
-
+/* ── FILTER ── */
+function filterCards(type, btn) {
+  activeFilter = type;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCards();
 }
 
 renderAll();
-
 </script>
-
 </body>
 </html>
