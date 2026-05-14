@@ -1,837 +1,717 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Card Vault | SmartQuizzer</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        :root {
-            --gold: #FFD700;
-            --gold-dark: #b8860b;
-            --navy: #0a0e1a;
-            --navy-card: #0d1528;
-            --legendary: linear-gradient(135deg, #FFD700, #FF6B00, #FFD700);
-            --epic: linear-gradient(135deg, #9B59B6, #6C3483, #9B59B6);
-            --rare: linear-gradient(135deg, #3498DB, #1A5276, #3498DB);
-            --common: linear-gradient(135deg, #7F8C8D, #2C3E50, #7F8C8D);
-        }
+<title>Scholar's Vault | SmartQuizzer</title>
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-        body {
-            background: var(--navy);
-            font-family: 'Crimson Text', serif;
-            color: #fff;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+<style>
 
-        /* Stars background */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-image: 
-                radial-gradient(1px 1px at 20% 30%, rgba(255,215,0,0.4) 0%, transparent 100%),
-                radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,0.3) 0%, transparent 100%),
-                radial-gradient(1px 1px at 50% 60%, rgba(255,215,0,0.2) 0%, transparent 100%),
-                radial-gradient(1px 1px at 10% 80%, rgba(255,255,255,0.2) 0%, transparent 100%),
-                radial-gradient(1px 1px at 90% 70%, rgba(255,215,0,0.3) 0%, transparent 100%),
-                radial-gradient(2px 2px at 35% 15%, rgba(255,255,255,0.4) 0%, transparent 100%),
-                radial-gradient(2px 2px at 65% 85%, rgba(255,215,0,0.3) 0%, transparent 100%);
-            pointer-events: none;
-            z-index: 0;
-        }
+:root{
+    --primary-blue:#3498db;
+    --dark-blue:#2c3e50;
+    --sunny-yellow:#f1c40f;
+    --soft-bg:#f4f9ff;
+    --card-white:#ffffff;
 
-        /* NAV */
-        .vault-nav {
-            background: rgba(10,14,26,0.95);
-            border-bottom: 2px solid var(--gold-dark);
-            padding: 14px 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-        }
-        .vault-nav .brand {
-            font-family: 'Cinzel', serif;
-            font-size: 1.4rem;
-            color: var(--gold);
-            text-decoration: none;
-            font-weight: 900;
-        }
-        .nav-link-custom {
-            color: #ccc !important;
-            font-family: 'Cinzel', serif;
-            font-size: 0.85rem;
-            margin: 0 10px;
-            text-decoration: none;
-            transition: 0.3s;
-        }
-        .nav-link-custom:hover { color: var(--gold) !important; }
-        .nav-link-custom i { color: var(--gold); margin-right: 5px; }
+    --legendary:linear-gradient(135deg,#f1c40f,#f39c12);
+    --epic:linear-gradient(135deg,#9b59b6,#8e44ad);
+    --rare:linear-gradient(135deg,#3498db,#2980b9);
+    --common:linear-gradient(135deg,#95a5a6,#7f8c8d);
+}
 
-        /* HERO SECTION */
-        .vault-hero {
-            text-align: center;
-            padding: 50px 20px 30px;
-            position: relative;
-            z-index: 1;
-        }
-        .vault-hero h1 {
-            font-family: 'Cinzel', serif;
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            font-weight: 900;
-            background: linear-gradient(135deg, #FFD700, #FFA500, #FFD700);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 10px;
-            text-shadow: none;
-        }
-        .vault-hero p {
-            color: #aaa;
-            font-size: 1.1rem;
-            font-style: italic;
-        }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
 
-        /* XP PROGRESS BAR */
-        .xp-vault-bar {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,215,0,0.2);
-            border-radius: 20px;
-            padding: 16px 24px;
-            margin: 0 auto 40px;
-            max-width: 600px;
-            position: relative;
-            z-index: 1;
-        }
-        .xp-vault-bar .xp-label {
-            font-family: 'Cinzel', serif;
-            font-size: 0.8rem;
-            color: var(--gold);
-            letter-spacing: 0.1em;
-            margin-bottom: 8px;
-        }
-        .xp-track {
-            background: rgba(255,255,255,0.1);
-            border-radius: 50px;
-            height: 12px;
-            overflow: hidden;
-        }
-        .xp-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #FFD700, #FFA500);
-            border-radius: 50px;
-            transition: width 1.5s ease;
-            box-shadow: 0 0 10px rgba(255,215,0,0.5);
-        }
-        .xp-stats {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 6px;
-            font-size: 0.85rem;
-            color: #888;
-        }
+body{
+    background:var(--soft-bg);
+    font-family:'Poppins',sans-serif;
+    min-height:100vh;
+    color:var(--dark-blue);
+}
 
-        /* FILTER TABS */
-        .filter-tabs {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 40px;
-            position: relative;
-            z-index: 1;
-        }
-        .filter-btn {
-            font-family: 'Cinzel', serif;
-            font-size: 0.8rem;
-            padding: 8px 20px;
-            border-radius: 50px;
-            border: 1px solid rgba(255,215,0,0.3);
-            background: transparent;
-            color: #aaa;
-            cursor: pointer;
-            transition: 0.3s;
-            letter-spacing: 0.05em;
-        }
-        .filter-btn:hover, .filter-btn.active {
-            background: var(--gold);
-            color: #000;
-            border-color: var(--gold);
-        }
+/* NAVBAR */
 
-        /* CARDS GRID */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 30px;
-            padding: 0 20px 60px;
-            max-width: 1400px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
+.vault-nav{
+    background:white;
+    border-bottom:3px solid var(--sunny-yellow);
+    padding:14px 0;
+    position:sticky;
+    top:0;
+    z-index:100;
+    box-shadow:0 2px 10px rgba(0,0,0,0.05);
+}
 
-        /* CARD WRAPPER */
-        .card-wrapper {
-            perspective: 1000px;
-            height: 340px;
-            cursor: pointer;
-        }
+.brand{
+    text-decoration:none;
+    font-family:'Cinzel',serif;
+    font-weight:900;
+    font-size:1.6rem;
+    color:var(--primary-blue);
+}
 
-        .card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            transform-style: preserve-3d;
-            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+.nav-link-custom{
+    margin-left:20px;
+    text-decoration:none;
+    color:var(--dark-blue);
+    font-weight:600;
+    transition:0.3s;
+}
 
-        .card-wrapper:hover .card-inner,
-        .card-wrapper.flipped .card-inner {
-            transform: rotateY(180deg);
-        }
+.nav-link-custom:hover{
+    color:var(--primary-blue);
+}
 
-        .card-front, .card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-            border-radius: 16px;
-            overflow: hidden;
-        }
+.nav-link-custom i{
+    margin-right:6px;
+    color:var(--sunny-yellow);
+}
 
-        .card-back {
-            transform: rotateY(180deg);
-        }
+/* HERO */
 
-        /* LOCKED CARD */
-        .card-locked .card-front {
-            filter: brightness(0.3) grayscale(1);
-        }
-        .card-locked .lock-overlay {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-            border-radius: 16px;
-        }
-        .card-locked .lock-overlay i {
-            font-size: 2.5rem;
-            color: var(--gold);
-            margin-bottom: 8px;
-            opacity: 0.8;
-        }
-        .card-locked .lock-overlay span {
-            font-family: 'Cinzel', serif;
-            font-size: 0.75rem;
-            color: var(--gold);
-            text-align: center;
-            opacity: 0.8;
-            letter-spacing: 0.05em;
-        }
+.vault-hero{
+    text-align:center;
+    padding:40px 20px 20px;
+}
 
-        /* FRONT IMAGE */
-        .card-front img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
+.vault-hero h1{
+    font-family:'Cinzel',serif;
+    font-size:2.6rem;
+    font-weight:900;
+    color:var(--dark-blue);
+}
 
-        /* RARITY BORDER */
-        .rarity-legendary { box-shadow: 0 0 20px rgba(255,215,0,0.6), 0 0 40px rgba(255,100,0,0.3), inset 0 0 0 2px #FFD700; }
-        .rarity-epic      { box-shadow: 0 0 20px rgba(155,89,182,0.6), 0 0 40px rgba(108,52,131,0.3), inset 0 0 0 2px #9B59B6; }
-        .rarity-rare      { box-shadow: 0 0 20px rgba(52,152,219,0.6), 0 0 40px rgba(26,82,118,0.3), inset 0 0 0 2px #3498DB; }
-        .rarity-common    { box-shadow: 0 0 10px rgba(127,140,141,0.4), inset 0 0 0 2px #7F8C8D; }
+.vault-hero p{
+    color:#5f6f81;
+    margin-top:8px;
+    font-style:italic;
+}
 
-        /* RARITY BADGE on front */
-        .rarity-tag {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-family: 'Cinzel', serif;
-            font-size: 0.65rem;
-            padding: 3px 10px;
-            border-radius: 50px;
-            font-weight: 700;
-            letter-spacing: 0.05em;
-            z-index: 5;
-        }
-        .tag-legendary { background: linear-gradient(135deg, #FFD700, #FF6B00); color: #000; }
-        .tag-epic      { background: linear-gradient(135deg, #9B59B6, #6C3483); color: #fff; }
-        .tag-rare      { background: linear-gradient(135deg, #3498DB, #1A5276); color: #fff; }
-        .tag-common    { background: linear-gradient(135deg, #7F8C8D, #2C3E50); color: #fff; }
+/* XP SECTION */
 
-        /* CARD BACK DESIGN */
-        .card-back-content {
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(160deg, #0d1528 0%, #0a1020 60%, #0d1a35 100%);
-            border-radius: 16px;
-            padding: 14px;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
+.xp-vault-bar{
+    background:white;
+    max-width:650px;
+    margin:auto;
+    padding:22px;
+    border-radius:18px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.06);
+}
 
-        .back-title {
-            font-family: 'Cinzel', serif;
-            font-size: 0.7rem;
-            font-weight: 900;
-            color: var(--gold);
-            text-align: center;
-            border-bottom: 1px solid rgba(255,215,0,0.3);
-            padding-bottom: 8px;
-            margin-bottom: 8px;
-            letter-spacing: 0.05em;
-            line-height: 1.3;
-        }
+.xp-label{
+    font-size:0.8rem;
+    font-weight:700;
+    color:var(--primary-blue);
+    margin-bottom:10px;
+}
 
-        .back-nickname {
-            background: rgba(255,215,0,0.08);
-            border-left: 3px solid var(--gold);
-            padding: 5px 8px;
-            margin-bottom: 8px;
-            border-radius: 0 6px 6px 0;
-        }
-        .back-nickname .nic-label {
-            font-family: 'Cinzel', serif;
-            font-size: 0.6rem;
-            color: var(--gold);
-            letter-spacing: 0.08em;
-        }
-        .back-nickname .nic-value {
-            font-size: 0.75rem;
-            color: #fff;
-            font-style: italic;
-            line-height: 1.3;
-        }
+.xp-track{
+    height:14px;
+    border-radius:50px;
+    overflow:hidden;
+    background:#e8edf3;
+}
 
-        .back-achievements {
-            flex: 1;
-            overflow: hidden;
-        }
-        .back-achievements .ach-label {
-            font-family: 'Cinzel', serif;
-            font-size: 0.6rem;
-            color: var(--gold);
-            letter-spacing: 0.08em;
-            margin-bottom: 4px;
-        }
-        .back-achievements ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .back-achievements ul li {
-            font-size: 0.68rem;
-            color: #ccc;
-            padding: 2px 0;
-            padding-left: 12px;
-            position: relative;
-            line-height: 1.3;
-        }
-        .back-achievements ul li::before {
-            content: '▸';
-            position: absolute;
-            left: 0;
-            color: var(--gold);
-            font-size: 0.6rem;
-        }
+.xp-fill{
+    height:100%;
+    width:0%;
+    background:var(--legendary);
+    transition:width 1s ease;
+}
 
-        .back-quote {
-            margin-top: 6px;
-            padding: 5px 8px;
-            background: rgba(255,255,255,0.04);
-            border-radius: 6px;
-            font-size: 0.62rem;
-            font-style: italic;
-            color: #aaa;
-            text-align: center;
-            line-height: 1.4;
-            border-top: 1px solid rgba(255,215,0,0.15);
-        }
+/* STATS */
 
-        .back-rarity {
-            text-align: center;
-            margin-top: 5px;
-            font-family: 'Cinzel', serif;
-            font-size: 0.6rem;
-            color: var(--gold);
-            letter-spacing: 0.1em;
-        }
+.vault-stats{
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    flex-wrap:wrap;
+    margin:30px 0;
+}
 
-        /* SHIMMER on hover */
-        .card-wrapper:not(.card-locked):hover .card-front::after {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%;
-            width: 200%; height: 200%;
-            background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.08) 50%, transparent 60%);
-            animation: shimmer 0.6s ease;
-            pointer-events: none;
-        }
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
+.stat-pill{
+    background:white;
+    padding:12px 24px;
+    border-radius:50px;
+    box-shadow:0 3px 10px rgba(0,0,0,0.06);
+    border-bottom:4px solid var(--primary-blue);
+    text-align:center;
+}
 
-        /* UNLOCK ANIMATION */
-        @keyframes unlockPop {
-            0% { transform: scale(0.8); opacity: 0; }
-            60% { transform: scale(1.05); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        .card-wrapper.just-unlocked {
-            animation: unlockPop 0.6s ease forwards;
-        }
+.stat-pill .num{
+    font-size:1.2rem;
+    font-weight:800;
+    color:var(--primary-blue);
+}
 
-        /* STATS ROW */
-        .vault-stats {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            flex-wrap: wrap;
-            margin-bottom: 30px;
-            position: relative;
-            z-index: 1;
-        }
-        .stat-pill {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,215,0,0.2);
-            border-radius: 50px;
-            padding: 8px 20px;
-            text-align: center;
-        }
-        .stat-pill .num {
-            font-family: 'Cinzel', serif;
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--gold);
-        }
-        .stat-pill .lbl {
-            font-size: 0.75rem;
-            color: #888;
-        }
+.stat-pill .lbl{
+    font-size:0.72rem;
+    color:#7d8b99;
+    text-transform:uppercase;
+}
 
-        /* SECTION LABEL */
-        .section-label {
-            font-family: 'Cinzel', serif;
-            font-size: 0.75rem;
-            color: var(--gold-dark);
-            letter-spacing: 0.15em;
-            text-align: center;
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 1;
-        }
-        .section-label::before, .section-label::after {
-            content: '——————';
-            opacity: 0.3;
-            margin: 0 10px;
-        }
+/* FILTERS */
 
-        /* MOBILE */
-        @media (max-width: 576px) {
-            .cards-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 12px 40px; }
-            .card-wrapper { height: 280px; }
-        }
-    </style>
+.filter-tabs{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:30px;
+}
+
+.filter-btn{
+    border:none;
+    padding:10px 20px;
+    border-radius:50px;
+    background:white;
+    color:var(--primary-blue);
+    border:2px solid var(--primary-blue);
+    font-weight:600;
+    transition:0.3s;
+}
+
+.filter-btn:hover,
+.filter-btn.active{
+    background:var(--primary-blue);
+    color:white;
+}
+
+/* GRID */
+
+.cards-grid{
+    max-width:1200px;
+    margin:auto;
+    padding:20px;
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+    gap:25px;
+}
+
+/* CARD */
+
+.card-wrapper{
+    perspective:1000px;
+    height:350px;
+    transition:0.3s;
+}
+
+.card-wrapper:hover{
+    transform:translateY(-5px);
+}
+
+.card-inner{
+    width:100%;
+    height:100%;
+    position:relative;
+    transform-style:preserve-3d;
+    transition:transform 0.7s;
+}
+
+.card-wrapper.flipped .card-inner{
+    transform:rotateY(180deg);
+}
+
+.card-front,
+.card-back{
+    position:absolute;
+    width:100%;
+    height:100%;
+    border-radius:18px;
+    overflow:hidden;
+    backface-visibility:hidden;
+    box-shadow:0 10px 24px rgba(0,0,0,0.12);
+}
+
+/* FRONT */
+
+.card-front img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+/* BACK */
+
+.card-back{
+    transform:rotateY(180deg);
+    background:linear-gradient(180deg,#ffffff,#f8fbff);
+    border:3px solid var(--primary-blue);
+    padding:16px;
+}
+
+.card-back-content{
+    height:100%;
+    display:flex;
+    flex-direction:column;
+}
+
+.back-title{
+    font-family:'Cinzel',serif;
+    font-weight:800;
+    color:var(--primary-blue);
+    font-size:0.9rem;
+    border-bottom:1px solid #dde7f0;
+    padding-bottom:6px;
+}
+
+.back-sub{
+    color:#7b8da1;
+    font-size:0.72rem;
+    margin-top:5px;
+}
+
+.ach-label{
+    margin-top:12px;
+    color:#f39c12;
+    font-size:0.72rem;
+    font-weight:700;
+}
+
+.card-back ul{
+    padding-left:18px;
+    margin-top:8px;
+    font-size:0.73rem;
+    flex-grow:1;
+}
+
+.card-back li{
+    margin-bottom:5px;
+}
+
+.back-quote{
+    border-top:1px solid #dde7f0;
+    padding-top:10px;
+    font-size:0.68rem;
+    color:#6f7c8a;
+    font-style:italic;
+    text-align:center;
+}
+
+/* RARITY */
+
+.rarity-tag{
+    position:absolute;
+    top:12px;
+    right:12px;
+    padding:5px 12px;
+    border-radius:50px;
+    color:white;
+    font-size:0.65rem;
+    font-weight:800;
+    box-shadow:0 3px 10px rgba(0,0,0,0.2);
+}
+
+/* LOCKED */
+
+.card-locked .card-front{
+    filter:blur(2px) grayscale(0.8) brightness(0.7);
+}
+
+.lock-overlay{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    background:rgba(44,62,80,0.45);
+    backdrop-filter:blur(2px);
+    color:white;
+    text-align:center;
+}
+
+.lock-overlay i{
+    font-size:3rem;
+    margin-bottom:12px;
+}
+
+.lock-overlay div{
+    font-weight:800;
+    font-size:0.9rem;
+}
+
+/* MOBILE */
+
+@media(max-width:576px){
+
+    .cards-grid{
+        grid-template-columns:repeat(2,1fr);
+        gap:14px;
+    }
+
+    .card-wrapper{
+        height:300px;
+    }
+
+    .vault-hero h1{
+        font-size:2rem;
+    }
+
+}
+
+</style>
 </head>
+
 <body>
 
-<!-- NAV -->
+<!-- NAVBAR -->
+
 <nav class="vault-nav">
-    <div class="container d-flex justify-content-between align-items-center">
-        <a href="dashboard.html" class="brand">SmartQuizzer ☀️</a>
-        <div class="d-none d-md-flex align-items-center">
-            <a href="dashboard.html" class="nav-link-custom"><i class="fa-solid fa-house"></i>Home</a>
-            <a href="study_hub.html" class="nav-link-custom"><i class="fa-solid fa-graduation-cap"></i>Study Hub</a>
-            <a href="library.html" class="nav-link-custom"><i class="fa-solid fa-book"></i>Library</a>
-            <a href="https://simrankaurrrrrr-smartquizzer-backend.hf.space/logout" class="nav-link-custom text-danger ms-3"><i class="fa-solid fa-power-off"></i>Logout</a>
-        </div>
-    </div>
+<div class="container d-flex justify-content-between align-items-center">
+
+<a href="dashboard.html" class="brand">
+SmartQuizzer ☀️
+</a>
+
+<div class="d-none d-md-flex">
+
+<a href="dashboard.html" class="nav-link-custom">
+<i class="fa-solid fa-house"></i>Home
+</a>
+
+<a href="https://simrankaurrrrrr-smartquizzer-backend.hf.space/logout"
+class="nav-link-custom text-danger">
+<i class="fa-solid fa-power-off"></i>Logout
+</a>
+
+</div>
+</div>
 </nav>
 
 <!-- HERO -->
+
 <div class="vault-hero">
-    <h1>⚡ Scholar's Vault</h1>
-    <p>Collect legendary minds. Unlock their secrets. Build your legacy.</p>
+<h1>Scholar's Vault</h1>
+<p>Unlock legendary minds as you earn XP through quizzes!</p>
 </div>
 
 <!-- XP BAR -->
+
 <div class="xp-vault-bar mx-3 mx-md-auto">
-    <div class="xp-label">YOUR PROGRESS</div>
-    <div class="xp-track">
-        <div class="xp-fill" id="vault-xp-bar" style="width: 0%"></div>
-    </div>
-    <div class="xp-stats">
-        <span id="vault-xp-text">0 XP</span>
-        <span id="vault-cards-text">0 / 10 Cards Unlocked</span>
-    </div>
+
+<div class="xp-label">YOUR PROGRESS</div>
+
+<div class="xp-track">
+<div class="xp-fill" id="vault-xp-bar"></div>
+</div>
+
+<div class="d-flex justify-content-between mt-2"
+style="font-size:0.82rem;font-weight:600;">
+
+<span id="vault-xp-text">0 XP</span>
+<span id="vault-cards-text">0 / 10 Unlocked</span>
+
+</div>
+
 </div>
 
 <!-- STATS -->
+
 <div class="vault-stats">
-    <div class="stat-pill">
-        <div class="num" id="stat-unlocked">0</div>
-        <div class="lbl">Unlocked</div>
-    </div>
-    <div class="stat-pill">
-        <div class="num" id="stat-legendary">0</div>
-        <div class="lbl">Legendary</div>
-    </div>
-    <div class="stat-pill">
-        <div class="num" id="stat-xp">0</div>
-        <div class="lbl">Total XP</div>
-    </div>
-    <div class="stat-pill">
-        <div class="num" id="stat-next">500</div>
-        <div class="lbl">XP to Next Card</div>
-    </div>
+
+<div class="stat-pill">
+<div class="num" id="stat-unlocked">0</div>
+<div class="lbl">Unlocked</div>
+</div>
+
+<div class="stat-pill">
+<div class="num" id="stat-xp">0</div>
+<div class="lbl">Your XP</div>
+</div>
+
+<div class="stat-pill">
+<div class="num" id="stat-next">500</div>
+<div class="lbl">Next Unlock</div>
+</div>
+
 </div>
 
 <!-- FILTERS -->
+
 <div class="filter-tabs">
-    <button class="filter-btn active" onclick="filterCards('all', this)">All Cards</button>
-    <button class="filter-btn" onclick="filterCards('unlocked', this)">Unlocked</button>
-    <button class="filter-btn" onclick="filterCards('locked', this)">Locked</button>
-    <button class="filter-btn" onclick="filterCards('legendary', this)">⭐ Legendary</button>
-    <button class="filter-btn" onclick="filterCards('epic', this)">💜 Epic</button>
+
+<button class="filter-btn active"
+onclick="filterCards('all',this)">
+All
+</button>
+
+<button class="filter-btn"
+onclick="filterCards('unlocked',this)">
+Unlocked
+</button>
+
+<button class="filter-btn"
+onclick="filterCards('locked',this)">
+Locked
+</button>
+
 </div>
 
-<div class="section-label">FLIP CARD TO REVEAL KNOWLEDGE</div>
+<!-- GRID -->
 
-<!-- CARDS GRID -->
 <div class="cards-grid" id="cards-grid"></div>
 
 <script>
-const BACKEND_URL = "https://simrankaurrrrrr-smartquizzer-backend.hf.space";
-const BASE_IMG = "https://raw.githubusercontent.com/Simrannnnnnnnnnnn/SmartQuizzer-Web/main/cards";
+
+const BACKEND_URL =
+"https://simrankaurrrrrr-smartquizzer-backend.hf.space";
+
+const BASE_IMG =
+"https://raw.githubusercontent.com/Simrannnnnnnnnnnn/SmartQuizzer-Web/main/cards";
 
 const ALL_CARDS = [
-    {
-        id: 1,
-        name: "APJ Abdul Kalam",
-        title: "Missile Man of India",
-        field: "Aerospace Science",
-        rarity: "legendary",
-        xp_required: 0,
-        front: `${BASE_IMG}/front_side/Apj_Abdul_kalam_Front.png`,
-        back: `${BASE_IMG}/back_side/APJ_Abdul_Kalam_Back.png`,
-        nickname: ["Missile Man of India", "People's President"],
-        achievements: [
-            "Developed Agni, Prithvi, Trishul, Akash, Nag missiles",
-            "Led IGMDP — India's missile self-reliance program",
-            "Developed SLV-III — launched Rohini satellite (1980)",
-            "11th President of India (2002–2007)",
-            "Chief Scientific Adviser to Prime Minister"
-        ],
-        quote: "Dream, Dream, Dream. Dreams transform into thoughts and thoughts result in action."
-    },
-    {
-        id: 2,
-        name: "Srinivasa Ramanujan",
-        title: "Mathematical Genius",
-        field: "Mathematics",
-        rarity: "legendary",
-        xp_required: 500,
-        front: `${BASE_IMG}/front_side/Srinivasa_Ramanujan_front.png`,
-        back: `${BASE_IMG}/back_side/Srinivasa_back.png`,
-        nickname: ["The Man Who Knew Infinity", "Magic Mind of Mathematics"],
-        achievements: [
-            "Discovered Hardy-Ramanujan Number: 1729",
-            "Ramanujan Prime & Ramanujan Theta Function",
-            "Infinite series formula for calculating Pi",
-            "Mock Theta Functions (used in black hole physics!)",
-            "Self-taught — no formal university training"
-        ],
-        quote: "An equation has no meaning unless it expresses a thought of God."
-    },
-    {
-        id: 3,
-        name: "C.V. Raman",
-        title: "Discoverer of Raman Effect",
-        field: "Physics",
-        rarity: "legendary",
-        xp_required: 1000,
-        front: `${BASE_IMG}/front_side/CV_RAMAN_Front.png`,
-        back: `${BASE_IMG}/back_side/CV_Raman_Back.png`,
-        nickname: ["The Light Wizard of India", "Pride of Indian Science"],
-        achievements: [
-            "Discovered Raman Effect — light scattering (1928)",
-            "First Asian Nobel Prize in Physics (1930)",
-            "Founded Indian Academy of Sciences (1934)",
-            "Explained why the sky and ocean appear blue",
-            "Established Raman Research Institute, Bangalore"
-        ],
-        quote: "Success can come to you by courageous devotion to the task before you."
-    },
-    {
-        id: 4,
-        name: "Albert Einstein",
-        title: "Father of Modern Physics",
-        field: "Theoretical Physics",
-        rarity: "legendary",
-        xp_required: 1500,
-        front: `${BASE_IMG}/front_side/Albert_einstein_front.png`,
-        back: `${BASE_IMG}/back_side/albert_einstein_back.png`,
-        nickname: ["Father of Modern Physics", "The Genius of the Century"],
-        achievements: [
-            "Theory of Relativity — E=mc²",
-            "Photoelectric Effect — Nobel Prize 1921",
-            "Predicted gravitational waves (proved 100 yrs later!)",
-            "Modern GPS technology based on his theories",
-            "Bose-Einstein Condensate discovery"
-        ],
-        quote: "Imagination is more important than knowledge."
-    },
-    {
-        id: 5,
-        name: "Marie Curie",
-        title: "First Woman Nobel Prize Winner",
-        field: "Chemistry & Physics",
-        rarity: "legendary",
-        xp_required: 2000,
-        front: `${BASE_IMG}/front_side/Marie_curie_front.png`,
-        back: `${BASE_IMG}/back_side/Marie_Curie_back.png`,
-        nickname: ["Mother of Modern Physics", "The Radioactive Genius"],
-        achievements: [
-            "Discovered two elements: Polonium & Radium",
-            "ONLY person with Nobel Prize in TWO sciences",
-            "Coined the term 'Radioactivity'",
-            "Developed mobile X-ray units in World War I",
-            "Pioneered radiation therapy for cancer"
-        ],
-        quote: "Nothing in life is to be feared, it is only to be understood."
-    },
-    {
-        id: 6,
-        name: "Nikola Tesla",
-        title: "Master of Electricity",
-        field: "Electrical Engineering",
-        rarity: "legendary",
-        xp_required: 2500,
-        front: `${BASE_IMG}/front_side/Nikola_tesla_Front.png`,
-        back: `${BASE_IMG}/back_side/nikola_tesla_back.png`,
-        nickname: ["Master of Lightning", "The Man Who Invented the 20th Century"],
-        achievements: [
-            "Invented AC (Alternating Current) electrical system",
-            "Invented the Tesla Coil",
-            "Pioneered radio transmission (before Marconi)",
-            "Invented rotating magnetic field & induction motor",
-            "Held 300+ patents across multiple countries"
-        ],
-        quote: "The present is theirs; the future, for which I really worked, is mine."
-    },
-    {
-        id: 7,
-        name: "Isaac Newton",
-        title: "Discoverer of Gravity",
-        field: "Mathematics & Physics",
-        rarity: "epic",
-        xp_required: 3000,
-        front: `${BASE_IMG}/front_side/ISaac_newton_front.png`,
-        back: `${BASE_IMG}/back_side/Isaac_newton_Back.png`,
-        nickname: ["Father of Classical Mechanics", "The Apple Man of Science"],
-        achievements: [
-            "Discovered Law of Universal Gravitation",
-            "Formulated 3 Laws of Motion",
-            "Co-invented Calculus",
-            "Built first reflecting telescope",
-            "Wrote Principia Mathematica — greatest science book"
-        ],
-        quote: "If I have seen further, it is by standing on the shoulders of giants."
-    },
-    {
-        id: 8,
-        name: "Alan Turing",
-        title: "Father of Computing",
-        field: "Computer Science",
-        rarity: "legendary",
-        xp_required: 3500,
-        front: `${BASE_IMG}/front_side/Alan_Turing_front.png`,
-        back: `${BASE_IMG}/back_side/Alan_turing_back.png`,
-        nickname: ["Father of Computer Science", "Father of Artificial Intelligence"],
-        achievements: [
-            "Invented Turing Machine — foundation of all computers",
-            "Cracked Nazi Enigma code in WW2 (saved ~14M lives)",
-            "Created the Turing Test for AI intelligence",
-            "Pioneered theoretical computer science",
-            "His face now appears on UK £50 banknote"
-        ],
-        quote: "Sometimes it is the people no one imagines anything of who do the things no one can imagine."
-    },
-    {
-        id: 9,
-        name: "Ada Lovelace",
-        title: "World's First Programmer",
-        field: "Mathematics & Computing",
-        rarity: "epic",
-        xp_required: 4000,
-        front: `${BASE_IMG}/front_side/ADA_LoveLace_front.png`,
-        back: `${BASE_IMG}/back_side/Ada_Lovelace_back.png`,
-        nickname: ["World's First Programmer", "The Enchantress of Numbers"],
-        achievements: [
-            "Wrote world's first computer algorithm (1843)",
-            "Created program for Babbage's Analytical Engine",
-            "First to see computers could do more than just math",
-            "Ada programming language (1980) named after her",
-            "Visioned modern computing 100 years before it existed"
-        ],
-        quote: "That brain of mine is something more than merely mortal."
-    },
-    {
-        id: 10,
-        name: "Tim Berners-Lee",
-        title: "Inventor of the World Wide Web",
-        field: "Computer Science",
-        rarity: "legendary",
-        xp_required: 4500,
-        front: `${BASE_IMG}/front_side/TIM_Berners_lee_front.png`,
-        back: `${BASE_IMG}/back_side/Tim_Berners_Lee_Back.png`,
-        nickname: ["Inventor of the World Wide Web", "The Man Who Connected the World"],
-        achievements: [
-            "Invented World Wide Web in 1989 at CERN",
-            "Created HTTP protocol & HTML language",
-            "Built world's first web browser & web server",
-            "Gave WWW to entire world for FREE — no patent!",
-            "Changed how 5+ billion people communicate daily"
-        ],
-        quote: "The Web is more a social creation than a technical one."
-    }
-];
 
-const rarityStars = { legendary: "★★★★★", epic: "★★★★", rare: "★★★", common: "★★" };
+{
+id:1,
+name:"APJ Abdul Kalam",
+title:"Missile Man of India",
+rarity:"legendary",
+xp_required:0,
+achievements:[
+"Led IGMDP Program",
+"11th President of India",
+"Developed Agni Missile"
+],
+quote:"Dream big, dreams transform into action.",
+front:`${BASE_IMG}/front_side/Apj_Abdul_kalam_Front.png`
+},
+
+{
+id:2,
+name:"Srinivasa Ramanujan",
+title:"Math Wizard",
+rarity:"legendary",
+xp_required:500,
+achievements:[
+"Hardy-Ramanujan Number",
+"Infinite Series for Pi",
+"Mock Theta Functions"
+],
+quote:"Equations express thoughts of God.",
+front:`${BASE_IMG}/front_side/Srinivasa_Ramanujan_front.png`
+},
+
+{
+id:3,
+name:"C.V. Raman",
+title:"Nobel Physicist",
+rarity:"legendary",
+xp_required:1200,
+achievements:[
+"Discovered Raman Effect",
+"Nobel Prize 1930",
+"Explained Blue Sky"
+],
+quote:"Success requires courage.",
+front:`${BASE_IMG}/front_side/CV_RAMAN_Front.png`
+}
+
+];
 
 let userXP = 0;
 let activeFilter = 'all';
 
-async function loadUserXP() {
-    try {
-        const res = await fetch(`${BACKEND_URL}/api/dashboard_stats`, { credentials: 'include' });
-        const data = await res.json();
-        if (data.success) {
-            userXP = data.total_xp || 0;
-        }
-    } catch(e) {
-        console.error('XP load failed:', e);
-    }
-    renderAll();
+async function loadUserXP(){
+
+try{
+
+const res = await fetch(
+`${BACKEND_URL}/api/dashboard_stats`,
+{
+credentials:'include'
+}
+);
+
+const data = await res.json();
+
+if(data.success){
+
+userXP = data.total_xp || 0;
+renderAll();
+
 }
 
-function renderAll() {
-    updateStats();
-    renderCards();
+}catch(err){
+
+console.log("XP Load Failed");
+
 }
 
-function updateStats() {
-    const unlocked = ALL_CARDS.filter(c => userXP >= c.xp_required).length;
-    const legendary = ALL_CARDS.filter(c => userXP >= c.xp_required && c.rarity === 'legendary').length;
-
-    // Next card
-    const nextCard = ALL_CARDS.find(c => userXP < c.xp_required);
-    const nextXP = nextCard ? nextCard.xp_required - userXP : 0;
-
-    document.getElementById('stat-unlocked').textContent = unlocked;
-    document.getElementById('stat-legendary').textContent = legendary;
-    document.getElementById('stat-xp').textContent = userXP;
-    document.getElementById('stat-next').textContent = nextXP > 0 ? nextXP : '✓ All!';
-
-    document.getElementById('vault-xp-text').textContent = `${userXP} XP`;
-    document.getElementById('vault-cards-text').textContent = `${unlocked} / ${ALL_CARDS.length} Cards Unlocked`;
-
-    const maxXP = ALL_CARDS[ALL_CARDS.length - 1].xp_required + 500;
-    const pct = Math.min((userXP / maxXP) * 100, 100);
-    setTimeout(() => {
-        document.getElementById('vault-xp-bar').style.width = pct + '%';
-    }, 300);
 }
 
-function renderCards() {
-    const grid = document.getElementById('cards-grid');
-    grid.innerHTML = '';
+function renderAll(){
 
-    const filtered = ALL_CARDS.filter(c => {
-        const isUnlocked = userXP >= c.xp_required;
-        if (activeFilter === 'unlocked') return isUnlocked;
-        if (activeFilter === 'locked') return !isUnlocked;
-        if (activeFilter === 'legendary') return c.rarity === 'legendary';
-        if (activeFilter === 'epic') return c.rarity === 'epic';
-        return true;
-    });
+const unlocked =
+ALL_CARDS.filter(c =>
+userXP >= c.xp_required).length;
 
-    filtered.forEach(card => {
-        const isUnlocked = userXP >= card.xp_required;
-        const wrapper = document.createElement('div');
-        wrapper.className = `card-wrapper${isUnlocked ? '' : ' card-locked'}`;
-        wrapper.dataset.rarity = card.rarity;
+document.getElementById('stat-unlocked').textContent = unlocked;
+document.getElementById('stat-xp').textContent = userXP;
 
-        if (isUnlocked) {
-            wrapper.addEventListener('click', () => wrapper.classList.toggle('flipped'));
-        }
+document.getElementById('vault-xp-text').textContent =
+`${userXP} XP`;
 
-        const xpNeeded = card.xp_required - userXP;
+document.getElementById('vault-cards-text').textContent =
+`${unlocked} / ${ALL_CARDS.length} Unlocked`;
 
-        wrapper.innerHTML = `
-            <div class="card-inner">
-                <!-- FRONT -->
-                <div class="card-front rarity-${card.rarity}">
-                    <img src="${card.front}" alt="${card.name}" loading="lazy" onerror="this.style.background='#0d1528';this.alt='${card.name}'">
-                    <span class="rarity-tag tag-${card.rarity}">${card.rarity.toUpperCase()}</span>
-                    ${!isUnlocked ? `
-                    <div class="lock-overlay">
-                        <i class="fa-solid fa-lock"></i>
-                        <span>LOCKED<br>${xpNeeded} XP needed</span>
-                    </div>` : ''}
-                </div>
-                <!-- BACK -->
-                <div class="card-back rarity-${card.rarity}">
-                    <div class="card-back-content">
-                        <div class="back-title">${card.name.toUpperCase()}<br>${card.title}</div>
-                        <div class="back-nickname">
-                            <div class="nic-label">⚡ KNOWN AS</div>
-                            <div class="nic-value">${card.nickname[0]}</div>
-                        </div>
-                        <div class="back-achievements">
-                            <div class="ach-label">🏆 ACHIEVEMENTS</div>
-                            <ul>
-                                ${card.achievements.map(a => `<li>${a}</li>`).join('')}
-                            </ul>
-                        </div>
-                        <div class="back-quote">"${card.quote}"</div>
-                        <div class="back-rarity">${rarityStars[card.rarity]} ${card.rarity.toUpperCase()}</div>
-                    </div>
-                </div>
-            </div>
-        `;
-        grid.appendChild(wrapper);
-    });
+const nextCard =
+ALL_CARDS.find(c =>
+userXP < c.xp_required);
 
-    if (filtered.length === 0) {
-        grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; color:#666; font-family:'Cinzel',serif; padding:60px 0;">No cards match this filter.</div>`;
-    }
+document.getElementById('stat-next').textContent =
+nextCard
+? `${nextCard.xp_required - userXP}`
+: "DONE";
+
+const percent =
+Math.min((userXP / 5000) * 100,100);
+
+document.getElementById('vault-xp-bar').style.width =
+percent + "%";
+
+renderCards();
+
 }
 
-function filterCards(type, btn) {
-    activeFilter = type;
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderCards();
+function renderCards(){
+
+const grid =
+document.getElementById('cards-grid');
+
+grid.innerHTML = '';
+
+ALL_CARDS
+.filter(card => {
+
+if(activeFilter === 'unlocked')
+return userXP >= card.xp_required;
+
+if(activeFilter === 'locked')
+return userXP < card.xp_required;
+
+return true;
+
+})
+.forEach(card => {
+
+const unlocked =
+userXP >= card.xp_required;
+
+const wrapper =
+document.createElement('div');
+
+wrapper.className =
+`card-wrapper ${unlocked ? '' : 'card-locked'}`;
+
+wrapper.innerHTML = `
+
+<div class="card-inner">
+
+<div class="card-front">
+
+<img src="${card.front}"
+onerror="this.src='https://via.placeholder.com/220x340?text=Scholar'">
+
+<div class="rarity-tag"
+style="background:var(--${card.rarity})">
+${card.rarity.toUpperCase()}
+</div>
+
+${!unlocked ? `
+<div class="lock-overlay">
+
+<i class="fa-solid fa-lock"></i>
+
+<div>
+${card.xp_required - userXP} XP NEEDED
+</div>
+
+</div>
+` : ''}
+
+</div>
+
+<div class="card-back">
+
+${unlocked ? `
+
+<div class="card-back-content">
+
+<div class="back-title">
+${card.name.toUpperCase()}
+</div>
+
+<div class="back-sub">
+${card.title}
+</div>
+
+<div class="ach-label">
+🏆 ACHIEVEMENTS
+</div>
+
+<ul>
+${card.achievements
+.map(a => `<li>${a}</li>`)
+.join('')}
+</ul>
+
+<div class="back-quote">
+"${card.quote}"
+</div>
+
+</div>
+
+`
+:
+`
+<div class="d-flex justify-content-center align-items-center h-100 fw-bold text-secondary">
+LOCKED
+</div>
+`
+}
+
+</div>
+</div>
+`;
+
+wrapper.addEventListener('click', () => {
+
+if(!unlocked) return;
+
+wrapper.classList.toggle('flipped');
+
+});
+
+grid.appendChild(wrapper);
+
+});
+
+}
+
+function filterCards(type,btn){
+
+activeFilter = type;
+
+document.querySelectorAll('.filter-btn')
+.forEach(b => b.classList.remove('active'));
+
+btn.classList.add('active');
+
+renderCards();
+
 }
 
 loadUserXP();
+
 </script>
 
 </body>
