@@ -1,27 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Scholar's Vault | SmartQuizzer</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- PREMIUM FONTS -->
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 
 :root{
-    --primary-blue:#3498db;
-    --dark-blue:#2c3e50;
-    --sunny-yellow:#f1c40f;
-    --soft-bg:#f4f9ff;
+    --primary:#f4b400;
+    --primary-dark:#d89d00;
+    --blue:#3498db;
+    --dark:#07111f;
+    --dark2:#0d1b2e;
+    --soft:#edf3fb;
+    --card:#ffffff;
+    --gold:#f1c40f;
 
     --legendary:linear-gradient(135deg,#f1c40f,#f39c12);
-    --epic:linear-gradient(135deg,#9b59b6,#8e44ad);
+    --epic:linear-gradient(135deg,#8e44ad,#6c2eb9);
     --rare:linear-gradient(135deg,#3498db,#2980b9);
-    --common:linear-gradient(135deg,#95a5a6,#7f8c8d);
 }
 
 *{
@@ -31,227 +36,206 @@
 }
 
 body{
-    background:
-    radial-gradient(circle at top,#ffffff,#eef6ff);
-    font-family:'Poppins',sans-serif;
-    min-height:100vh;
-    color:var(--dark-blue);
+    background:#f5f6f8;
+    font-family:'Outfit',sans-serif;
+    color:#2c3e50;
     overflow-x:hidden;
 }
 
-/* ================= NAVBAR ================= */
+/* =========================
+   NAVBAR
+========================= */
 
 .vault-nav{
     background:white;
-    border-bottom:3px solid var(--sunny-yellow);
-    padding:14px 0;
+    border-bottom:2px solid #f1c40f;
+    padding:16px 0;
     position:sticky;
     top:0;
     z-index:100;
-    box-shadow:0 2px 12px rgba(0,0,0,0.06);
 }
 
 .brand{
     text-decoration:none;
     font-family:'Cinzel',serif;
+    font-size:1.8rem;
     font-weight:900;
-    font-size:1.7rem;
-    color:var(--primary-blue);
+    color:#3498db;
 }
 
 .nav-link-custom{
     margin-left:22px;
     text-decoration:none;
-    color:var(--dark-blue);
-    font-weight:600;
+    color:#2c3e50;
+    font-weight:700;
     transition:0.3s;
 }
 
 .nav-link-custom:hover{
-    color:var(--primary-blue);
+    color:#f1c40f;
 }
 
 .nav-link-custom i{
     margin-right:6px;
-    color:var(--sunny-yellow);
 }
 
-/* ================= HERO ================= */
+/* =========================
+   HERO
+========================= */
 
 .vault-hero{
     text-align:center;
-    padding:50px 20px 25px;
+    padding:50px 20px 30px;
 }
 
 .vault-hero h1{
     font-family:'Cinzel',serif;
     font-size:3rem;
     font-weight:900;
-    color:var(--dark-blue);
+    color:#1b2f48;
 }
 
 .vault-hero p{
-    color:#607080;
     margin-top:10px;
+    color:#6d7b8b;
+    font-size:1.05rem;
     font-style:italic;
-    font-size:1rem;
 }
 
-/* ================= XP ================= */
+/* =========================
+   XP BOX
+========================= */
 
 .xp-vault-bar{
     background:white;
-    max-width:760px;
+    max-width:750px;
     margin:auto;
-    padding:24px;
-    border-radius:22px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.06);
+    padding:26px;
+    border-radius:24px;
+    box-shadow:0 8px 28px rgba(0,0,0,0.06);
 }
 
 .xp-label{
-    font-size:0.8rem;
-    font-weight:700;
-    color:var(--primary-blue);
+    color:#3498db;
+    font-weight:800;
     margin-bottom:10px;
+    font-size:0.82rem;
 }
 
 .xp-track{
     height:16px;
+    background:#e9eef5;
     border-radius:50px;
     overflow:hidden;
-    background:#e8edf3;
 }
 
 .xp-fill{
     height:100%;
     width:0%;
-    background:var(--legendary);
-    transition:width 1s ease;
+    background:linear-gradient(90deg,#f1c40f,#f39c12);
+    transition:1s;
 }
 
-/* ================= STATS ================= */
+/* =========================
+   STATS
+========================= */
 
 .vault-stats{
     display:flex;
     justify-content:center;
-    gap:18px;
     flex-wrap:wrap;
+    gap:18px;
     margin:35px 0;
 }
 
 .stat-pill{
     background:white;
-    padding:14px 26px;
-    border-radius:50px;
-    box-shadow:0 5px 14px rgba(0,0,0,0.08);
-    border-bottom:4px solid var(--primary-blue);
-    text-align:center;
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    box-shadow:0 6px 18px rgba(0,0,0,0.08);
+    border-bottom:5px solid #3498db;
 }
 
 .stat-pill .num{
-    font-size:1.25rem;
-    font-weight:800;
-    color:var(--primary-blue);
+    font-size:1.7rem;
+    font-weight:900;
+    color:#3498db;
 }
 
 .stat-pill .lbl{
-    font-size:0.75rem;
-    color:#7d8b99;
+    font-size:0.72rem;
     text-transform:uppercase;
+    color:#7b8b9a;
+    margin-top:4px;
 }
 
-/* ================= FILTER ================= */
+/* =========================
+   FILTERS
+========================= */
 
 .filter-tabs{
     display:flex;
     justify-content:center;
     gap:12px;
-    flex-wrap:wrap;
     margin-bottom:35px;
+    flex-wrap:wrap;
 }
 
 .filter-btn{
     border:none;
-    padding:11px 22px;
-    border-radius:50px;
     background:white;
-    color:var(--primary-blue);
-    border:2px solid var(--primary-blue);
+    padding:12px 24px;
+    border-radius:50px;
+    border:2px solid #3498db;
+    color:#3498db;
     font-weight:700;
     transition:0.3s;
     cursor:pointer;
 }
 
-.filter-btn:hover,
-.filter-btn.active{
-    background:var(--primary-blue);
+.filter-btn.active,
+.filter-btn:hover{
+    background:#3498db;
     color:white;
 }
 
-/* ================= GRID ================= */
+/* =========================
+   CARD GRID
+========================= */
 
 .cards-grid{
-    max-width:1450px;
+    max-width:1300px;
     margin:auto;
     padding:20px;
     display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(290px,1fr));
-    gap:30px;
+    grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+    gap:28px;
 }
-
-/* ================= CARD ================= */
 
 .card-wrapper{
-    height:430px;
-    border-radius:24px;
-    overflow:hidden;
     position:relative;
-    box-shadow:0 14px 32px rgba(0,0,0,0.14);
-    transition:0.35s;
-    background:white;
-}
-
-.card-wrapper.unlocked{
+    height:370px;
+    border-radius:22px;
+    overflow:hidden;
     cursor:pointer;
+    transition:0.35s;
+    box-shadow:0 10px 30px rgba(0,0,0,0.18);
 }
 
-.card-wrapper.unlocked:hover{
-    transform:
-    translateY(-10px)
-    scale(1.02);
-
-    box-shadow:
-    0 24px 40px rgba(52,152,219,0.25);
+.card-wrapper:hover{
+    transform:translateY(-10px) scale(1.02);
 }
 
-.card-wrapper img.card-img{
+.card-img{
     width:100%;
     height:100%;
     object-fit:cover;
-    display:block;
 }
-
-/* holographic overlay */
-
-.card-wrapper.unlocked::before{
-    content:'';
-    position:absolute;
-    inset:0;
-
-    background:
-    linear-gradient(
-    135deg,
-    rgba(255,255,255,0.18),
-    transparent 25%,
-    rgba(52,152,219,0.10),
-    transparent 70%,
-    rgba(241,196,15,0.15)
-    );
-
-    pointer-events:none;
-}
-
-/* ================= TAG ================= */
 
 .rarity-tag{
     position:absolute;
@@ -260,35 +244,29 @@ body{
     padding:6px 14px;
     border-radius:50px;
     color:white;
-    font-size:0.68rem;
+    font-size:0.7rem;
     font-weight:800;
-    box-shadow:0 5px 16px rgba(0,0,0,0.2);
 }
-
-/* ================= HINT ================= */
 
 .flip-hint-badge{
     position:absolute;
-    bottom:14px;
+    bottom:12px;
     left:50%;
     transform:translateX(-50%);
-    background:rgba(0,0,0,0.55);
+    background:rgba(0,0,0,0.65);
     color:white;
     font-size:0.72rem;
-    font-weight:600;
-    padding:7px 16px;
+    padding:6px 16px;
     border-radius:50px;
-    white-space:nowrap;
-    backdrop-filter:blur(4px);
+    backdrop-filter:blur(5px);
 }
 
-/* ================= LOCKED ================= */
+/* =========================
+   LOCKED
+========================= */
 
-.card-wrapper.card-locked img.card-img{
-    filter:
-    blur(2px)
-    grayscale(0.8)
-    brightness(0.6);
+.card-locked img{
+    filter:blur(3px) grayscale(1) brightness(0.55);
 }
 
 .lock-overlay{
@@ -298,181 +276,138 @@ body{
     flex-direction:column;
     justify-content:center;
     align-items:center;
-
-    background:rgba(20,20,20,0.4);
-    backdrop-filter:blur(3px);
-
     color:white;
-    text-align:center;
+    background:rgba(0,0,0,0.35);
 }
 
 .lock-overlay i{
-    font-size:3.5rem;
-    margin-bottom:14px;
+    font-size:3rem;
+    margin-bottom:12px;
 }
 
 .lock-overlay div{
     font-weight:800;
-    font-size:1rem;
 }
 
-/* ======================================================
-   MODAL SHOWCASE
-====================================================== */
+/* =====================================================
+   PREMIUM MODAL
+===================================================== */
 
 .card-modal-overlay{
-    display:none;
     position:fixed;
     inset:0;
     z-index:9999;
 
-    background:
-    radial-gradient(circle at top,
-    rgba(52,152,219,0.18),
-    transparent 30%),
-
-    radial-gradient(circle at bottom right,
-    rgba(241,196,15,0.15),
-    transparent 35%),
-
-    rgba(5,8,20,0.95);
-
-    backdrop-filter:blur(14px);
+    display:none;
     justify-content:center;
     align-items:center;
-    padding:25px;
 
-    animation:fadeInModal 0.35s ease;
+    padding:30px;
+
+    background:
+    radial-gradient(circle at top left,#17345f 0%,#081120 40%,#02060d 100%);
+
+    overflow:hidden;
 }
 
 .card-modal-overlay.active{
     display:flex;
 }
 
-@keyframes fadeInModal{
-    from{
-        opacity:0;
-    }
-    to{
-        opacity:1;
-    }
+.card-modal-overlay::before{
+    content:'';
+    position:absolute;
+    width:700px;
+    height:700px;
+    border-radius:50%;
+    background:rgba(52,152,219,0.14);
+    filter:blur(120px);
+    top:-180px;
+    left:-120px;
 }
 
-@keyframes fadeOutModal{
-    from{
-        opacity:1;
-    }
-    to{
-        opacity:0;
-    }
+.stars{
+    position:absolute;
+    inset:0;
+    opacity:0.08;
+    background-image:
+    radial-gradient(white 1px, transparent 1px);
+    background-size:40px 40px;
+    pointer-events:none;
 }
 
-/* ================= CLOSE ================= */
+/* CLOSE */
 
 .modal-close-btn{
     position:absolute;
     top:24px;
-    right:26px;
-
-    background:rgba(255,255,255,0.1);
+    right:24px;
+    width:50px;
+    height:50px;
     border:none;
-    color:white;
-
-    font-size:1.4rem;
-
-    width:46px;
-    height:46px;
-
     border-radius:50%;
+    background:rgba(255,255,255,0.1);
+    color:white;
+    font-size:1.3rem;
     cursor:pointer;
+    z-index:5;
     transition:0.3s;
+}
+
+.modal-close-btn:hover{
+    background:rgba(255,255,255,0.2);
+}
+
+/* LAYOUT */
+
+.modal-body{
+    position:relative;
+    width:100%;
+    max-width:1250px;
 
     display:flex;
     align-items:center;
     justify-content:center;
+    gap:70px;
+
+    z-index:2;
 }
 
-.modal-close-btn:hover{
-    background:rgba(255,255,255,0.22);
-}
-
-/* ================= MODAL BODY ================= */
-
-.modal-body{
-    display:flex;
-    align-items:center;
-    gap:55px;
-
-    position:relative;
-
-    max-width:1300px;
-    width:100%;
-}
-
-/* ================= CARD SCENE ================= */
+/* CARD */
 
 .modal-card-scene{
-    perspective:2000px;
-
-    width:min(500px,90vw);
-    height:min(740px,85vh);
-
-    cursor:pointer;
+    perspective:1200px;
+    width:min(400px,90vw);
+    height:min(600px,82vh);
     flex-shrink:0;
-
-    transition:transform 0.25s ease;
-
-    animation:cardFloatUp 0.55s cubic-bezier(0.22,1,0.36,1);
 }
-
-@keyframes cardFloatUp{
-    from{
-        transform:
-        translateY(80px)
-        scale(0.72);
-
-        opacity:0;
-    }
-
-    to{
-        transform:
-        translateY(0)
-        scale(1);
-
-        opacity:1;
-    }
-}
-
-/* ================= INNER ================= */
 
 .modal-card-inner{
+    position:relative;
     width:100%;
     height:100%;
-    position:relative;
     transform-style:preserve-3d;
-    transition:transform 0.8s cubic-bezier(0.4,0,0.2,1);
+    transition:0.8s;
 }
 
 .modal-card-inner.flipped{
     transform:rotateY(180deg);
 }
 
-/* ================= CARD FACE ================= */
-
 .modal-card-face{
     position:absolute;
     width:100%;
     height:100%;
-
-    border-radius:28px;
+    border-radius:26px;
     overflow:hidden;
-
     backface-visibility:hidden;
 
+    border:1px solid rgba(241,196,15,0.35);
+
     box-shadow:
-    0 0 0 2px rgba(255,255,255,0.08),
-    0 25px 70px rgba(0,0,0,0.7),
-    0 0 60px rgba(52,152,219,0.2);
+    0 0 0 1px rgba(255,255,255,0.05),
+    0 0 45px rgba(241,196,15,0.18),
+    0 25px 70px rgba(0,0,0,0.7);
 }
 
 .modal-card-face img{
@@ -481,183 +416,194 @@ body{
     object-fit:cover;
 }
 
-/* holographic glow */
-
-.modal-card-face::before{
-    content:'';
-    position:absolute;
-    inset:0;
-
-    background:
-    linear-gradient(
-    135deg,
-    rgba(255,255,255,0.18),
-    transparent 30%,
-    rgba(52,152,219,0.12),
-    transparent 70%,
-    rgba(241,196,15,0.18)
-    );
-
-    mix-blend-mode:screen;
-    pointer-events:none;
-}
-
-.modal-card-face::after{
-    content:'';
-    position:absolute;
-    inset:-2px;
-
-    border-radius:28px;
-
-    background:
-    linear-gradient(
-    135deg,
-    rgba(52,152,219,0.55),
-    rgba(241,196,15,0.35),
-    rgba(155,89,182,0.45)
-    );
-
-    z-index:-1;
-    filter:blur(24px);
-    opacity:0.7;
-}
-
 .modal-card-back-face{
     transform:rotateY(180deg);
 }
 
-/* ================= HINT ================= */
-
 .modal-hint{
-    color:rgba(255,255,255,0.65);
-    font-size:0.85rem;
-    text-align:center;
     margin-top:18px;
-    letter-spacing:0.04em;
+    color:rgba(255,255,255,0.7);
+    text-align:center;
+    font-size:0.85rem;
 }
 
 .modal-hint i{
-    margin-right:5px;
-    color:var(--sunny-yellow);
+    color:#f1c40f;
 }
 
-/* ================= INFO ================= */
+/* INFO PANEL */
 
 .modal-info{
-    color:white;
-
-    max-width:450px;
     width:100%;
-
-    padding:20px 0;
-}
-
-.modal-info .scientist-name{
-    font-family:'Cinzel',serif;
-    font-size:2.5rem;
-    font-weight:900;
-    line-height:1.1;
-
-    background:
-    linear-gradient(135deg,#ffffff,#f1c40f);
-
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-}
-
-.modal-info .scientist-title{
-    color:rgba(255,255,255,0.72);
-    font-size:1rem;
-    margin-top:8px;
-    margin-bottom:22px;
-}
-
-.modal-info .rarity-pill{
-    display:inline-block;
-    padding:6px 16px;
-    border-radius:50px;
-    font-size:0.74rem;
-    font-weight:800;
+    max-width:520px;
     color:white;
-    margin-bottom:24px;
 }
 
-.modal-info .section-label{
-    color:var(--sunny-yellow);
-    font-size:0.78rem;
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:0.08em;
+.scientist-name{
+    font-family:'Cinzel',serif;
+    font-size:3rem;
+    line-height:1.1;
+    font-weight:900;
+    color:#ffe082;
     margin-bottom:10px;
 }
 
+.scientist-title{
+    font-size:1.1rem;
+    color:rgba(255,255,255,0.7);
+    margin-bottom:22px;
+}
+
+.rarity-pill{
+    display:inline-block;
+    padding:8px 18px;
+    border-radius:50px;
+    font-size:0.72rem;
+    font-weight:800;
+    color:white;
+    margin-bottom:28px;
+}
+
+.section-label{
+    color:#f1c40f;
+    font-size:0.8rem;
+    font-weight:800;
+    margin-bottom:12px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+}
+
+/* MINI INFO */
+
+.info-mini-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:14px;
+    margin-bottom:28px;
+}
+
+.mini-info-card{
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.08);
+    padding:16px;
+    border-radius:16px;
+    text-align:center;
+    backdrop-filter:blur(10px);
+}
+
+.mini-label{
+    font-size:0.65rem;
+    color:#f1c40f;
+    margin-bottom:6px;
+    font-weight:800;
+}
+
+.mini-value{
+    font-size:0.9rem;
+    font-weight:700;
+}
+
+/* ACHIEVEMENTS */
+
 .modal-info ul{
     padding-left:20px;
-    font-size:0.95rem;
-    color:rgba(255,255,255,0.88);
-    margin-bottom:24px;
+    margin-bottom:26px;
 }
 
 .modal-info ul li{
     margin-bottom:8px;
+    line-height:1.5;
+    color:rgba(255,255,255,0.88);
 }
 
-.modal-info .modal-quote{
+/* TIMELINE */
+
+.timeline-box{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin-bottom:28px;
+}
+
+.timeline-item{
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.08);
+    padding:14px;
+    border-radius:14px;
+    color:rgba(255,255,255,0.85);
+    font-size:0.84rem;
+    backdrop-filter:blur(8px);
+}
+
+/* FUN FACT */
+
+.did-you-know{
+    background:rgba(241,196,15,0.08);
+    border-left:4px solid #f1c40f;
+    padding:16px;
+    border-radius:14px;
+    line-height:1.7;
+    margin-bottom:22px;
+    color:#f5f5f5;
+    font-size:0.85rem;
+}
+
+/* QUOTE */
+
+.modal-quote{
+    border-left:4px solid #3498db;
+    padding-left:16px;
+    color:rgba(255,255,255,0.75);
     font-style:italic;
-    font-size:0.92rem;
-    color:rgba(255,255,255,0.72);
-    border-left:3px solid var(--primary-blue);
-    padding-left:14px;
     line-height:1.7;
 }
 
-/* ================= MOBILE ================= */
+/* MOBILE */
 
-@media(max-width:950px){
+@media(max-width:900px){
 
     .modal-body{
         flex-direction:column;
+        gap:35px;
         overflow-y:auto;
-        max-height:92vh;
-        gap:25px;
+        max-height:90vh;
+        padding-top:30px;
     }
 
-    .modal-info{
+    .scientist-name{
+        font-size:2.3rem;
         text-align:center;
     }
 
-    .modal-info ul{
-        text-align:left;
+    .scientist-title{
+        text-align:center;
     }
 
-    .modal-info .modal-quote{
-        text-align:left;
+    .modal-info{
+        max-width:100%;
     }
+
 }
 
 @media(max-width:576px){
 
+    .vault-hero h1{
+        font-size:2.2rem;
+    }
+
     .cards-grid{
         grid-template-columns:repeat(2,1fr);
-        gap:16px;
+        gap:14px;
     }
 
     .card-wrapper{
-        height:280px;
+        height:290px;
     }
 
-    .vault-hero h1{
-        font-size:2.1rem;
+    .info-mini-grid{
+        grid-template-columns:1fr;
     }
 
-    .modal-card-scene{
-        width:92vw;
-        height:72vh;
-    }
-
-    .modal-info .scientist-name{
-        font-size:2rem;
-    }
 }
 
 </style>
@@ -665,10 +611,9 @@ body{
 
 <body>
 
-<!-- ================= NAVBAR ================= -->
+<!-- NAVBAR -->
 
 <nav class="vault-nav">
-
 <div class="container d-flex justify-content-between align-items-center">
 
 <a href="dashboard.html" class="brand">
@@ -681,6 +626,14 @@ SmartQuizzer ☀️
 <i class="fa-solid fa-house"></i>Home
 </a>
 
+<a href="#" class="nav-link-custom">
+<i class="fa-solid fa-book-open"></i>Study Hub
+</a>
+
+<a href="#" class="nav-link-custom">
+<i class="fa-solid fa-fire"></i>Mistakes
+</a>
+
 <a href="https://simrankaurrrrrr-smartquizzer-backend.hf.space/logout"
 class="nav-link-custom text-danger">
 <i class="fa-solid fa-power-off"></i>Logout
@@ -690,14 +643,14 @@ class="nav-link-custom text-danger">
 </div>
 </nav>
 
-<!-- ================= HERO ================= -->
+<!-- HERO -->
 
 <div class="vault-hero">
-<h1>Scholar's Vault</h1>
+<h1>Scholar’s Vault</h1>
 <p>Unlock legendary minds as you earn XP through quizzes!</p>
 </div>
 
-<!-- ================= XP ================= -->
+<!-- XP -->
 
 <div class="xp-vault-bar mx-3 mx-md-auto">
 
@@ -707,17 +660,14 @@ class="nav-link-custom text-danger">
 <div class="xp-fill" id="vault-xp-bar"></div>
 </div>
 
-<div class="d-flex justify-content-between mt-2"
-style="font-size:0.82rem;font-weight:600;">
-
+<div class="d-flex justify-content-between mt-2 fw-bold">
 <span id="vault-xp-text">0 XP</span>
 <span id="vault-cards-text">0 / 10 Unlocked</span>
-
 </div>
 
 </div>
 
-<!-- ================= STATS ================= -->
+<!-- STATS -->
 
 <div class="vault-stats">
 
@@ -738,7 +688,7 @@ style="font-size:0.82rem;font-weight:600;">
 
 </div>
 
-<!-- ================= FILTER ================= -->
+<!-- FILTERS -->
 
 <div class="filter-tabs">
 
@@ -759,23 +709,23 @@ Locked
 
 </div>
 
-<!-- ================= GRID ================= -->
+<!-- GRID -->
 
 <div class="cards-grid" id="cards-grid"></div>
 
-<!-- ===================================================
-     MODAL
-=================================================== -->
+<!-- ======================================================
+     PREMIUM MODAL
+====================================================== -->
 
 <div class="card-modal-overlay" id="cardModal">
+
+<div class="stars"></div>
 
 <button class="modal-close-btn" id="modalCloseBtn">
 <i class="fa-solid fa-xmark"></i>
 </button>
 
 <div class="modal-body">
-
-<!-- CARD -->
 
 <div>
 
@@ -796,12 +746,12 @@ Locked
 
 <div class="modal-hint" id="modalHint">
 <i class="fa-solid fa-rotate"></i>
-Flip to see more about this card
+Click card to flip
 </div>
 
 </div>
 
-<!-- INFO -->
+<!-- RIGHT INFO -->
 
 <div class="modal-info">
 
@@ -811,13 +761,48 @@ Flip to see more about this card
 
 <div class="rarity-pill" id="modalRarity"></div>
 
-<div class="section-label">🏆 Achievements</div>
+<!-- MINI INFO -->
+
+<div class="info-mini-grid">
+
+<div class="mini-info-card">
+<div class="mini-label">FIELD</div>
+<div class="mini-value" id="modalField"></div>
+</div>
+
+<div class="mini-info-card">
+<div class="mini-label">COUNTRY</div>
+<div class="mini-value" id="modalCountry"></div>
+</div>
+
+<div class="mini-info-card">
+<div class="mini-label">BORN</div>
+<div class="mini-value" id="modalBorn"></div>
+</div>
+
+</div>
+
+<!-- ACHIEVEMENTS -->
+
+<div class="section-label">
+🏆 Achievements
+</div>
 
 <ul id="modalAchievements"></ul>
 
-<div class="section-label">📘 Details</div>
+<!-- TIMELINE -->
 
-<ul id="modalDetails"></ul>
+<div class="section-label">
+📜 Timeline
+</div>
+
+<div class="timeline-box" id="modalTimeline"></div>
+
+<!-- DID YOU KNOW -->
+
+<div class="did-you-know" id="modalFact"></div>
+
+<!-- QUOTE -->
 
 <div class="modal-quote" id="modalQuote"></div>
 
@@ -828,15 +813,8 @@ Flip to see more about this card
 
 <script>
 
-const BACKEND_URL =
-"https://simrankaurrrrrr-smartquizzer-backend.hf.space";
-
 const BASE_IMG =
 "https://raw.githubusercontent.com/Simrannnnnnnnnnnn/SmartQuizzer-Web/main/cards";
-
-/* ==================================================
-   CARDS
-================================================== */
 
 const ALL_CARDS = [
 
@@ -848,18 +826,25 @@ rarity:"legendary",
 xp_required:0,
 
 field:"Aerospace Science",
-born:"1931",
 country:"India",
-known_for:"Agni & Prithvi Missiles",
-fun_fact:"He sold newspapers as a child.",
+born:"1931",
 
 achievements:[
 "Led IGMDP Program",
 "11th President of India",
 "Developed Agni Missile",
-"Inspired Millions of Students",
+"Inspired millions of students",
 "Known as People's President"
 ],
+
+timeline:[
+"1960 → Joined DRDO",
+"1980 → Led SLV-III",
+"1998 → Pokhran-II",
+"2002 → Became President"
+],
+
+fact:"💡 Did you know? Kalam sold newspapers as a child before becoming one of India's greatest scientists.",
 
 quote:"Dream big, dreams transform into action.",
 
@@ -870,25 +855,31 @@ back:`${BASE_IMG}/back_side/APJ_Abdul_Kalam_Back.png`
 {
 id:2,
 name:"Albert Einstein",
-title:"Modern Physics Father",
+title:"Father of Modern Physics",
 rarity:"legendary",
-xp_required:1500,
+xp_required:500,
 
 field:"Physics",
-born:"1879",
 country:"Germany",
-known_for:"Theory of Relativity",
-fun_fact:"Einstein’s brain was preserved for research.",
+born:"1879",
 
 achievements:[
-"E=mc² Theory",
-"Photoelectric Effect",
-"Theory of Relativity",
+"Developed Theory of Relativity",
+"Created E = mc²",
 "Nobel Prize Winner",
-"Changed Modern Physics Forever"
+"Changed modern science forever"
 ],
 
-quote:"Imagination is everything.",
+timeline:[
+"1905 → Annus Mirabilis Papers",
+"1915 → General Relativity",
+"1921 → Nobel Prize",
+"1933 → Moved to USA"
+],
+
+fact:"💡 Einstein did not speak fluently until around age 9.",
+
+quote:"Imagination is more important than knowledge.",
 
 front:`${BASE_IMG}/front_side/Albert_einstein_front.png`,
 back:`${BASE_IMG}/back_side/albert_einstein_back.png`
@@ -899,23 +890,29 @@ id:3,
 name:"Marie Curie",
 title:"Radioactivity Pioneer",
 rarity:"legendary",
-xp_required:2000,
+xp_required:1500,
 
-field:"Chemistry & Physics",
-born:"1867",
+field:"Chemistry",
 country:"Poland",
-known_for:"Radioactivity Research",
-fun_fact:"First woman to win a Nobel Prize.",
+born:"1867",
 
 achievements:[
 "Discovered Radium",
-"Two Nobel Prizes",
-"Mobile X-rays",
-"Advanced Cancer Treatment",
-"First Female Professor at Sorbonne"
+"First woman Nobel winner",
+"Won 2 Nobel Prizes",
+"Advanced cancer treatment"
 ],
 
-quote:"Understand, don't fear.",
+timeline:[
+"1898 → Discovered Radium",
+"1903 → Nobel Prize Physics",
+"1911 → Nobel Prize Chemistry",
+"1914 → Mobile X-Ray Units"
+],
+
+fact:"💡 Marie Curie carried radioactive samples in her pockets without knowing the dangers.",
+
+quote:"Nothing in life is to be feared, only understood.",
 
 front:`${BASE_IMG}/front_side/Marie_curie_front.png`,
 back:`${BASE_IMG}/back_side/Marie_Curie_back.png`
@@ -923,240 +920,161 @@ back:`${BASE_IMG}/back_side/Marie_Curie_back.png`
 
 ];
 
-/* ==================================================
-   GLOBALS
-================================================== */
-
-let userXP = 0;
+let userXP = 40;
 let activeFilter = 'all';
 
-/* ==================================================
-   LOAD XP
-================================================== */
-
-async function loadUserXP(){
-
-    try{
-
-        const res = await fetch(
-        `${BACKEND_URL}/api/dashboard_stats`,
-        { credentials:'include' }
-        );
-
-        const data = await res.json();
-
-        if(data.success){
-            userXP = data.total_xp || 0;
-            renderAll();
-        }
-
-    }catch(err){
-
-        console.log("XP load failed");
-        renderAll();
-    }
-}
-
-/* ==================================================
+/* =========================
    RENDER
-================================================== */
+========================= */
 
 function renderAll(){
 
-    const unlocked =
-    ALL_CARDS.filter(c =>
-    userXP >= c.xp_required).length;
+const unlocked =
+ALL_CARDS.filter(c => userXP >= c.xp_required).length;
 
-    document.getElementById('stat-unlocked').textContent = unlocked;
+document.getElementById('stat-unlocked').textContent = unlocked;
+document.getElementById('stat-xp').textContent = userXP;
 
-    document.getElementById('stat-xp').textContent = userXP;
+document.getElementById('vault-xp-text').textContent =
+`${userXP} XP`;
 
-    document.getElementById('vault-xp-text').textContent =
-    `${userXP} XP`;
+document.getElementById('vault-cards-text').textContent =
+`${unlocked} / ${ALL_CARDS.length} Unlocked`;
 
-    document.getElementById('vault-cards-text').textContent =
-    `${unlocked} / ${ALL_CARDS.length} Unlocked`;
+const nextCard =
+ALL_CARDS.find(c => userXP < c.xp_required);
 
-    const nextCard =
-    ALL_CARDS.find(c => userXP < c.xp_required);
+document.getElementById('stat-next').textContent =
+nextCard ? nextCard.xp_required - userXP : "DONE";
 
-    document.getElementById('stat-next').textContent =
-    nextCard
-    ? `${nextCard.xp_required - userXP}`
-    : "DONE";
+const percent = Math.min((userXP / 5000) * 100,100);
 
-    const percent =
-    Math.min((userXP / 5000) * 100,100);
+document.getElementById('vault-xp-bar').style.width =
+percent + "%";
 
-    document.getElementById('vault-xp-bar').style.width =
-    percent + "%";
-
-    renderCards();
+renderCards();
 }
 
-/* ==================================================
-   RENDER CARDS
-================================================== */
+/* =========================
+   CARDS
+========================= */
 
 function renderCards(){
 
-    const grid =
-    document.getElementById('cards-grid');
+const grid = document.getElementById('cards-grid');
 
-    grid.innerHTML = '';
+grid.innerHTML = '';
 
-    ALL_CARDS
+ALL_CARDS
+.filter(card => {
 
-    .filter(card => {
+if(activeFilter === 'unlocked')
+return userXP >= card.xp_required;
 
-        if(activeFilter === 'unlocked')
-        return userXP >= card.xp_required;
+if(activeFilter === 'locked')
+return userXP < card.xp_required;
 
-        if(activeFilter === 'locked')
-        return userXP < card.xp_required;
+return true;
 
-        return true;
-    })
+})
+.forEach(card => {
 
-    .forEach(card => {
+const isUnlocked = userXP >= card.xp_required;
 
-        const isUnlocked =
-        userXP >= card.xp_required;
+const wrapper = document.createElement('div');
 
-        const wrapper =
-        document.createElement('div');
+wrapper.className =
+`card-wrapper ${isUnlocked ? '' : 'card-locked'}`;
 
-        wrapper.className =
-        `card-wrapper ${isUnlocked ? 'unlocked' : 'card-locked'}`;
+wrapper.innerHTML = `
 
-        wrapper.innerHTML = `
+<img class="card-img" src="${card.front}">
 
-        <img class="card-img"
-        src="${card.front}">
+<div class="rarity-tag"
+style="background:var(--${card.rarity})">
+${card.rarity.toUpperCase()}
+</div>
 
-        <div class="rarity-tag"
-        style="background:var(--${card.rarity})">
+${isUnlocked
+?
+`<div class="flip-hint-badge">
+<i class="fa-solid fa-rotate"></i>
+Tap to Explore
+</div>`
 
-        ${card.rarity.toUpperCase()}
-        </div>
+:
 
-        ${
-        isUnlocked
+`<div class="lock-overlay">
+<i class="fa-solid fa-lock"></i>
+<div>${card.xp_required - userXP} XP Needed</div>
+</div>`
 
-        ?
-
-        `<div class="flip-hint-badge">
-        <i class="fa-solid fa-rotate"></i>
-        Tap to Explore
-        </div>`
-
-        :
-
-        `<div class="lock-overlay">
-
-        <i class="fa-solid fa-lock"></i>
-
-        <div>
-        ${card.xp_required - userXP}
-        XP NEEDED
-        </div>
-
-        </div>`
-        }
-        `;
-
-        if(isUnlocked){
-
-            wrapper.addEventListener(
-            'click',
-            () => openModal(card)
-            );
-        }
-
-        grid.appendChild(wrapper);
-    });
 }
 
-/* ==================================================
+`;
+
+if(isUnlocked){
+wrapper.addEventListener('click',() => openModal(card));
+}
+
+grid.appendChild(wrapper);
+
+});
+
+}
+
+/* =========================
    MODAL
-================================================== */
+========================= */
 
-const modal =
-document.getElementById('cardModal');
-
-const cardInner =
-document.getElementById('modalCardInner');
-
-const modalHint =
-document.getElementById('modalHint');
-
-/* OPEN */
+const modal = document.getElementById('cardModal');
+const cardInner = document.getElementById('modalCardInner');
 
 function openModal(card){
 
-    document.getElementById('modalFrontImg').src =
-    card.front;
+document.getElementById('modalFrontImg').src = card.front;
+document.getElementById('modalBackImg').src = card.back;
 
-    document.getElementById('modalBackImg').src =
-    card.back;
+document.getElementById('modalName').textContent = card.name;
+document.getElementById('modalTitle').textContent = card.title;
 
-    document.getElementById('modalName').textContent =
-    card.name;
+const rarity = document.getElementById('modalRarity');
 
-    document.getElementById('modalTitle').textContent =
-    card.title;
+rarity.textContent = card.rarity.toUpperCase();
+rarity.style.background = `var(--${card.rarity})`;
 
-    const rarityPill =
-    document.getElementById('modalRarity');
+document.getElementById('modalField').textContent = card.field;
+document.getElementById('modalCountry').textContent = card.country;
+document.getElementById('modalBorn').textContent = card.born;
 
-    rarityPill.textContent =
-    card.rarity.toUpperCase();
+document.getElementById('modalAchievements').innerHTML =
+card.achievements.map(a => `<li>${a}</li>`).join('');
 
-    rarityPill.style.background =
-    `var(--${card.rarity})`;
+document.getElementById('modalTimeline').innerHTML =
+card.timeline.map(t =>
+`<div class="timeline-item">${t}</div>`
+).join('');
 
-    document.getElementById('modalAchievements').innerHTML =
-    card.achievements.map(a =>
-    `<li>${a}</li>`).join('');
+document.getElementById('modalFact').textContent =
+card.fact;
 
-    document.getElementById('modalDetails').innerHTML =
+document.getElementById('modalQuote').textContent =
+`"${card.quote}"`;
 
-    `
-    <li><strong>Field:</strong> ${card.field}</li>
-    <li><strong>Born:</strong> ${card.born}</li>
-    <li><strong>Country:</strong> ${card.country}</li>
-    <li><strong>Known For:</strong> ${card.known_for}</li>
-    <li><strong>Fun Fact:</strong> ${card.fun_fact}</li>
-    `;
+cardInner.classList.remove('flipped');
 
-    document.getElementById('modalQuote').textContent =
-    `"${card.quote}"`;
+modal.classList.add('active');
 
-    cardInner.classList.remove('flipped');
+document.body.style.overflow = 'hidden';
 
-    modal.classList.add('active');
-
-    document.body.style.overflow = 'hidden';
 }
-
-/* CLOSE */
 
 function closeModal(){
 
-    modal.style.animation =
-    "fadeOutModal 0.25s ease";
+modal.classList.remove('active');
 
-    setTimeout(() => {
+document.body.style.overflow = '';
 
-        modal.classList.remove('active');
-
-        modal.style.animation = "";
-
-        cardInner.classList.remove('flipped');
-
-        document.body.style.overflow = '';
-
-    },220);
 }
 
 /* FLIP */
@@ -1164,102 +1082,37 @@ function closeModal(){
 document.getElementById('modalCardScene')
 .addEventListener('click', () => {
 
-    cardInner.classList.toggle('flipped');
+cardInner.classList.toggle('flipped');
 
-    const flipped =
-    cardInner.classList.contains('flipped');
-
-    modalHint.innerHTML = flipped
-
-    ?
-
-    '<i class="fa-solid fa-rotate"></i> Click to flip back'
-
-    :
-
-    '<i class="fa-solid fa-rotate"></i> Flip to see more about this card';
 });
 
-/* CLOSE BTN */
+/* CLOSE */
 
 document.getElementById('modalCloseBtn')
 .addEventListener('click', closeModal);
 
-/* OUTSIDE CLICK */
-
-modal.addEventListener('click', (e) => {
-
-    if(e.target === modal){
-        closeModal();
-    }
+modal.addEventListener('click', e => {
+if(e.target === modal){
+closeModal();
+}
 });
 
-/* ESC */
+/* FILTER */
 
-document.addEventListener('keydown', (e) => {
+function filterCards(type,btn){
 
-    if(e.key === 'Escape'){
-        closeModal();
-    }
-});
+activeFilter = type;
 
-/* ==================================================
-   3D TILT
-================================================== */
+document.querySelectorAll('.filter-btn')
+.forEach(b => b.classList.remove('active'));
 
-const scene =
-document.getElementById('modalCardScene');
+btn.classList.add('active');
 
-scene.addEventListener('mousemove', (e) => {
+renderCards();
 
-    const rect =
-    scene.getBoundingClientRect();
-
-    const x =
-    e.clientX - rect.left;
-
-    const y =
-    e.clientY - rect.top;
-
-    const rotateY =
-    ((x / rect.width) - 0.5) * 18;
-
-    const rotateX =
-    ((y / rect.height) - 0.5) * -18;
-
-    scene.style.transform =
-    `rotateX(${rotateX}deg)
-    rotateY(${rotateY}deg)`;
-});
-
-scene.addEventListener('mouseleave', () => {
-
-    scene.style.transform =
-    'rotateX(0deg) rotateY(0deg)';
-});
-
-/* ==================================================
-   FILTER
-================================================== */
-
-function filterCards(type, btn){
-
-    activeFilter = type;
-
-    document.querySelectorAll('.filter-btn')
-    .forEach(b =>
-    b.classList.remove('active'));
-
-    btn.classList.add('active');
-
-    renderCards();
 }
 
-/* ==================================================
-   INIT
-================================================== */
-
-loadUserXP();
+renderAll();
 
 </script>
 
