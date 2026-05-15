@@ -645,26 +645,82 @@ menuToggle.addEventListener('click', openDrawer);
 drawerClose.addEventListener('click', closeDrawer);
 navOverlay.addEventListener('click', closeDrawer);
 
+// ── Fallback Data (shown instantly if backend is slow/down) ──────────
+const FALLBACK_FACTS = [
+    "The human brain processes images 60,000 times faster than text!",
+    "Spaced repetition can boost memory retention by up to 200%.",
+    "Albert Einstein failed his first university entrance exam.",
+    "The first computer bug was an actual bug — a moth found in a relay.",
+    "Learning a new language rewires your brain and delays dementia.",
+    "NASA uses the Pomodoro Technique for astronaut training schedules.",
+    "Your brain is more creative when you're tired — use it wisely!",
+    "The word 'quiz' was invented as a bet in 18th-century Dublin.",
+    "Writing notes by hand improves retention vs. typing by 29%.",
+    "Sleeping after studying helps consolidate memories up to 3x better.",
+];
+
+const FALLBACK_VOCAB = [
+    { word: "Ephemeral", type: "Adjective", meaning: "Lasting for a very short time; transitory.", ex1: "Social media trends are ephemeral — here today, gone tomorrow.", ex2: "The ephemeral beauty of cherry blossoms makes them even more precious." },
+    { word: "Perspicacious", type: "Adjective", meaning: "Having a ready insight; shrewd and understanding.", ex1: "Her perspicacious analysis impressed the entire board.", ex2: "A perspicacious student notices patterns others overlook." },
+    { word: "Sycophant", type: "Noun", meaning: "A person who flatters powerful people to gain favour.", ex1: "The CEO was surrounded by sycophants who never questioned his decisions.", ex2: "True friends don't behave like sycophants." },
+    { word: "Laconic", type: "Adjective", meaning: "Using very few words; brief and concise.", ex1: "His laconic reply — just 'No.' — ended the debate.", ex2: "A laconic writing style is valued in journalism." },
+    { word: "Equanimity", type: "Noun", meaning: "Mental calmness under pressure or stress.", ex1: "She faced the exam results with remarkable equanimity.", ex2: "Equanimity is a skill, not just a personality trait." },
+    { word: "Perfidious", type: "Adjective", meaning: "Deceitful and untrustworthy; guilty of betrayal.", ex1: "The perfidious ally leaked their strategy to rivals.", ex2: "History remembers perfidious leaders harshly." },
+    { word: "Sagacious", type: "Adjective", meaning: "Having or showing keen mental discernment and wisdom.", ex1: "The sagacious mentor guided students without giving away answers.", ex2: "A sagacious investor studies trends others ignore." },
+    { word: "Loquacious", type: "Adjective", meaning: "Tending to talk a great deal; talkative.", ex1: "The loquacious host kept the audience entertained for hours.", ex2: "Being loquacious isn't the same as being communicative." },
+    { word: "Insipid", type: "Adjective", meaning: "Lacking flavour, excitement, or interest.", ex1: "The film had an insipid plot that put half the audience to sleep.", ex2: "Insipid feedback gives the writer nothing to improve on." },
+    { word: "Tenacious", type: "Adjective", meaning: "Holding firm to a purpose; not giving up easily.", ex1: "Her tenacious study habits helped her top the exam.", ex2: "Tenacious learners turn every failure into a lesson." },
+    { word: "Cogent", type: "Adjective", meaning: "Clear, logical, and convincing.", ex1: "She presented a cogent argument that swayed the panel.", ex2: "Cogent essays get higher marks because they're easy to follow." },
+    { word: "Serendipity", type: "Noun", meaning: "A happy accident; a fortunate unexpected discovery.", ex1: "Meeting his co-founder was pure serendipity — both reached for the same book.", ex2: "Many scientific breakthroughs began with serendipity." },
+];
+
+// Shuffle array in place (Fisher-Yates)
+function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
 // ── Vocabulary ────────────────────────────────────
 let vocabList = [];
 let currentVocabIdx = 0;
 
 async function fetchVocabulary() {
+    // Show shuffled fallback immediately so user sees something right away
+    vocabList = shuffle([...FALLBACK_VOCAB]);
+    updateVocabUI();
+
     try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 8000); // 8s timeout
+
         const headers = isGuest() ? { 'X-Guest-Mode': 'true' } : {};
         const res = await fetch(`${BACKEND_URL}/get-vocab`, {
             credentials: 'include',
-            headers
+            headers,
+            signal: controller.signal
         });
+        clearTimeout(timeout);
+
         const data = await res.json();
         if (data.success && data.vocab && data.vocab.length > 0) {
-            vocabList = data.vocab;
+            // Merge backend words with fallback, shuffle, deduplicate by word
+            const combined = [...data.vocab, ...FALLBACK_VOCAB];
+            const seen = new Set();
+            vocabList = shuffle(combined.filter(v => {
+                if (seen.has(v.word)) return false;
+                seen.add(v.word);
+                return true;
+            }));
+            currentVocabIdx = 0;
             updateVocabUI();
-        } else {
-            document.getElementById('vocab-word').innerText    = "Stay Tuned!";
-            document.getElementById('vocab-meaning').innerText = "Fresh words coming soon.";
         }
-    } catch (e) { console.error("Vocab fetch error:", e); }
+    } catch (e) {
+        // Fallback already showing — silently ignore
+        console.log("Vocab: using fallback words.", e.name);
+    }
 }
 
 function updateVocabUI() {
@@ -689,18 +745,30 @@ function changeVocab(direction) {
 
 // ── Fun Fact ──────────────────────────────────────
 async function fetchFunFact() {
+    // Show a random fallback instantly
+    const randomFact = FALLBACK_FACTS[Math.floor(Math.random() * FALLBACK_FACTS.length)];
+    document.getElementById('fact-text').innerText = randomFact;
+
     try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 8000);
+
         const headers = isGuest() ? { 'X-Guest-Mode': 'true' } : {};
-        const res  = await fetch(`${BACKEND_URL}/get-fun-fact`, {
+        const res = await fetch(`${BACKEND_URL}/get-fun-fact`, {
             credentials: 'include',
-            headers
+            headers,
+            signal: controller.signal
         });
+        clearTimeout(timeout);
+
         const data = await res.json();
-        if (data.success && data.fact) {
+        // Only replace if backend returned something meaningful
+        if ((data.success || data.status === 'success') && data.fact && data.fact.trim().length > 10) {
             document.getElementById('fact-text').innerText = data.fact;
         }
     } catch (e) {
-        document.getElementById('fact-text').innerText = "AI can now detect diseases from a single blood drop!";
+        // Fallback already showing — silently ignore
+        console.log("Fun fact: using fallback.", e.name);
     }
 }
 
