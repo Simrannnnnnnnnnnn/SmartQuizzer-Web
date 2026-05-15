@@ -1,3 +1,149 @@
+
+Claude finished the response
+You said: abhi mujhe y do errror encounter ho rhe hai inhe thik krege please or in sb m na responsiveness add kr do mtlb smjh rhe ho kya kh rhi hu same website dikhe mob…
+1778781919398_image.png
+1778781947377_image.png
+abhi mujhe y do errror encounter ho rhe hai inhe thik krege please or in sb m na responsiveness add kr do mtlb smjh rhe ho kya kh rhi hu same website dikhe mobile pr bhi or desktop pr bhi mtlb user ko bar bar adjust na krna pde
+
+11:12 AM
+Claude responded: Haan samajh gayi!
+Haan samajh gayi! Do issues hain:
+
+"NoneType: None" error - Start Quiz click karne par backend se kuch return nahi ho raha
+"Connection error!" - Backend se connection fail ho raha hai
+Pehle mujhe code dekhna hoga. SmartQuizzer-v2 ka GitHub repo share karo ya relevant files paste karo - specifically:
+
+study_hub_result.html (ya jo bhi quiz redirect handle karta hai)
+Backend route jo quiz generate karta hai
+Responsiveness ke liye bhi code chahiye taaki sahi jagah CSS fix kar sakun.
+
+Repo link do ya files paste karo - phir dono fix ek saath karunga! 🔧
+
+You said: https://github.
+[https://github.com/Simrannnnnnnnnnnn/SmartQuizzer-Web](https://github.com/Simrannnnnnnnnnnn/SmartQuizzer-Web/blob/main/collections.html)
+
+11:12 AM
+Claude responded: GitHub repo directly fetch nahi ho pa raha security reasons se.
+
+Searched the web
+Searched the web
+GitHub repo directly fetch nahi ho pa raha security reasons se. Simran, mujhe files manually chahiye. Please ye files ka content paste karo ya raw GitHub links share karo:
+
+study_hub_result.html - jisme "Start Quiz" button hai aur error aa raha hai
+quiz.html (ya jo quiz page hai)
+Backend file - jo API call handle karta hai (app.py / server.js / routes)
+Ya agar raw link milega toh fetch kar sakta hun, jaise:
+
+https://raw.githubusercontent.com/Simrannnnnnnnnnnn/SmartQuizzer-Web/main/study_hub_result.html
+Ye raw links try karo browser mein aur content paste karo — phir dono bugs + responsiveness ek saath fix karunga! 🔧
+
+You said: y mera studyhubresult.
+
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>AI Study Bundle | SmartQuizzer</title> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/a
+
+pasted
+
+
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Live Quiz | SmartQuizzer</title> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+pasted
+
+y mera study_hub_result.html  or y mera quiz.html
+
+11:14 AM
+Claude responded: Code dekh liya!
+Code dekh liya! Dono bugs clear hain. Let me fix them:
+
+Bug 1: startQuiz() mein sirf alert hai, actual quiz data generate/redirect nahi ho raha Bug 2: startInteractiveChallenge() mein backend down hone par "Connection error!" aa raha hai
+
+Abhi fix karta hun dono files:
+
+
+Reading frontend design skill
+Reading frontend design skill
+Ab dono files fix karta hun — bugs + responsiveness dono saath:
+
+
+Created 2 files, read a file
+Created 2 files, read a file
+Dono files ready hain! Ye sab fix kiya:
+
+🐛 Bug Fixes:
+
+1. "NoneType: None" / Start Quiz broken — startQuiz() mein sirf alert tha, koi logic nahi tha. Ab:
+
+Backend se /generate-quiz call hoti hai properly
+Fallback bhi hai — agar backend down ho toh flashcards ko quiz format mein convert karke quiz.html pe bhej deta hai (revision mode mein)
+Alert ki jagah smooth toast notification aata hai
+2. "Connection error!" — pehle bare alert() popup aata tha jo annoying tha. Ab toast message aata hai with helpful message "backend may be starting up, try in 30s" (HuggingFace Spaces cold start hoti hai)
+
+📱 Responsiveness fixes:
+
+Header buttons mobile pe wrap hote hain, text short ho jaata hai (Start → hidden on xs)
+Flashcard height mobile pe 220px ho jaati hai
+sticky-top mobile pe off ho jaata hai taaki overlap na ho
+Option cards mobile pe 1 column, tablet+ pe 2 column
+Question text, buttons — sab clamp() se fluid size
+Confidence buttons bhi wrap hote hain
+Container padding responsive
+
+Study hub result
+Code · HTML 
+
+Quiz
+Code · HTML 
+You said: acha ab jb m result page s take a new quiz pr jati hu to 404 error a rha hai i need ki jo topic pr abhi quiz hua hai same topic pr ae but different questions s…
+acha ab jb m result page s take a new quiz pr jati hu to 404 error a rha hai i need ki jo topic pr abhi quiz hua hai same topic pr ae but different questions smjh rhe example mann lo mne quiz ki abhi photosynthesis pr to us pr questions aae mne quiz kiya compelte ab m click krti hu take new quiz pr to mujhe fr s photosynthesis pr quiz chiaye but with new questions
+
+11:20 AM
+Claude responded: Smart feature hai!
+Smart feature hai! "Take New Quiz" → same topic, fresh questions.
+
+Pehle result page ka code dikhao — results.html paste karo taaki dekh saku 404 kahan se aa raha hai aur wahan button kaise connected hai.
+
+You said: y mera results.
+
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Performance Analytics | SmartQuizzer</title> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0
+
+pasted
+
+y mera results.html or ise bhi responsive bna dena you know what i am saying responsiveness ki tablet pr mobile pr or desktop ppr bar  bar adjust na krna pde
+
+11:22 AM
+Claude responded: Dekh liya!
+Dekh liya! Problem clear hai — "Take New Quiz" button quiz_selection.html pe jaata hai jo exist nahi karta, isliye 404. Fix karti hun — same topic, fresh questions + full responsiveness.
+
+
+Created a file, read a file
+Created a file, read a file
+Done! Yeh sab fix kiya:
+
+🐛 Bug Fix — 404 "Take New Quiz":
+
+Pehle quiz_selection.html pe redirect ho raha tha jo exist hi nahi karta. Ab takeNewQuiz() function:
+
+lastQuizResult se topic uthata hai (jo abhi complete hua — e.g. "Photosynthesis")
+currentStudyData se content uthata hai
+Backend /generate-quiz call karta hai — fresh new questions aati hain same topic pe
+quiz.html pe redirect — quiz shuru!
+Fallback: Backend down ho toh flashcards use karta hai revision mode mein
+📱 Responsiveness:
+
+Header buttons mobile pe wrap + short text (Print Report → Report)
+Charts clamp() se fluid height — mobile pe chhote, desktop pe bade
+Review cards ke answer boxes flex-wrap se stack hote hain mobile pe
+CTA buttons full width with max-width cap
+Font sizes sab clamp() se fluid
+Toast notifications instead of alert()
+
+Results
+Code · HTML 
+You said: <!
+
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Scholar's Vault | SmartQuizzer</title> <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> <link rel="style
+
+pasted
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,51 +155,84 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
         :root { 
-            --sun: #FFCC00; 
-            --sun-light: #FFF4CC;
-            --warm-bg: #FFFDF5; 
-            --text-dark: #2d3436;
-            --gold-primary: #FFD700;
-            --gold-dark: #b8860B;
+            --sun: 
+#FFCC00; 
+            --sun-light: 
+#FFF4CC;
+            --warm-bg: 
+#FFFDF5; 
+            --text-dark: 
+#2d3436;
+            --gold-primary: 
+#FFD700;
+            --gold-dark: 
+#b8860B;
         }
         body { background-color: var(--warm-bg) !important; font-family: 'Inter', sans-serif; color: var(--text-dark); }
         .sun-nav { background: white; border-bottom: 3px solid var(--sun-light); padding: 12px 0; }
         .nav-link-custom { font-weight: 700; color: #444 !important; margin: 0 12px; text-decoration: none; transition: 0.3s; font-size: 0.95rem; }
         .nav-link-custom:hover { color: var(--sun) !important; transform: translateY(-2px); }
         .nav-link-custom i { color: var(--sun); margin-right: 5px; }
-        .sunshine-card { background: #ffffff; border-radius: 30px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: 0.3s; }
-        .sunshine-input { background: #ffffff !important; border: 2px solid var(--sun-light) !important; border-radius: 15px !important; }
+        .sunshine-card { background: 
+#ffffff; border-radius: 30px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: 0.3s; }
+        .sunshine-input { background: 
+#ffffff !important; border: 2px solid var(--sun-light) !important; border-radius: 15px !important; }
         .sunshine-input:focus { border-color: var(--sun) !important; box-shadow: 0 0 15px rgba(255,204,0,0.2) !important; }
-        .sunshine-outline { border: 2px solid var(--sun) !important; color: #b89600 !important; background: transparent; }
+        .sunshine-outline { border: 2px solid var(--sun) !important; color: 
+#b89600 !important; background: transparent; }
         .btn-check:checked + .sunshine-outline { background: var(--sun) !important; color: white !important; }
-        .sunshine-main-btn { background: linear-gradient(45deg, #ffcc00, #ffb800) !important; color: white !important; border: none !important; border-radius: 20px !important; transition: 0.3s; font-size: 1.1rem; }
+        .sunshine-main-btn { background: linear-gradient(45deg, 
+#ffcc00, 
+#ffb800) !important; color: white !important; border: none !important; border-radius: 20px !important; transition: 0.3s; font-size: 1.1rem; }
         .sunshine-main-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255,184,0,0.4) !important; }
 
         /* XP CARD */
         .xp-card { border-top: 5px solid var(--gold-primary); background: #fff; }
-        .xp-progress-container { background: #f1f2f6; border-radius: 50px; height: 18px; margin: 15px 0; overflow: hidden; position: relative; border: 1px solid #eee; }
-        .xp-progress-bar { background: linear-gradient(90deg, #FFD700 0%, #FFCC00 50%, #FFA500 100%); height: 100%; border-radius: 50px; width: 0%; transition: 1.5s cubic-bezier(0.4,0,0.2,1); position: relative; }
+        .xp-progress-container { background: 
+#f1f2f6; border-radius: 50px; height: 18px; margin: 15px 0; overflow: hidden; position: relative; border: 1px solid #eee; }
+        .xp-progress-bar { background: linear-gradient(90deg, 
+#FFD700 0%, 
+#FFCC00 50%, 
+#FFA500 100%); height: 100%; border-radius: 50px; width: 0%; transition: 1.5s cubic-bezier(0.4,0,0.2,1); position: relative; }
         .xp-progress-bar::after { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%); animation: shine-bar 3s infinite; }
         @keyframes shine-bar { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-        .level-circle { width: 50px; height: 50px; background: linear-gradient(135deg, #FFD700, #FFA500); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2rem; box-shadow: 0 4px 15px rgba(255,165,0,0.4); border: 2px solid white; }
+        .level-circle { width: 50px; height: 50px; background: linear-gradient(135deg, 
+#FFD700, 
+#FFA500); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2rem; box-shadow: 0 4px 15px rgba(255,165,0,0.4); border: 2px solid white; }
 
         /* BULB */
         .bulb-wrap { position: relative; display: inline-block; cursor: pointer; }
-        .bulb-icon { font-size: 1.4rem; color: #FFD700; transition: transform 0.2s, filter 0.2s; }
-        .bulb-wrap:hover .bulb-icon, .bulb-wrap:focus .bulb-icon { transform: scale(1.2); filter: drop-shadow(0 0 6px #FFD700); outline: none; }
-        
-        .fact-popup::after { content: ''; position: absolute; bottom: -8px; right: 16px; width: 12px; height: 12px; background: #fff; border-right: 1.5px solid #FFD700; border-bottom: 1.5px solid #FFD700; transform: rotate(45deg); }
-        .fact-label { font-weight: 700; font-size: 0.75rem; color: #b8860b; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
-        .fact-popup { visibility: hidden; opacity: 0; position: absolute; bottom: 38px; right: 0;background: #fff; border: 1.5px solid #FFD700; border-radius: 16px; padding: 14px 16px; width: 230px; z-index: 999; font-size: 0.82rem; color: #444; line-height: 1.5; box-shadow: 0 8px 24px rgba(255,204,0,0.2);transition: opacity 0.2s, visibility 0.2s;}
+        .bulb-icon { font-size: 1.4rem; color: 
+#FFD700; transition: transform 0.2s, filter 0.2s; }
+        .bulb-wrap:hover .bulb-icon, .bulb-wrap:focus .bulb-icon { transform: scale(1.2); filter: drop-shadow(0 0 6px 
+#FFD700); outline: none; }
+
+        .fact-popup::after { content: ''; position: absolute; bottom: -8px; right: 16px; width: 12px; height: 12px; background: #fff; border-right: 1.5px solid 
+#FFD700; border-bottom: 1.5px solid 
+#FFD700; transform: rotate(45deg); }
+        .fact-label { font-weight: 700; font-size: 0.75rem; color: 
+#b8860b; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+        .fact-popup { visibility: hidden; opacity: 0; position: absolute; bottom: 38px; right: 0;background: #fff; border: 1.5px solid 
+#FFD700; border-radius: 16px; padding: 14px 16px; width: 230px; z-index: 999; font-size: 0.82rem; color: #444; line-height: 1.5; box-shadow: 0 8px 24px rgba(255,204,0,0.2);transition: opacity 0.2s, visibility 0.2s;}
         .bulb-wrap:hover .fact-popup, .bulb-wrap:focus-within .fact-popup { visibility: visible; opacity: 1; }
 
         /* POWER WORDS */
-        .power-word-card { background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); color: #0369a1; min-height: 300px; border: 1px solid #7dd3fc; }
-        .power-word-card .badge { background: #0ea5e9 !important; color: white; }
-        .vocab-nav-btn { background: white; border: none; color: #0ea5e9; border-radius: 50%; width: 35px; height: 35px; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .vocab-nav-btn:hover { background: #0ea5e9; color: white; transform: scale(1.1); }
-        .example-box { background: rgba(255,255,255,0.6); border-left: 4px solid #0ea5e9; padding: 10px 15px; border-radius: 12px; font-size: 0.88rem; margin-top: 12px; color: #0c4a6e; font-style: italic; }
-        .streak-badge { background: white; border: 2px solid #FFCC00; padding: 8px 20px; border-radius: 50px; }
+        .power-word-card { background: linear-gradient(135deg, 
+#e0f2fe 0%, 
+#bae6fd 100%); color: 
+#0369a1; min-height: 300px; border: 1px solid 
+#7dd3fc; }
+        .power-word-card .badge { background: 
+#0ea5e9 !important; color: white; }
+        .vocab-nav-btn { background: white; border: none; color: 
+#0ea5e9; border-radius: 50%; width: 35px; height: 35px; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .vocab-nav-btn:hover { background: 
+#0ea5e9; color: white; transform: scale(1.1); }
+        .example-box { background: rgba(255,255,255,0.6); border-left: 4px solid 
+#0ea5e9; padding: 10px 15px; border-radius: 12px; font-size: 0.88rem; margin-top: 12px; color: 
+#0c4a6e; font-style: italic; }
+        .streak-badge { background: white; border: 2px solid 
+#FFCC00; padding: 8px 20px; border-radius: 50px; }
         .icon-box { transition: 0.3s; }
         .sunshine-card:hover .icon-box { transform: rotate(15deg) scale(1.1); }
         input[type=range]::-webkit-slider-thumb { background: var(--sun); border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
@@ -77,12 +256,14 @@
     <div class="row mb-4 animate__animated animate__fadeIn">
         <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
-                <h2 class="fw-bold mb-0" style="color: #4b4b4b;">Rise & Study! ☀️</h2>
+                <h2 class="fw-bold mb-0" style="color: 
+#4b4b4b;">Rise & Study! ☀️</h2>
                 <p class="text-muted fw-medium">Welcome back, <b id="username-display" class="text-warning">Loading...</b></p>
             </div>
             <div class="streak-badge d-flex align-items-center animate__animated animate__bounceIn">
                 <i class="fa-solid fa-fire-flame-curved text-warning fs-4 me-2"></i>
-                <span class="fw-bold fs-5" id="header-xp-display" style="color: #4b4b4b;">0 XP</span>
+                <span class="fw-bold fs-5" id="header-xp-display" style="color: 
+#4b4b4b;">0 XP</span>
             </div>
         </div>
     </div>
@@ -93,7 +274,8 @@
             <div class="sunshine-card p-4 p-md-5 animate__animated animate__fadeInLeft">
                 <div class="d-flex align-items-center mb-4">
                     <div class="icon-box me-3 rounded-circle d-flex align-items-center justify-content-center" style="background: var(--sun-light); width: 60px; height: 60px;">
-                        <i class="fa-solid fa-wand-magic-sparkles fs-3" style="color: #ffcc00;"></i>
+                        <i class="fa-solid fa-wand-magic-sparkles fs-3" style="color: 
+#ffcc00;"></i>
                     </div>
                     <div>
                         <h4 class="fw-bold mb-0">AI Quiz Engine</h4>
@@ -112,7 +294,9 @@
                             </div>
                             <div class="col-6">
                                 <input type="radio" class="btn-check" name="quiz_goal" id="qz" value="quiz">
-                                <label class="btn sunshine-outline w-100 py-3 rounded-4 fw-bold" for="qz" style="border-color: #ff7675 !important; color: #ff7675 !important;">
+                                <label class="btn sunshine-outline w-100 py-3 rounded-4 fw-bold" for="qz" style="border-color: 
+#ff7675 !important; color: 
+#ff7675 !important;">
                                     <i class="fa-solid fa-fire me-2"></i>Deep Test
                                 </label>
                             </div>
@@ -196,7 +380,8 @@
                 <div>
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div class="d-flex align-items-center">
-                            <div class="rounded-circle bg-white d-flex align-items-center justify-content-center me-2" style="width: 35px; height: 35px; color: #0ea5e9;">
+                            <div class="rounded-circle bg-white d-flex align-items-center justify-content-center me-2" style="width: 35px; height: 35px; color: 
+#0ea5e9;">
                                 <i class="fa-solid fa-book-open"></i>
                             </div>
                             <h6 class="fw-bold mb-0">Power Words</h6>
@@ -207,7 +392,8 @@
                         </div>
                     </div>
                     <div id="vocab-content">
-                        <h4 class="fw-bold mb-1" id="vocab-word" style="color: #0c4a6e;">Loading...</h4>
+                        <h4 class="fw-bold mb-1" id="vocab-word" style="color: 
+#0c4a6e;">Loading...</h4>
                         <span class="badge mb-3" id="vocab-type">---</span>
                         <p class="small mb-3" id="vocab-meaning" style="line-height: 1.5;">Loading meaning...</p>
                         <div class="example-box"><span id="vocab-ex-1">Example 1 loading...</span></div>
@@ -218,7 +404,9 @@
             </div>
 
             <!-- COLLECTION VAULT -->
-            <div class="sunshine-card p-4 text-center animate__animated animate__fadeInRight" style="border: 2px dashed #dcdde1; background: #f8fafc; border-radius: 30px;">
+            <div class="sunshine-card p-4 text-center animate__animated animate__fadeInRight" style="border: 2px dashed 
+#dcdde1; background: 
+#f8fafc; border-radius: 30px;">
                 <div class="d-flex justify-content-around mb-3 opacity-50">
                     <i class="fa-solid fa-id-card-clip fs-4"></i>
                     <i class="fa-solid fa-clone fs-2 text-warning opacity-100"></i>
@@ -244,7 +432,7 @@ let currentVocabIdx = 0;
 
 async function fetchVocabulary() {
     try {
-        const res = await fetch(`${BACKEND_URL}/get-vocab`, { credentials: 'include' });
+        const res = await fetch(${BACKEND_URL}/get-vocab, { credentials: 'include' });
         const data = await res.json();
         if (data.success && data.vocab && data.vocab.length > 0) {
             vocabList = data.vocab;
@@ -285,7 +473,7 @@ function changeVocab(direction) {
 // ==========================================
 async function fetchFunFact() {
     try {
-        const res = await fetch(`${BACKEND_URL}/get-fun-fact`, { credentials: 'include' });
+        const res = await fetch(${BACKEND_URL}/get-fun-fact, { credentials: 'include' });
         const data = await res.json();
         if (data.success && data.fact) {
             document.getElementById('fact-text').innerText = data.fact;
@@ -303,12 +491,12 @@ async function loadStats() {
     fetchFunFact();
 
     try {
-        const res = await fetch(`${BACKEND_URL}/api/dashboard_stats`, { credentials: 'include' });
+        const res = await fetch(${BACKEND_URL}/api/dashboard_stats, { credentials: 'include' });
         const data = await res.json();
 
         if (data.success) {
             document.getElementById('username-display').innerText = data.username || 'User';
-            document.getElementById('header-xp-display').innerHTML = `<i class="fa-solid fa-bolt text-warning me-1"></i> ${data.total_xp || 0} XP`;
+            document.getElementById('header-xp-display').innerHTML = <i class="fa-solid fa-bolt text-warning me-1"></i> ${data.total_xp || 0} XP;
 
             const totalXp = data.total_xp || 0;
             const level = Math.floor(totalXp / 500) + 1;
@@ -316,15 +504,15 @@ async function loadStats() {
             const progressPercent = (xpInCurrentLevel / 500) * 100;
             const xpLeft = 500 - xpInCurrentLevel;
 
-            document.getElementById('total-xp-display').innerText = `${totalXp} XP`;
+            document.getElementById('total-xp-display').innerText = ${totalXp} XP;
             document.getElementById('level-badge').innerText = level;
 
             // Animate bar after small delay so transition is visible
             setTimeout(() => {
-                document.getElementById('xp-bar').style.width = `${progressPercent}%`;
+                document.getElementById('xp-bar').style.width = ${progressPercent}%;
             }, 300);
 
-            document.getElementById('xp-to-next').innerText = `${xpLeft} XP to Level ${level + 1}`;
+            document.getElementById('xp-to-next').innerText = ${xpLeft} XP to Level ${level + 1};
         }
     } catch(e) {
         console.error('Stats load failed:', e);
@@ -340,15 +528,15 @@ document.getElementById('source-select').onchange = function() {
     area.className = "mt-4 animate__animated animate__fadeInUp";
 
     if (val === 'topic') {
-        area.innerHTML = `<input type="text" name="topic_name" id="topicInput" class="form-control sunshine-input p-4 rounded-pill" placeholder="Enter topic..." required>`;
+        area.innerHTML = <input type="text" name="topic_name" id="topicInput" class="form-control sunshine-input p-4 rounded-pill" placeholder="Enter topic..." required>;
     } else if (val === 'pdf') {
-        area.innerHTML = `<div class="p-4 text-center rounded-4 border-2 shadow-sm" style="background:#fffef0;border:2px dashed #ffe082;"><i class="fa-solid fa-file-pdf fa-2x text-warning mb-2"></i><p class="text-muted small fw-bold">Select PDF Document</p><input type="file" name="pdf_file" class="form-control" accept=".pdf" required></div>`;
+        area.innerHTML = <div class="p-4 text-center rounded-4 border-2 shadow-sm" style="background:#fffef0;border:2px dashed #ffe082;"><i class="fa-solid fa-file-pdf fa-2x text-warning mb-2"></i><p class="text-muted small fw-bold">Select PDF Document</p><input type="file" name="pdf_file" class="form-control" accept=".pdf" required></div>;
     } else if (val === 'image') {
-        area.innerHTML = `<div class="p-4 text-center rounded-4 border-2 shadow-sm" style="background:#fffef0;border:2px dashed #ffcc00;"><i class="fa-solid fa-image fa-2x text-warning mb-2"></i><p class="text-muted small fw-bold">Select Study Image</p><input type="file" name="image_file" class="form-control" accept="image/*" required></div>`;
+        area.innerHTML = <div class="p-4 text-center rounded-4 border-2 shadow-sm" style="background:#fffef0;border:2px dashed #ffcc00;"><i class="fa-solid fa-image fa-2x text-warning mb-2"></i><p class="text-muted small fw-bold">Select Study Image</p><input type="file" name="image_file" class="form-control" accept="image/*" required></div>;
     } else if (val === 'text') {
-        area.innerHTML = `<textarea name="raw_text" class="form-control sunshine-input p-4" rows="5" placeholder="Paste your notes here..." required></textarea>`;
+        area.innerHTML = <textarea name="raw_text" class="form-control sunshine-input p-4" rows="5" placeholder="Paste your notes here..." required></textarea>;
     } else if (val === 'mistake') {
-        area.innerHTML = `<div class="alert alert-warning border-0 rounded-4 fw-bold shadow-sm"><i class="fa-solid fa-lightbulb me-2"></i>AI will focus on your weak points based on past performance.</div>`;
+        area.innerHTML = <div class="alert alert-warning border-0 rounded-4 fw-bold shadow-sm"><i class="fa-solid fa-lightbulb me-2"></i>AI will focus on your weak points based on past performance.</div>;
     }
 };
 
@@ -360,11 +548,11 @@ document.getElementById('quiz-form').onsubmit = async function(e) {
     const btn = document.getElementById('submitBtn');
     const formData = new FormData(this);
 
-    btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Summoning Quiz...`;
+    btn.innerHTML = <span class="spinner-border spinner-border-sm me-2"></span>Summoning Quiz...;
     btn.disabled = true;
 
     try {
-        const response = await fetch(`${BACKEND_URL}/handle_generation`, {
+        const response = await fetch(${BACKEND_URL}/handle_generation, {
             method: "POST",
             body: formData,
             credentials: 'include'
@@ -394,7 +582,7 @@ document.getElementById('quiz-form').onsubmit = async function(e) {
 document.getElementById('countRange').addEventListener('input', function(e) {
     const output = document.getElementById('countOutput');
     output.innerText = e.target.value;
-    output.classList.remove('animate__bounceIn');
+    output.classList.remove('animate__bounceIn'); 
     void output.offsetWidth;
     output.classList.add('animate__bounceIn');
 });
@@ -405,3 +593,807 @@ loadStats();
 
 </body>
 </html>
+or is wale ko dekhan y hai mera dashboard.html ise responsive bna do
+
+Show more
+11:25 AM
+Claude responded: Dono files dekh li!
+Dono files dekh li! Dashboard mein responsive navbar missing hai mobile pe, aur collections page already responsive hai. Dashboard fix karta hun:
+
+
+Created a file, read a file
+Created a file, read a file
+Done! Yeh sab kiya dashboard mein:
+
+📱 Responsiveness:
+
+Mobile hamburger menu — desktop nav d-none d-md-flex, mobile pe same drawer style jo collections mein tha — consistent feel across pages
+Drawer mein "Card Vault" link bhi add kiya jo pehle missing tha
+Right column sticky — desktop pe scroll karte time right sidebar fixed rehta hai, mobile pe normal flow
+Quiz Engine card padding clamp() se fluid — mobile pe tight nahi lagta
+Goal toggle buttons font size responsive
+Action row — mobile pe "Generate" + "Brain" button full width stack ho jaate hain
+File upload zones properly sized
+XP text, brand name sab clamp() se fluid
+alert() ki jagah toast notifications
+🐛 Bug fix:
+
+alert("Backend Unreachable") → smooth toast message
+
+Dashboard
+Code · HTML 
+
+
+
+
+Claude is AI and can make mistakes. Please double-check responses.
+Dashboard · HTML
+Copy
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sunshine Dashboard | SmartQuizzer AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        :root { 
+            --sun: #FFCC00; 
+            --sun-light: #FFF4CC;
+            --warm-bg: #FFFDF5; 
+            --text-dark: #2d3436;
+            --gold-primary: #FFD700;
+            --gold-dark: #b8860B;
+        }
+ 
+        body { 
+            background-color: var(--warm-bg) !important; 
+            font-family: 'Inter', sans-serif; 
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+ 
+        /* ── NAV ── */
+        .sun-nav { 
+            background: white; 
+            border-bottom: 3px solid var(--sun-light); 
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 500;
+        }
+        .nav-brand {
+            font-weight: 800;
+            font-size: clamp(1.2rem, 5vw, 1.6rem);
+            color: var(--sun);
+            text-decoration: none;
+        }
+        .nav-link-custom { 
+            font-weight: 700; 
+            color: #444 !important; 
+            margin: 0 10px; 
+            text-decoration: none; 
+            transition: 0.3s; 
+            font-size: 0.9rem; 
+        }
+        .nav-link-custom:hover { color: var(--sun) !important; }
+        .nav-link-custom i { color: var(--sun); margin-right: 5px; }
+ 
+        /* Hamburger */
+        .hamburger-btn {
+            display: none;
+            background: none;
+            border: 2px solid var(--sun-light);
+            border-radius: 10px;
+            color: var(--gold-dark);
+            width: 42px; height: 42px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .hamburger-btn:hover { background: var(--sun-light); }
+ 
+        /* Mobile Drawer */
+        .mobile-drawer {
+            display: none;
+            position: fixed;
+            top: 0; right: 0;
+            width: min(280px, 80vw);
+            height: 100vh;
+            background: white;
+            border-left: 2px solid var(--sun-light);
+            z-index: 9999;
+            padding: 24px 20px;
+            flex-direction: column;
+            gap: 4px;
+            box-shadow: -8px 0 30px rgba(0,0,0,0.1);
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+        }
+        .mobile-drawer.open { transform: translateX(0); display: flex; }
+ 
+        .drawer-close {
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            color: #aaa;
+            cursor: pointer;
+            align-self: flex-end;
+            margin-bottom: 20px;
+            padding: 4px 8px;
+        }
+        .drawer-close:hover { color: #333; }
+ 
+        .drawer-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #444;
+            font-size: 0.95rem;
+            font-weight: 600;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+        .drawer-link:hover { background: var(--sun-light); border-color: #ffe082; color: var(--gold-dark); }
+        .drawer-link i { color: var(--sun); width: 20px; text-align: center; }
+        .drawer-link.danger { color: #e05555; }
+        .drawer-link.danger i { color: #e05555; }
+ 
+        .nav-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.35);
+            z-index: 9998;
+            backdrop-filter: blur(2px);
+        }
+        .nav-overlay.open { display: block; }
+ 
+        /* ── CARDS ── */
+        .sunshine-card { 
+            background: #ffffff; 
+            border-radius: 28px; 
+            border: none; 
+            box-shadow: 0 8px 24px rgba(0,0,0,0.05); 
+            transition: 0.3s; 
+        }
+        .sunshine-input { 
+            background: #ffffff !important; 
+            border: 2px solid var(--sun-light) !important; 
+            border-radius: 15px !important; 
+        }
+        .sunshine-input:focus { 
+            border-color: var(--sun) !important; 
+            box-shadow: 0 0 15px rgba(255,204,0,0.2) !important; 
+        }
+        .sunshine-outline { 
+            border: 2px solid var(--sun) !important; 
+            color: #b89600 !important; 
+            background: transparent; 
+        }
+        .btn-check:checked + .sunshine-outline { 
+            background: var(--sun) !important; 
+            color: white !important; 
+        }
+        .sunshine-main-btn { 
+            background: linear-gradient(45deg, #ffcc00, #ffb800) !important; 
+            color: white !important; 
+            border: none !important; 
+            border-radius: 18px !important; 
+            transition: 0.3s; 
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+        }
+        .sunshine-main-btn:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 10px 20px rgba(255,184,0,0.4) !important; 
+        }
+        .sunshine-main-btn:disabled { opacity: 0.7; transform: none; }
+ 
+        /* ── XP CARD ── */
+        .xp-card { border-top: 5px solid var(--gold-primary); }
+        .xp-progress-container { 
+            background: #f1f2f6; 
+            border-radius: 50px; 
+            height: 16px; 
+            margin: 14px 0; 
+            overflow: hidden; 
+            border: 1px solid #eee; 
+        }
+        .xp-progress-bar { 
+            background: linear-gradient(90deg, #FFD700 0%, #FFCC00 50%, #FFA500 100%); 
+            height: 100%; 
+            border-radius: 50px; 
+            width: 0%; 
+            transition: 1.5s cubic-bezier(0.4,0,0.2,1); 
+            position: relative; 
+        }
+        .xp-progress-bar::after { 
+            content: ""; 
+            position: absolute; inset: 0;
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%); 
+            animation: shine-bar 3s infinite; 
+        }
+        @keyframes shine-bar { 
+            0% { transform: translateX(-100%); } 
+            100% { transform: translateX(100%); } 
+        }
+        .level-circle { 
+            width: 48px; height: 48px; 
+            background: linear-gradient(135deg, #FFD700, #FFA500); 
+            color: #fff; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            font-weight: 800; font-size: 1.2rem; 
+            box-shadow: 0 4px 15px rgba(255,165,0,0.4); 
+            border: 2px solid white; 
+            flex-shrink: 0;
+        }
+ 
+        /* ── BULB ── */
+        .bulb-wrap { position: relative; display: inline-block; cursor: pointer; }
+        .bulb-icon { font-size: 1.4rem; color: #FFD700; transition: transform 0.2s, filter 0.2s; }
+        .bulb-wrap:hover .bulb-icon, .bulb-wrap:focus .bulb-icon { 
+            transform: scale(1.2); 
+            filter: drop-shadow(0 0 6px #FFD700); 
+        }
+        .fact-popup { 
+            visibility: hidden; opacity: 0; 
+            position: absolute; bottom: 42px; right: 0;
+            background: #fff; border: 1.5px solid #FFD700; 
+            border-radius: 16px; padding: 14px 16px; 
+            width: clamp(200px, 50vw, 240px); 
+            z-index: 999; font-size: 0.82rem; color: #444; 
+            line-height: 1.5; box-shadow: 0 8px 24px rgba(255,204,0,0.2);
+            transition: opacity 0.2s, visibility 0.2s;
+        }
+        .fact-popup::after { 
+            content: ''; position: absolute; 
+            bottom: -8px; right: 16px; 
+            width: 12px; height: 12px; 
+            background: #fff; 
+            border-right: 1.5px solid #FFD700; 
+            border-bottom: 1.5px solid #FFD700; 
+            transform: rotate(45deg); 
+        }
+        .bulb-wrap:hover .fact-popup, .bulb-wrap:focus-within .fact-popup { 
+            visibility: visible; opacity: 1; 
+        }
+        .fact-label { font-weight: 700; font-size: 0.75rem; color: #b8860b; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+ 
+        /* ── POWER WORDS ── */
+        .power-word-card { 
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); 
+            color: #0369a1; 
+            min-height: 260px; 
+            border: 1px solid #7dd3fc; 
+        }
+        .power-word-card .badge { background: #0ea5e9 !important; color: white; }
+        .vocab-nav-btn { 
+            background: white; border: none; color: #0ea5e9; 
+            border-radius: 50%; width: 34px; height: 34px; 
+            transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+            flex-shrink: 0;
+        }
+        .vocab-nav-btn:hover { background: #0ea5e9; color: white; transform: scale(1.1); }
+        .example-box { 
+            background: rgba(255,255,255,0.6); 
+            border-left: 4px solid #0ea5e9; 
+            padding: 10px 14px; border-radius: 12px; 
+            font-size: 0.85rem; margin-top: 10px; 
+            color: #0c4a6e; font-style: italic; 
+        }
+ 
+        /* ── STREAK BADGE ── */
+        .streak-badge { 
+            background: white; 
+            border: 2px solid #FFCC00; 
+            padding: 8px 18px; 
+            border-radius: 50px; 
+            white-space: nowrap;
+        }
+ 
+        /* ── GOAL TOGGLE ── */
+        .goal-label {
+            font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+            padding: 12px 8px;
+        }
+ 
+        /* ── FILE INPUT ── */
+        .file-drop-zone {
+            background: #fffef0;
+            border: 2px dashed #ffe082;
+            border-radius: 16px;
+            padding: clamp(16px, 4vw, 28px);
+            text-align: center;
+        }
+ 
+        /* ── HEADER ROW ── */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+ 
+        /* ── ACTION BTNS ── */
+        .action-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .action-row .btn-brain {
+            background: #2d3436;
+            color: white;
+            border: none;
+            border-radius: 16px;
+            padding: 12px 18px;
+            font-size: 1rem;
+            flex-shrink: 0;
+            transition: 0.2s;
+        }
+        .action-row .btn-brain:hover { background: #1a1a2e; }
+ 
+        /* ── TOAST ── */
+        .toast-msg {
+            position: fixed;
+            bottom: 20px; left: 50%;
+            transform: translateX(-50%);
+            background: #333; color: white;
+            padding: 12px 22px; border-radius: 50px;
+            font-weight: 600; z-index: 9999;
+            font-size: 0.88rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            animation: slideUp 0.3s ease;
+            white-space: nowrap;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+ 
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            .hamburger-btn { display: flex; }
+            .desktop-nav { display: none !important; }
+            .container { padding-left: 14px; padding-right: 14px; }
+            .sunshine-card { padding: 20px !important; }
+        }
+ 
+        @media (max-width: 576px) {
+            body { padding-bottom: 20px; }
+            .dashboard-header h2 { font-size: 1.3rem; }
+            .action-row { flex-direction: column; }
+            .action-row .sunshine-main-btn { width: 100%; }
+            .action-row .btn-brain { width: 100%; text-align: center; }
+            .goal-label { font-size: 0.8rem; padding: 10px 6px; }
+        }
+ 
+        @media (min-width: 992px) {
+            .right-col { position: sticky; top: 80px; align-self: flex-start; }
+        }
+    </style>
+</head>
+<body>
+ 
+<!-- NAVBAR -->
+<nav class="sun-nav mb-3 mb-md-4">
+    <div class="container d-flex justify-content-between align-items-center">
+        <a href="dashboard.html" class="nav-brand">SmartQuizzer ☀️</a>
+ 
+        <!-- Desktop -->
+        <div class="desktop-nav d-none d-md-flex align-items-center">
+            <a href="dashboard.html" class="nav-link-custom"><i class="fa-solid fa-house"></i>Home</a>
+            <a href="study_hub.html" class="nav-link-custom"><i class="fa-solid fa-graduation-cap"></i>Study Hub</a>
+            <a href="review.html" class="nav-link-custom"><i class="fa-solid fa-brain"></i>Mistakes</a>
+            <a href="https://simrankaurrrrrr-smartquizzer-backend.hf.space/logout" class="nav-link-custom text-danger ms-3">
+                <i class="fa-solid fa-power-off" style="color:#e05555;"></i>Logout
+            </a>
+        </div>
+ 
+        <!-- Mobile hamburger -->
+        <button class="hamburger-btn" id="menuToggle" aria-label="Open menu">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    </div>
+</nav>
+ 
+<!-- Mobile Drawer -->
+<div class="nav-overlay" id="navOverlay"></div>
+<div class="mobile-drawer" id="mobileDrawer">
+    <button class="drawer-close" id="drawerClose"><i class="fa-solid fa-xmark"></i></button>
+    <a href="dashboard.html" class="drawer-link"><i class="fa-solid fa-house"></i>Home</a>
+    <a href="study_hub.html" class="drawer-link"><i class="fa-solid fa-graduation-cap"></i>Study Hub</a>
+    <a href="review.html" class="drawer-link"><i class="fa-solid fa-brain"></i>Mistakes</a>
+    <a href="collections.html" class="drawer-link"><i class="fa-solid fa-id-card-clip"></i>Card Vault</a>
+    <a href="https://simrankaurrrrrr-smartquizzer-backend.hf.space/logout" class="drawer-link danger">
+        <i class="fa-solid fa-power-off"></i>Logout
+    </a>
+</div>
+ 
+<!-- MAIN -->
+<div class="container pb-5">
+ 
+    <!-- Header -->
+    <div class="dashboard-header animate__animated animate__fadeIn">
+        <div>
+            <h2 class="fw-bold mb-0" style="color: #4b4b4b;">Rise & Study! ☀️</h2>
+            <p class="text-muted fw-medium mb-0 mt-1">
+                Welcome back, <b id="username-display" class="text-warning">Loading...</b>
+            </p>
+        </div>
+        <div class="streak-badge d-flex align-items-center">
+            <i class="fa-solid fa-fire-flame-curved text-warning fs-5 me-2"></i>
+            <span class="fw-bold" id="header-xp-display" style="color: #4b4b4b; font-size: clamp(0.9rem, 2.5vw, 1.1rem);">0 XP</span>
+        </div>
+    </div>
+ 
+    <div class="row g-4">
+ 
+        <!-- LEFT: Quiz Engine -->
+        <div class="col-lg-8">
+            <div class="sunshine-card p-3 p-md-4 p-xl-5 animate__animated animate__fadeInLeft">
+                <div class="d-flex align-items-center mb-4 gap-3">
+                    <div class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0"
+                         style="background: var(--sun-light); width: 56px; height: 56px;">
+                        <i class="fa-solid fa-wand-magic-sparkles fs-4" style="color: #ffcc00;"></i>
+                    </div>
+                    <div>
+                        <h4 class="fw-bold mb-0" style="font-size: clamp(1rem, 3vw, 1.3rem);">AI Quiz Engine</h4>
+                        <p class="text-muted small mb-0">Convert anything into a quiz in seconds</p>
+                    </div>
+                </div>
+ 
+                <form id="quiz-form" enctype="multipart/form-data">
+ 
+                    <!-- Goal Toggle -->
+                    <div class="mb-4">
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <input type="radio" class="btn-check" name="quiz_goal" id="rev" value="revision" checked>
+                                <label class="btn sunshine-outline w-100 rounded-4 fw-bold goal-label" for="rev">
+                                    <i class="fa-solid fa-leaf me-1 me-sm-2"></i>Light Revision
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <input type="radio" class="btn-check" name="quiz_goal" id="qz" value="quiz">
+                                <label class="btn sunshine-outline w-100 rounded-4 fw-bold goal-label"
+                                       for="qz" style="border-color: #ff7675 !important; color: #ff7675 !important;">
+                                    <i class="fa-solid fa-fire me-1 me-sm-2"></i>Deep Test
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+ 
+                    <!-- Source + Count -->
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label class="form-label fw-bold small text-muted ms-1">INPUT SOURCE</label>
+                            <select name="source_type" id="source-select" class="form-select sunshine-input p-3 fw-bold">
+                                <option value="topic">🌐 Explore a Topic</option>
+                                <option value="pdf">📄 Smart PDF Upload</option>
+                                <option value="image">📸 Scan Image (OCR)</option>
+                                <option value="text">✍️ Quick Text Paste</option>
+                                <option value="mistake">🧠 Mistake Bank Review</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label fw-bold small text-muted ms-1">QUESTION COUNT</label>
+                            <input type="range" name="count" class="form-range mt-2"
+                                   id="countRange" min="1" max="15" value="5">
+                            <div class="d-flex justify-content-between text-muted fw-bold" style="font-size:0.8rem;">
+                                <span>1</span>
+                                <span id="countOutput" class="text-warning fw-bold fs-5 animate__animated">5</span>
+                                <span>15</span>
+                            </div>
+                        </div>
+                    </div>
+ 
+                    <!-- Dynamic Input Area -->
+                    <div id="input-area" class="mt-4">
+                        <input type="text" name="topic_name" id="topicInput"
+                               class="form-control sunshine-input p-3 p-md-4 rounded-pill"
+                               placeholder="Enter topic (e.g. Artificial Intelligence)..." required>
+                    </div>
+ 
+                    <!-- Submit -->
+                    <div class="action-row mt-4">
+                        <button type="submit" class="btn sunshine-main-btn flex-grow-1 py-3 fw-bold shadow-sm" id="submitBtn">
+                            Generate Questions Now 🪄
+                        </button>
+                        <button type="button" id="caseBtn"
+                                class="btn btn-brain" title="Start AI Case Challenge">
+                            <i class="fa-solid fa-brain me-1"></i>
+                            <span class="d-sm-none">Case Challenge</span>
+                        </button>
+                    </div>
+ 
+                </form>
+            </div>
+        </div>
+ 
+        <!-- RIGHT COLUMN -->
+        <div class="col-lg-4 right-col">
+ 
+            <!-- XP Card -->
+            <div class="sunshine-card p-3 p-md-4 mb-4 xp-card animate__animated animate__fadeInRight">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div>
+                        <h6 class="fw-bold text-muted mb-1" style="font-size: 0.72rem; letter-spacing: 1px;">CURRENT RANK</h6>
+                        <h3 class="fw-bold mb-0" id="total-xp-display" style="color: var(--gold-dark); font-size: clamp(1.2rem, 4vw, 1.6rem);">0 XP</h3>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="bulb-wrap" tabindex="0">
+                            <i class="fa-solid fa-lightbulb bulb-icon"></i>
+                            <div class="fact-popup">
+                                <p class="fact-label">did you know?</p>
+                                <p id="fact-text" style="margin:0;">Loading...</p>
+                            </div>
+                        </div>
+                        <div class="level-circle" id="level-badge">1</div>
+                    </div>
+                </div>
+ 
+                <div class="xp-progress-container">
+                    <div class="xp-progress-bar" id="xp-bar"></div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <p class="small text-muted mb-0 fw-bold" id="xp-to-next">0 XP to next level</p>
+                    <div class="badge bg-light text-warning border border-warning-subtle">
+                        <i class="fa-solid fa-crown me-1"></i>Pro Learner
+                    </div>
+                </div>
+            </div>
+ 
+            <!-- Power Words -->
+            <div class="sunshine-card p-3 p-md-4 mb-4 power-word-card animate__animated animate__fadeInRight">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="rounded-circle bg-white d-flex align-items-center justify-content-center flex-shrink-0"
+                             style="width: 34px; height: 34px; color: #0ea5e9;">
+                            <i class="fa-solid fa-book-open"></i>
+                        </div>
+                        <h6 class="fw-bold mb-0">Power Words</h6>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="vocab-nav-btn" onclick="changeVocab(-1)" aria-label="Previous word">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                        <button class="vocab-nav-btn" onclick="changeVocab(1)" aria-label="Next word">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+ 
+                <div id="vocab-content">
+                    <h4 class="fw-bold mb-1" id="vocab-word" style="color: #0c4a6e; font-size: clamp(1.1rem, 4vw, 1.5rem);">Loading...</h4>
+                    <span class="badge mb-2" id="vocab-type">---</span>
+                    <p class="small mb-2" id="vocab-meaning" style="line-height: 1.5;">Loading meaning...</p>
+                    <div class="example-box"><span id="vocab-ex-1">Example 1 loading...</span></div>
+                    <div class="example-box"><span id="vocab-ex-2">Example 2 loading...</span></div>
+                </div>
+ 
+                <p class="small text-center mt-3 opacity-75 mb-0 fw-bold">Daily boost for your vocabulary!</p>
+            </div>
+ 
+            <!-- Card Collection -->
+            <div class="sunshine-card p-3 p-md-4 text-center animate__animated animate__fadeInRight"
+                 style="border: 2px dashed #dcdde1; background: #f8fafc; border-radius: 28px;">
+                <div class="d-flex justify-content-around mb-3 opacity-50">
+                    <i class="fa-solid fa-id-card-clip fs-4"></i>
+                    <i class="fa-solid fa-clone fs-2 text-warning opacity-100"></i>
+                    <i class="fa-solid fa-id-card-clip fs-4"></i>
+                </div>
+                <h6 class="fw-bold">Card Collection</h6>
+                <p class="small text-muted mb-3">View your earned achievement cards</p>
+                <a href="collections.html" class="btn btn-dark btn-sm rounded-pill w-100 fw-bold py-2">Open Vault</a>
+            </div>
+ 
+        </div>
+    </div>
+</div>
+ 
+<script>
+const BACKEND_URL = "https://simrankaurrrrrr-smartquizzer-backend.hf.space";
+ 
+// ── Toast ─────────────────────────────────────────
+function showToast(msg, duration = 3000) {
+    const existing = document.querySelector('.toast-msg');
+    if (existing) existing.remove();
+    const t = document.createElement('div');
+    t.className = 'toast-msg';
+    t.innerText = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), duration);
+}
+ 
+// ── Mobile Nav ────────────────────────────────────
+const menuToggle  = document.getElementById('menuToggle');
+const mobileDrawer = document.getElementById('mobileDrawer');
+const navOverlay  = document.getElementById('navOverlay');
+const drawerClose = document.getElementById('drawerClose');
+ 
+function openDrawer() {
+    mobileDrawer.classList.add('open');
+    navOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+function closeDrawer() {
+    mobileDrawer.classList.remove('open');
+    navOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+}
+menuToggle.addEventListener('click', openDrawer);
+drawerClose.addEventListener('click', closeDrawer);
+navOverlay.addEventListener('click', closeDrawer);
+ 
+// ── Vocabulary ────────────────────────────────────
+let vocabList = [];
+let currentVocabIdx = 0;
+ 
+async function fetchVocabulary() {
+    try {
+        const res = await fetch(`${BACKEND_URL}/get-vocab`, { credentials: 'include' });
+        const data = await res.json();
+        if (data.success && data.vocab && data.vocab.length > 0) {
+            vocabList = data.vocab;
+            updateVocabUI();
+        } else {
+            document.getElementById('vocab-word').innerText = "Stay Tuned!";
+            document.getElementById('vocab-meaning').innerText = "Fresh words coming soon.";
+        }
+    } catch (e) { console.error("Vocab fetch error:", e); }
+}
+ 
+function updateVocabUI() {
+    if (!vocabList.length) return;
+    const item = vocabList[currentVocabIdx];
+    const content = document.getElementById('vocab-content');
+    content.classList.remove('animate__fadeIn');
+    void content.offsetWidth;
+    content.classList.add('animate__animated', 'animate__fadeIn');
+    document.getElementById('vocab-word').innerText    = item.word    || "N/A";
+    document.getElementById('vocab-type').innerText    = item.type    || "Word";
+    document.getElementById('vocab-meaning').innerText = item.meaning || "No definition available.";
+    document.getElementById('vocab-ex-1').innerText    = item.ex1     || "Learning makes you smarter!";
+    document.getElementById('vocab-ex-2').innerText    = item.ex2     || "Keep practicing daily.";
+}
+ 
+function changeVocab(direction) {
+    if (!vocabList.length) return;
+    currentVocabIdx = (currentVocabIdx + direction + vocabList.length) % vocabList.length;
+    updateVocabUI();
+}
+ 
+// ── Fun Fact ──────────────────────────────────────
+async function fetchFunFact() {
+    try {
+        const res  = await fetch(`${BACKEND_URL}/get-fun-fact`, { credentials: 'include' });
+        const data = await res.json();
+        if (data.success && data.fact) {
+            document.getElementById('fact-text').innerText = data.fact;
+        }
+    } catch (e) {
+        document.getElementById('fact-text').innerText = "AI can now detect diseases from a single blood drop!";
+    }
+}
+ 
+// ── Dashboard Stats ───────────────────────────────
+async function loadStats() {
+    fetchVocabulary();
+    fetchFunFact();
+ 
+    try {
+        const res  = await fetch(`${BACKEND_URL}/api/dashboard_stats`, { credentials: 'include' });
+        const data = await res.json();
+ 
+        if (data.success) {
+            document.getElementById('username-display').innerText = data.username || 'User';
+            document.getElementById('header-xp-display').innerHTML =
+                `<i class="fa-solid fa-bolt text-warning me-1"></i> ${data.total_xp || 0} XP`;
+ 
+            const totalXp = data.total_xp || 0;
+            const level   = Math.floor(totalXp / 500) + 1;
+            const xpInLevel = totalXp % 500;
+            const percent   = (xpInLevel / 500) * 100;
+            const xpLeft    = 500 - xpInLevel;
+ 
+            document.getElementById('total-xp-display').innerText = `${totalXp} XP`;
+            document.getElementById('level-badge').innerText = level;
+            document.getElementById('xp-to-next').innerText  = `${xpLeft} XP to Level ${level + 1}`;
+ 
+            setTimeout(() => {
+                document.getElementById('xp-bar').style.width = `${percent}%`;
+            }, 300);
+        }
+    } catch (e) { console.error('Stats load failed:', e); }
+}
+ 
+// ── Source Toggle ─────────────────────────────────
+document.getElementById('source-select').onchange = function () {
+    const area = document.getElementById('input-area');
+    area.className = "mt-4 animate__animated animate__fadeInUp";
+ 
+    const val = this.value;
+    if (val === 'topic') {
+        area.innerHTML = `<input type="text" name="topic_name" id="topicInput"
+            class="form-control sunshine-input p-3 p-md-4 rounded-pill"
+            placeholder="Enter topic (e.g. Photosynthesis)..." required>`;
+    } else if (val === 'pdf') {
+        area.innerHTML = `<div class="file-drop-zone">
+            <i class="fa-solid fa-file-pdf fa-2x text-warning mb-2"></i>
+            <p class="text-muted small fw-bold mb-2">Select PDF Document</p>
+            <input type="file" name="pdf_file" class="form-control" accept=".pdf" required>
+        </div>`;
+    } else if (val === 'image') {
+        area.innerHTML = `<div class="file-drop-zone" style="border-color:#ffcc00;">
+            <i class="fa-solid fa-image fa-2x text-warning mb-2"></i>
+            <p class="text-muted small fw-bold mb-2">Select Study Image</p>
+            <input type="file" name="image_file" class="form-control" accept="image/*" required>
+        </div>`;
+    } else if (val === 'text') {
+        area.innerHTML = `<textarea name="raw_text" class="form-control sunshine-input p-3"
+            rows="5" placeholder="Paste your notes here..." required></textarea>`;
+    } else if (val === 'mistake') {
+        area.innerHTML = `<div class="alert alert-warning border-0 rounded-4 fw-bold shadow-sm">
+            <i class="fa-solid fa-lightbulb me-2"></i>AI will focus on your weak points from past performance.
+        </div>`;
+    }
+};
+ 
+// ── Quiz Generation ───────────────────────────────
+document.getElementById('quiz-form').onsubmit = async function (e) {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    const formData = new FormData(this);
+ 
+    btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Summoning Quiz...`;
+    btn.disabled = true;
+ 
+    try {
+        const response = await fetch(`${BACKEND_URL}/handle_generation`, {
+            method: "POST",
+            body: formData,
+            credentials: 'include'
+        });
+        const res = await response.json();
+ 
+        if (res.success) {
+            if (res.questions) localStorage.setItem('quiz_questions', JSON.stringify(res.questions));
+            if (res.topic)     localStorage.setItem('quiz_topic', res.topic);
+            localStorage.setItem('quiz_goal', formData.get('quiz_goal'));
+            window.location.href = "quiz.html";
+        } else {
+            showToast(res.message || "Failed to generate quiz.");
+        }
+    } catch (err) {
+        showToast("Backend unreachable. Please try again.");
+    } finally {
+        btn.innerHTML = "Generate Questions Now 🪄";
+        btn.disabled = false;
+    }
+};
+ 
+// ── Range Slider ──────────────────────────────────
+document.getElementById('countRange').addEventListener('input', function (e) {
+    const output = document.getElementById('countOutput');
+    output.innerText = e.target.value;
+    output.classList.remove('animate__bounceIn');
+    void output.offsetWidth;
+    output.classList.add('animate__bounceIn');
+});
+ 
+// ── Init ──────────────────────────────────────────
+loadStats();
+</script>
+ 
+</body>
+</html>
+ 
