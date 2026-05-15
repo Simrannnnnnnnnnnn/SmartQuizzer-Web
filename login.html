@@ -15,7 +15,7 @@
         body {
             margin: 0;
             font-family: 'Inter', -apple-system, sans-serif;
-            background: #FFFDF5; /* Soft sunshine background */
+            background: #FFFDF5;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -63,7 +63,7 @@
             box-shadow: 0 8px 20px rgba(255, 184, 0, 0.3);
         }
         .sunshine-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(255, 184, 0, 0.4); }
-        .sunshine-btn:disabled { background: #ccc; transform: none; box-shadow: none; }
+        .sunshine-btn:disabled { background: #ccc; transform: none; box-shadow: none; cursor: not-allowed; }
 
         .divider { margin: 25px 0; display: flex; align-items: center; opacity: 0.4; }
         .divider-line { flex: 1; height: 1px; background: #888; }
@@ -83,8 +83,11 @@
             transition: 0.3s;
             box-sizing: border-box;
             background: transparent;
+            cursor: pointer;
+            font-size: 1rem;
         }
         .guest-btn:hover { background: #FFF9DB; }
+        .guest-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
         #error-message {
             color: #d9534f;
@@ -103,7 +106,7 @@
 <div class="glass-card animate__animated animate__fadeInUp">
     <h2>SmartQuizzer ☀️</h2>
     <p class="subtitle">Log in to keep your streak alive!</p>
-    
+
     <div id="error-message" class="animate__animated animate__shakeX"></div>
 
     <form id="loginForm">
@@ -122,7 +125,7 @@
         <div class="divider-line"></div>
     </div>
 
-    <button id="guestBtn" class="guest-btn">
+    <button id="guestBtn" class="guest-btn" onclick="handleGuestLogin()">
         <span>🕵️‍♂️</span> Continue as Guest
     </button>
 
@@ -133,68 +136,54 @@
 
 <script>
 const BACKEND_URL = "https://simrankaurrrrrr-smartquizzer-backend.hf.space";
-const loginForm = document.getElementById('loginForm');
-const errorMsg = document.getElementById('error-message');
-const submitBtn = document.getElementById('submitBtn');
-const guestBtn = document.getElementById('guestBtn');
 
-// 1. Standard Login Logic
-loginForm.onsubmit = async function(e) {
+// ── Standard Login ────────────────────────────────
+document.getElementById('loginForm').onsubmit = async function(e) {
     e.preventDefault();
-    submitBtn.disabled = true;
+
+    const submitBtn = document.getElementById('submitBtn');
+    const errorMsg  = document.getElementById('error-message');
+
+    submitBtn.disabled  = true;
     submitBtn.innerText = "Verifying... ⏳";
     errorMsg.style.display = "none";
 
-    const login_id = document.getElementById('login_id').value;
-    const password = document.getElementById('password').value;
+    const login_id = document.getElementById('login_id').value.trim();
+    const password  = document.getElementById('password').value;
 
     try {
         const response = await fetch(`${BACKEND_URL}/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            credentials: 'include', // Cookie save karne ke liye
+            credentials: 'include',
             body: JSON.stringify({ login_id, password })
         });
-        
+
         const data = await response.json();
-        
+
         if (data.success) {
-            // Success! Send user to Dashboard
+            // Clear any leftover guest state
+            localStorage.removeItem('is_guest');
+            localStorage.removeItem('username');
             window.location.href = "dashboard.html";
         } else {
             throw new Error(data.message || "Invalid credentials");
         }
     } catch (err) {
+        const errorMsg = document.getElementById('error-message');
         errorMsg.innerText = "❌ " + err.message;
         errorMsg.style.display = "block";
-        submitBtn.disabled = false;
+        submitBtn.disabled  = false;
         submitBtn.innerText = "LET'S GO 🚀";
     }
 };
 
-// 2. Guest Login Logic (Fixing Unauthorized here too)
-guestBtn.onclick = async function() {
-    guestBtn.disabled = true;
-    guestBtn.innerText = "Joining... 🕵️‍♂️";
-    
-    try {
-        const response = await fetch(`${BACKEND_URL}/guest_login`, {
-            method: 'GET',
-            credentials: 'include'
-        });
-        const data = await response.json();
-        if (data.success) {
-            window.location.href = "dashboard.html";
-        } else {
-            alert("Guest login failed");
-        }
-    } catch (e) {
-        alert("Server error. Try again later.");
-    } finally {
-        guestBtn.disabled = false;
-        guestBtn.innerText = "Continue as Guest";
-    }
-};
+function handleGuestLogin() {
+    const btn = document.getElementById('guestBtn');
+    btn.disabled  = true;
+    btn.innerText = "Joining as Guest... 🕵️‍♂️";
+    window.location.href = `${BACKEND_URL}/guest-login`;
+}
 </script>
 </body>
 </html>
