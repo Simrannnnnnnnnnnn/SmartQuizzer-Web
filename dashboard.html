@@ -266,6 +266,19 @@
             white-space: nowrap;
         }
 
+        /* ── GUEST BANNER ── */
+        .guest-banner {
+            background: linear-gradient(90deg, #fff8e1, #fff3cd);
+            border: 2px solid #ffe082;
+            border-radius: 18px;
+            padding: 14px 20px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+        }
+        .guest-banner.show { display: flex; }
+
         /* ── GOAL TOGGLE ── */
         .goal-label {
             font-size: clamp(0.8rem, 2.5vw, 0.95rem);
@@ -361,7 +374,7 @@
             <a href="dashboard.html" class="nav-link-custom"><i class="fa-solid fa-house"></i>Home</a>
             <a href="study_hub.html" class="nav-link-custom"><i class="fa-solid fa-graduation-cap"></i>Study Hub</a>
             <a href="review.html" class="nav-link-custom"><i class="fa-solid fa-brain"></i>Mistakes</a>
-            <a href="https://simrankaurrrrrr-smartquizzer-backend.hf.space/logout" class="nav-link-custom text-danger ms-3">
+            <a href="#" onclick="handleLogout()" class="nav-link-custom text-danger ms-3">
                 <i class="fa-solid fa-power-off" style="color:#e05555;"></i>Logout
             </a>
         </div>
@@ -381,13 +394,22 @@
     <a href="study_hub.html" class="drawer-link"><i class="fa-solid fa-graduation-cap"></i>Study Hub</a>
     <a href="review.html" class="drawer-link"><i class="fa-solid fa-brain"></i>Mistakes</a>
     <a href="collections.html" class="drawer-link"><i class="fa-solid fa-id-card-clip"></i>Card Vault</a>
-    <a href="https://simrankaurrrrrr-smartquizzer-backend.hf.space/logout" class="drawer-link danger">
+    <a href="#" onclick="handleLogout()" class="drawer-link danger">
         <i class="fa-solid fa-power-off"></i>Logout
     </a>
 </div>
 
 <!-- MAIN -->
 <div class="container pb-5">
+
+    <!-- Guest Banner -->
+    <div class="guest-banner animate__animated animate__fadeIn" id="guest-banner">
+        <i class="fa-solid fa-circle-info fs-5" style="color: #b8860b; flex-shrink:0;"></i>
+        <div>
+            <strong style="color: #7a5c00;">You're browsing as a Guest</strong>
+            <p class="mb-0 small text-muted">Progress won't be saved. <a href="login.html" style="color: #b8860b; font-weight:700;">Sign up free</a> to track XP, mistakes & history.</p>
+        </div>
+    </div>
 
     <!-- Header -->
     <div class="dashboard-header animate__animated animate__fadeIn">
@@ -571,6 +593,35 @@
 <script>
 const BACKEND_URL = "https://simrankaurrrrrr-smartquizzer-backend.hf.space";
 
+// ── Guest Mode Detection ──────────────────────────
+// Check URL param first (coming from /guest-login redirect),
+// then fall back to what's already stored in localStorage.
+(function detectGuestMode() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('mode') === 'guest') {
+        localStorage.setItem('is_guest', 'true');
+        localStorage.setItem('username', 'Guest User');
+        // Clean the URL so it doesn't stay in browser history
+        const cleanUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, cleanUrl);
+    }
+})();
+
+function isGuest() {
+    return localStorage.getItem('is_guest') === 'true';
+}
+
+// ── Logout ────────────────────────────────────────
+function handleLogout() {
+    localStorage.removeItem('is_guest');
+    localStorage.removeItem('username');
+    localStorage.removeItem('quiz_questions');
+    localStorage.removeItem('quiz_topic');
+    localStorage.removeItem('quiz_goal');
+    // Redirect to backend logout (clears server session too)
+    window.location.href = `${BACKEND_URL}/logout`;
+}
+
 // ── Toast ─────────────────────────────────────────
 function showToast(msg, duration = 3000) {
     const existing = document.querySelector('.toast-msg');
@@ -583,21 +634,13 @@ function showToast(msg, duration = 3000) {
 }
 
 // ── Mobile Nav ────────────────────────────────────
-const menuToggle  = document.getElementById('menuToggle');
+const menuToggle   = document.getElementById('menuToggle');
 const mobileDrawer = document.getElementById('mobileDrawer');
-const navOverlay  = document.getElementById('navOverlay');
-const drawerClose = document.getElementById('drawerClose');
+const navOverlay   = document.getElementById('navOverlay');
+const drawerClose  = document.getElementById('drawerClose');
 
-function openDrawer() {
-    mobileDrawer.classList.add('open');
-    navOverlay.classList.add('open');
-    document.body.style.overflow = 'hidden';
-}
-function closeDrawer() {
-    mobileDrawer.classList.remove('open');
-    navOverlay.classList.remove('open');
-    document.body.style.overflow = '';
-}
+function openDrawer()  { mobileDrawer.classList.add('open'); navOverlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
+function closeDrawer() { mobileDrawer.classList.remove('open'); navOverlay.classList.remove('open'); document.body.style.overflow = ''; }
 menuToggle.addEventListener('click', openDrawer);
 drawerClose.addEventListener('click', closeDrawer);
 navOverlay.addEventListener('click', closeDrawer);
@@ -608,13 +651,17 @@ let currentVocabIdx = 0;
 
 async function fetchVocabulary() {
     try {
-        const res = await fetch(`${BACKEND_URL}/get-vocab`, { credentials: 'include' });
+        const headers = isGuest() ? { 'X-Guest-Mode': 'true' } : {};
+        const res = await fetch(`${BACKEND_URL}/get-vocab`, {
+            credentials: 'include',
+            headers
+        });
         const data = await res.json();
         if (data.success && data.vocab && data.vocab.length > 0) {
             vocabList = data.vocab;
             updateVocabUI();
         } else {
-            document.getElementById('vocab-word').innerText = "Stay Tuned!";
+            document.getElementById('vocab-word').innerText    = "Stay Tuned!";
             document.getElementById('vocab-meaning').innerText = "Fresh words coming soon.";
         }
     } catch (e) { console.error("Vocab fetch error:", e); }
@@ -643,7 +690,11 @@ function changeVocab(direction) {
 // ── Fun Fact ──────────────────────────────────────
 async function fetchFunFact() {
     try {
-        const res  = await fetch(`${BACKEND_URL}/get-fun-fact`, { credentials: 'include' });
+        const headers = isGuest() ? { 'X-Guest-Mode': 'true' } : {};
+        const res  = await fetch(`${BACKEND_URL}/get-fun-fact`, {
+            credentials: 'include',
+            headers
+        });
         const data = await res.json();
         if (data.success && data.fact) {
             document.getElementById('fact-text').innerText = data.fact;
@@ -658,6 +709,18 @@ async function loadStats() {
     fetchVocabulary();
     fetchFunFact();
 
+    // If guest, skip the backend stats call and just render defaults
+    if (isGuest()) {
+        document.getElementById('username-display').innerText = 'Guest';
+        document.getElementById('header-xp-display').innerHTML =
+            `<i class="fa-solid fa-bolt text-warning me-1"></i> 0 XP`;
+        document.getElementById('total-xp-display').innerText = '0 XP';
+        document.getElementById('level-badge').innerText = '1';
+        document.getElementById('xp-to-next').innerText  = '500 XP to Level 2';
+        document.getElementById('guest-banner').classList.add('show');
+        return;
+    }
+
     try {
         const res  = await fetch(`${BACKEND_URL}/api/dashboard_stats`, { credentials: 'include' });
         const data = await res.json();
@@ -667,21 +730,28 @@ async function loadStats() {
             document.getElementById('header-xp-display').innerHTML =
                 `<i class="fa-solid fa-bolt text-warning me-1"></i> ${data.total_xp || 0} XP`;
 
-            const totalXp = data.total_xp || 0;
-            const level   = Math.floor(totalXp / 500) + 1;
-            const xpInLevel = totalXp % 500;
-            const percent   = (xpInLevel / 500) * 100;
-            const xpLeft    = 500 - xpInLevel;
+            const totalXp    = data.total_xp || 0;
+            const level      = Math.floor(totalXp / 500) + 1;
+            const xpInLevel  = totalXp % 500;
+            const percent    = (xpInLevel / 500) * 100;
+            const xpLeft     = 500 - xpInLevel;
 
             document.getElementById('total-xp-display').innerText = `${totalXp} XP`;
-            document.getElementById('level-badge').innerText = level;
-            document.getElementById('xp-to-next').innerText  = `${xpLeft} XP to Level ${level + 1}`;
+            document.getElementById('level-badge').innerText       = level;
+            document.getElementById('xp-to-next').innerText        = `${xpLeft} XP to Level ${level + 1}`;
 
             setTimeout(() => {
                 document.getElementById('xp-bar').style.width = `${percent}%`;
             }, 300);
+        } else {
+            // Stats call failed — likely session expired; redirect to login
+            showToast("Session expired. Please log in again.");
+            setTimeout(() => { window.location.href = "login.html"; }, 2000);
         }
-    } catch (e) { console.error('Stats load failed:', e); }
+    } catch (e) {
+        console.error('Stats load failed:', e);
+        showToast("Could not reach server. Please check your connection.");
+    }
 }
 
 // ── Source Toggle ─────────────────────────────────
@@ -690,6 +760,17 @@ document.getElementById('source-select').onchange = function () {
     area.className = "mt-4 animate__animated animate__fadeInUp";
 
     const val = this.value;
+
+    // Guests can't use Mistake Bank
+    if (val === 'mistake' && isGuest()) {
+        showToast("⚠️ Mistake Bank is only available for registered users!");
+        this.value = 'topic';
+        area.innerHTML = `<input type="text" name="topic_name" id="topicInput"
+            class="form-control sunshine-input p-3 p-md-4 rounded-pill"
+            placeholder="Enter topic (e.g. Photosynthesis)..." required>`;
+        return;
+    }
+
     if (val === 'topic') {
         area.innerHTML = `<input type="text" name="topic_name" id="topicInput"
             class="form-control sunshine-input p-3 p-md-4 rounded-pill"
@@ -726,10 +807,12 @@ document.getElementById('quiz-form').onsubmit = async function (e) {
     btn.disabled = true;
 
     try {
+        const headers = isGuest() ? { 'X-Guest-Mode': 'true' } : {};
         const response = await fetch(`${BACKEND_URL}/handle_generation`, {
             method: "POST",
             body: formData,
-            credentials: 'include'
+            credentials: 'include',
+            headers
         });
         const res = await response.json();
 
